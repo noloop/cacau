@@ -30,6 +30,7 @@
   :depends-on (:cacau)
   :components ((:module "test"
                 :components
-                ((:file "cacau-test"))))
+                ((:file "async-runner")
+                 (:file "cacau-test" :depends-on ("async-runner")))))
   :perform (test-op (op c)
-                    (symbol-call :cacau-test '#:run)))
+                    (symbol-call :cacau-test '#:a-run)))

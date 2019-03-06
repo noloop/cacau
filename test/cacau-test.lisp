@@ -1,13 +1,3 @@
-(defpackage #:noloop.cacau-test
-  (:use #:common-lisp)
-  (:nicknames #:cacau-test)
-  (:import-from #:cacau
-                #:make-runner
-                #:suite-root
-                #:add-child
-                #:create-test
-                #:once-runner
-                #:run-runner))
 (in-package #:noloop.cacau-test)
 
 (defun test-runner-create-test (done)
@@ -22,13 +12,4 @@
     (once-runner runner-instance :run-end (lambda () 'END!))
     (run-runner runner-instance)))
 
-(defun async-done (test)
-  (format t "Test: ~a" test))
-
-(defun async-test (name fn)
-  (declare (ignore name))
-  (funcall fn #'async-done))
-
-(defun run ()
-  (async-test :test-1 #'test-runner-create-test))
-
+(a-test :test-runner-create-test #'test-runner-create-test)
