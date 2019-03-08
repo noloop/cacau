@@ -34,21 +34,26 @@
         (when (= (length results) plan-length)
           (format t "Runner Result: ~a"
                   (every #'(lambda (el)
-                             (equal t el))
+                             (eq t el))
                          results))))))
   
   (defun a-run ()
     (let ((next-test (next-test-class plan))
           (next-results (next-results-class plan)))
       
-      (defun async-done (test)
-        (format t "~a~%" test)
-        (funcall next-test)
-        (funcall next-results test))
+      (defun async-done (&optional (test nil test-supplied-p))
+        (let ((test-result nil))
+          (if test-supplied-p
+              (setf test-result test)
+              (setf test-result t))
+          (format t "~a~%" test-result)
+          (funcall next-test)
+          (funcall next-results test-result)))
 
       (funcall next-test)
       (setf plan '()))))
 
 ;; (a-test :test-1 #'(lambda (done) (funcall done (= 1 3))))
 ;; (a-test :test-2 #'(lambda (done) (funcall done (= 2 2))))
+;; (a-test :test-1 #'(lambda (done) (funcall done)))
 ;; (a-run)

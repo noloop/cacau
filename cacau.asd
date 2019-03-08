@@ -33,4 +33,4 @@
                 ((:file "async-runner")
                  (:file "cacau-test" :depends-on ("async-runner")))))
   :perform (test-op (op c)
-                    (symbol-call :cacau-test '#:a-run)))
+                    (symbol-call :cacau-test '#:run)))

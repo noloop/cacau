@@ -12,4 +12,6 @@
     (once-runner runner-instance :run-end (lambda () 'END!))
     (run-runner runner-instance)))
 
-(a-test :test-runner-create-test #'test-runner-create-test)
+(defun run ()
+  (a-test :test-runner-create-test #'test-runner-create-test)
+  (a-run))
