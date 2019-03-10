@@ -50,6 +50,4 @@
     (once bus
           :run-end
           (lambda ()
-            t))
-
-    ))
+            t))))

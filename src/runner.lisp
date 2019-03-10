@@ -11,8 +11,10 @@
            :accessor result)))
 
 (defun make-runner ()
-  (let ((new-runner (make-instance 'runner)))
+  (let ((new-runner (make-instance 'runner))
+        (temp-runnable (make-instance 'runnable)))
     (setf (suite-root new-runner) (make-suite))
+    (setf (eventbus temp-runnable) (eventbus new-runner))
     (create-runner-listeners new-runner)
     new-runner))
 
