@@ -9,29 +9,35 @@
                 :accessor before-each)
    (after-each :initform nil
                :accessor after-each)
-   (parents-before-each :initform '()
+   (parents-before-each :initform (make-list-iterator)
                         :accessor parents-before-each)
-   (parents-after-each :initform '()
+   (parents-after-each :initform (make-list-iterator)
                        :accessor parents-after-each)
-   (children :initform '()
+   (children :initform (make-list-iterator)
              :accessor children)
-   (children-onlys :initform '()
+   (children-onlys :initform (make-list-iterator)
                    :accessor children-onlys)
    (only-p :initform nil
            :accessor only-p)
    (skip-p :initform nil
            :accessor skip-p)))
 
-(defun make-suite (&key name fn)
+(defun make-suite (&key name parent)
   (make-instance 'suite-class
                  :name name
-                 :fn fn))
+                 :parent parent))
 
-(defmethod add-child (obj child)
-  (setf (parent obj) obj)
-  (setf (children obj) (push child (children obj))))
+(defmethod add-child ((suite suite-class) child)
+  (setf (parent child) suite)
+  (add (children suite) child))
 
-(defmethod run-suite ((obj suite-class))
-  (dolist (child (children obj))
-    (run-test child))
-  (emit (eventbus obj) :run-end))
+(defmethod next-child ((suite suite-class))
+  (let ((current-child (next (children suite))))
+    (if current-child
+        (run-runnable current-child)
+        (emit (eventbus suite) :suite-end suite))))
+
+(defmethod run-runnable ((suite suite-class))
+  ;;(inspect (children suite))
+  (next-child suite))
+

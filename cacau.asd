@@ -15,12 +15,15 @@
                 ((:file "package")
                  (:file "utils" :depends-on ("package"))
                  (:file "runnable" :depends-on ("package"))
-                 (:file "test" :depends-on ("runnable"))
-                 (:file "suite" :depends-on ("runnable" "test"))
-                 (:file "runner-listeners" :depends-on ("utils"))
-                 (:file "runner" :depends-on ("runner-listeners" "test" "suite"))
-                 (:file "cacau" :depends-on ("runner")))))
-  :in-order-to ((test-op (test-op "cacau/test"))))
+                 (:file "list-iterator" :depends-on ("package"))
+                 (:file "test" :depends-on ("runnable" "utils"))
+                 (:file "suite" :depends-on ("test" "list-iterator"))
+                 (:file "runner-listeners" :depends-on ("package"))
+                 (:file "runner" :depends-on ("runner-listeners" "suite"))
+                 )))
+                :in-order-to ((test-op (test-op "cacau/test"))))
+
+;; (:file "cacau" :depends-on ("runner"))
 
 (defsystem :cacau/test
   :author "noloop <noloop@zoho.com>"
@@ -28,9 +31,12 @@
   :license "GPLv3"
   :description "cacau Test."
   :depends-on (:cacau)
+  :serial t
   :components ((:module "test"
                 :components
                 ((:file "async-runner")
-                 (:file "cacau-test" :depends-on ("async-runner")))))
+                 (:file "runner-test")
+                 (:file "before-all-test")
+                 (:file "run"))))
   :perform (test-op (op c)
                     (symbol-call :cacau-test '#:run)))

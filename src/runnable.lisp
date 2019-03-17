@@ -7,8 +7,11 @@
        :accessor fn)
    (parent :initarg :parent
            :accessor parent)
-   (runnable-error :initarg :runnable-error
+   (runnable-error :initform nil
                    :accessor runnable-error)
    (eventbus :initarg :eventbus
              :accessor eventbus
              :allocation :class)))
+
+(defgeneric run-runnable (obj)
+  (:documentation "Something must be run, such as a test suite that calls run-runnable from each tests, or running a hook."))

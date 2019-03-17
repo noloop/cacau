@@ -13,6 +13,7 @@
                  (:run-start 0)
                  (:run-end 0)
                  (:run-duration 0)
+                 (:completed-suites 0)
                  (:completed-tests 0)))
 
     (on bus
@@ -28,26 +29,48 @@
           (incf (gethash :tests result-hash))))
 
     (on bus
-        :suite-end
+        :pass
         (lambda ()
           t))
 
     (on bus
-        :test-end
+        :fail
         (lambda ()
           t))
 
+    (on bus
+        :suite-end
+        (lambda (suite)
+          (unless (eq :suite-root (name suite))
+              (next-child (parent suite))
+              (incf (gethash :completed-suites result-hash)))))
+
+    (on bus
+        :test-end
+        (lambda (test)
+          (if (runnable-error test)
+              (emit bus :fail)
+              (emit bus :pass))
+          (incf (gethash :completed-tests result-hash))
+          (when (= (get-run-progress runner) 100)
+            (emit bus :run-end))))
+    
     (once bus
           :run-start
           (lambda ()
-            t))
+            (setf (gethash :run-start result-hash) (get-universal-time))))
 
     (once bus
           :run-abort
           (lambda ()
-            t))
+            (emit bus :run-end)))
 
     (once bus
           :run-end
           (lambda ()
-            t))))
+            (setf (gethash :run-end result-hash) (get-universal-time))
+            (setf (gethash :run-duration result-hash)
+                  (- (gethash :run-end result-hash)
+                     (gethash :run-start result-hash)))
+            (emit bus :end)))))
+

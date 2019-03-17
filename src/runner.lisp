@@ -13,18 +13,24 @@
 (defun make-runner ()
   (let ((new-runner (make-instance 'runner))
         (temp-runnable (make-instance 'runnable)))
-    (setf (suite-root new-runner) (make-suite))
+    (setf (suite-root new-runner)
+          (make-suite :name :suite-root
+                      :parent nil))
     (setf (eventbus temp-runnable) (eventbus new-runner))
     (create-runner-listeners new-runner)
     new-runner))
 
-(defmethod create-suite ((obj runner) name fn options)
+(defmethod create-suite ((obj runner) name options)
   (emit (eventbus obj) :add-suite options)
-  (make-suite :name name :fn fn))
+  (make-suite :name name))
 
 (defmethod create-test ((obj runner) name fn options)
   (emit (eventbus obj) :add-test options)
   (make-test :name name :fn fn))
+
+(defmethod get-run-progress ((obj runner))
+  (round (/ (gethash :completed-tests (result obj))
+            (/ (gethash :tests (result obj)) 100))))
 
 (defmethod once-runner ((obj runner) event-name fn)
   (once (eventbus obj) event-name fn))
@@ -34,6 +40,5 @@
 
 (defmethod run-runner ((obj runner))
   (emit (eventbus obj) :run-start)
-  (run-suite (suite-root obj)))
-
+  (run-runnable (suite-root obj)))
 

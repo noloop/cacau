@@ -6,6 +6,7 @@
                 #:suite-root
                 #:add-child
                 #:create-test
+                #:create-suite
                 #:once-runner
                 #:run-runner))
 (in-package #:noloop.cacau-test)

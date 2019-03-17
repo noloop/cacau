@@ -11,31 +11,25 @@
                  :name name
                  :fn fn))
 
-(defmethod run-test ((test-obj test-class)) 
-  (if (>= (get-function-args-length (fn test-obj)) 1)
-      (funcall (fn test-obj) (done test-obj))
-      (funcall (fn test-obj))))
+(defmethod run-runnable ((test test-class))
+  (if (>= (get-function-args-length (fn test)) 1)
+      (funcall (fn test) (done test))
+      (progn (funcall (fn test))
+             (after-run test))))
 
-(defmethod done ((test-obj test-class))
-  (lambda (&optional (arg nil arg-supplied-p)) 
-    (cond (arg-supplied-p
-           t)
-          ((and arg-supplied-p
+(defmethod done ((test test-class))
+  "The done function accepts an optional argument, which can be either one error or test-fn(function)."
+  (lambda (&optional (arg nil arg-supplied-p))
+    (cond ((and arg-supplied-p
                 (typep arg 'error))
-           (setf (runnable-error test-obj) arg))
+           (setf (runnable-error test) arg))
           ((and arg-supplied-p
                 (typep arg 'function))
-           (funcall arg)))))
+           (funcall arg)))
+    (after-run test)))
 
-;; cada suite ter seu método next-test, assim passa o proximo test, e também ter seu método get-current-test(precisa mesmo?!) para pegar o teste que está sendo executado no momento.
+(defmethod after-run ((test test-class))
+  (next-child (parent test))
+  (emit (eventbus test) :test-end test))
 
-;; TEST
-;; (defun create-test (description fn &key only skip)
-;;   (lambda ()
-;;     (list description
-;;           (if (null fn)
-;;               "PENDING"
-;;               (funcall fn))
-;;           only skip)))
-
-;; done accept optional argument, error or test-fn!!!
+;; TODO: TEST "PENDING"
