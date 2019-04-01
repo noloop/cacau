@@ -31,12 +31,12 @@
     (on bus
         :pass
         (lambda ()
-          t))
+          (incf (gethash :passing result-hash))))
 
     (on bus
         :fail
         (lambda ()
-          t))
+          (incf (gethash :failing result-hash))))
 
     (on bus
         :suite-end
@@ -49,7 +49,14 @@
         :test-end
         (lambda (test)
           (if (runnable-error test)
-              (emit bus :fail)
+              (let ((new-error (make-hash-table)))
+                (setf-hash new-error
+                           `((:name ,(name test))
+                             (:fn ,(fn test))
+                             (:parent ,(parent test))
+                             (:error ,(runnable-error test))))
+                (push new-error (gethash :errors result-hash))
+                (emit bus :fail))
               (emit bus :pass))
           (incf (gethash :completed-tests result-hash))
           (when (= (get-run-progress runner) 100)

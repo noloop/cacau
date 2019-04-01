@@ -1,5 +1,6 @@
 (defpackage #:noloop.cacau-test
-  (:use #:common-lisp)
+  (:use #:common-lisp
+        #:assert-p)
   (:nicknames #:cacau-test)
   (:import-from #:cacau
                 #:make-runner
@@ -8,6 +9,7 @@
                 #:create-test
                 #:create-suite
                 #:once-runner
+                #:create-before-all
                 #:run-runner))
 (in-package #:noloop.cacau-test)
 
@@ -51,7 +53,11 @@
           (funcall next-test)
           (funcall next-results test-result)))
 
-      (funcall next-test)
+      (handler-case (funcall next-test)
+        (error (c)
+          (setf plan '())
+          (error c)))
+      
       (setf plan '()))))
 
 ;; (a-test :test-1 #'(lambda (done) (funcall done (= 1 3))))

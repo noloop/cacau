@@ -6,5 +6,12 @@
                 #:once
                 #:on
                 #:emit)
+  (:import-from #:assertion-error
+                #:assertion-error
+                #:assertion-error-actual
+                #:assertion-error-expected
+                #:assertion-error-message
+                #:assertion-error-result
+                #:assertion-error-stack)
   (:export #:run-suite
 	   #:run-test))

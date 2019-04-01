@@ -27,6 +27,10 @@
                  :name name
                  :parent parent))
 
+(defmethod create-before-all ((suite suite-class) &rest args)
+  ;;(setf (before-all suite) (make-hook args))
+  )
+
 (defmethod add-child ((suite suite-class) child)
   (setf (parent child) suite)
   (add (children suite) child))

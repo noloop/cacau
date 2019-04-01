@@ -9,7 +9,7 @@
   :bug-tracker "https://github.com/noloop/cacau/issues"
   :source-control (:git "git@github.com:noloop/cacau.git")
   :description "Test Runner in Common Lisp."
-  :depends-on (:eventbus)
+  :depends-on (:eventbus :assertion-error)
   :components ((:module "src"
                 :components
                 ((:file "package")
@@ -19,24 +19,20 @@
                  (:file "test" :depends-on ("runnable" "utils"))
                  (:file "suite" :depends-on ("test" "list-iterator"))
                  (:file "runner-listeners" :depends-on ("package"))
-                 (:file "runner" :depends-on ("runner-listeners" "suite"))
-                 )))
+                 (:file "runner" :depends-on ("runner-listeners" "suite")))))
                 :in-order-to ((test-op (test-op "cacau/test"))))
-
-;; (:file "cacau" :depends-on ("runner"))
 
 (defsystem :cacau/test
   :author "noloop <noloop@zoho.com>"
   :maintainer "noloop <noloop@zoho.com>"
   :license "GPLv3"
   :description "cacau Test."
-  :depends-on (:cacau)
-  :serial t
+  :depends-on (:cacau :assert-p)
   :components ((:module "test"
                 :components
                 ((:file "async-runner")
                  (:file "runner-test")
                  (:file "before-all-test")
-                 (:file "run"))))
+                 (:file "run" :depends-on ("async-runner" "runner-test")))))
   :perform (test-op (op c)
                     (symbol-call :cacau-test '#:run)))

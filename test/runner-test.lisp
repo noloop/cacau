@@ -2,7 +2,7 @@
 
 (defun test-runner-create-test-sync (a-done)
   (let* ((runner-instance (make-runner))
-         (suite-root (suite-root runner-instance)))  
+         (suite-root (suite-root runner-instance)))
     (add-child suite-root
                (create-test runner-instance
                             :test-1
@@ -87,7 +87,7 @@
                (create-test runner-instance
                             :test-1
                             (lambda ()
-                              (= 1 1))
+                              (t-p nil))
                             '(:only-p nil :skip-p nil)))
     (add-child suite-2
                (create-test runner-instance
@@ -98,7 +98,7 @@
     (once-runner runner-instance
                  :end
                  (lambda ()
+                   (inspect runner-instance)
                    (funcall a-done)))
     (run-runner runner-instance)))
-
 
