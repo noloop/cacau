@@ -65,7 +65,7 @@
     (once bus
           :run-start
           (lambda ()
-            (setf (gethash :run-start result-hash) (get-universal-time))))
+            (setf (gethash :run-start result-hash) (get-internal-real-time))))
 
     (once bus
           :run-abort
@@ -75,9 +75,11 @@
     (once bus
           :run-end
           (lambda ()
-            (setf (gethash :run-end result-hash) (get-universal-time))
-            (setf (gethash :run-duration result-hash)
-                  (- (gethash :run-end result-hash)
-                     (gethash :run-start result-hash)))
+            (setf (gethash :run-end result-hash) (get-internal-real-time))
+            (let ((duration (- (gethash :run-end result-hash)
+                        (gethash :run-start result-hash))))
+              (setf (gethash :run-duration result-hash)
+                    (/ (if (<= duration 0) 1 duration)
+                       internal-time-units-per-second)))
             (emit bus :end)))))
 

@@ -4,10 +4,18 @@
   ((pos-hook-fn :initform nil
                 :accessor pos-hook-fn)))
 
-(defun make-hook (&key name fn)
-  (make-instance 'hook-class
-                 :name name
-                 :fn fn))
+(defun make-hook (args)
+  (let* ((function-p (typep (first args) 'function))
+         (new-hook (make-instance 'hook-class
+                                  :name (if function-p
+                                            :Anonymous
+                                            (first args))
+                                  :fn (if function-p
+                                          (first args)
+                                          (second args)))))
+    ;;(format t "~%p: ~a~%" function-p)
+    ;;(inspect new-hook)
+    new-hook))
 
 (defmethod run-runnable ((test test-class))
   (if (>= (get-function-args-length (fn test)) 1)

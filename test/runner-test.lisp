@@ -87,18 +87,18 @@
                (create-test runner-instance
                             :test-1
                             (lambda ()
-                              (t-p nil))
+                              (= 1 1))
                             '(:only-p nil :skip-p nil)))
     (add-child suite-2
                (create-test runner-instance
                             :test-2
-                            (lambda (done)
+                            (lambda (done) 
                               (funcall done))
                             '(:only-p nil :skip-p nil)))
     (once-runner runner-instance
                  :end
                  (lambda ()
-                   (inspect runner-instance)
+                   ;;(inspect runner-instance)
                    (funcall a-done)))
     (run-runner runner-instance)))
 

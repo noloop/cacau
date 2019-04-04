@@ -10,7 +10,8 @@
                 #:create-suite
                 #:once-runner
                 #:create-before-all
-                #:run-runner))
+                #:run-runner
+                #:result))
 (in-package #:noloop.cacau-test)
 
 (let ((plan '()))
