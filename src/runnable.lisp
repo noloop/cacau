@@ -13,5 +13,5 @@
              :accessor eventbus
              :allocation :class)))
 
-(defgeneric run-runnable (obj)
+(defgeneric run-runnable (obj &optional fn)
   (:documentation "Something must be run, such as a test suite that calls run-runnable from each tests, or running a hook."))

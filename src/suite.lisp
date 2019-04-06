@@ -40,7 +40,12 @@
         (run-runnable current-child)
         (emit (eventbus suite) :suite-end suite))))
 
-(defmethod run-runnable ((suite suite-class))
+(defmethod run-runnable ((suite suite-class) &optional fn)
+  (declare (ignore fn))
   ;;(inspect (children suite))
-  (next-child suite))
+  (if (before-all suite)
+      (run-runnable (before-all suite)
+                    (lambda ()
+                      (next-child suite)))
+      (next-child suite)))
 

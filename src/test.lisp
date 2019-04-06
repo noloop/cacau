@@ -11,12 +11,12 @@
                  :name name
                  :fn fn))
 
-(defmethod run-runnable ((test test-class))
-  ;;(inspect (before-all (parent test)))
+(defmethod run-runnable ((test test-class) &optional fn)
+  (declare (ignore fn))
+  ;;!!!!try-fn pode ficar apenas em (fn test) sem done!!!
   (try-fn
    test
    (lambda ()
-     (funcall (fn (before-all (parent test))))
      (if (>= (get-function-args-length (fn test)) 1)
          (funcall (fn test) (done test))
          (progn (funcall (fn test))

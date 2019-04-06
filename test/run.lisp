@@ -6,4 +6,6 @@
   ;; (a-test :test-runner-create-suite #'test-runner-create-suite)
   ;; (a-test :test-runner-create-suite-recursive #'test-runner-create-suite-recursive)
   (a-test :test-before-all #'test-before-all)
+  (a-test :test-async-before-all #'test-async-before-all)
+  (a-test :test-before-all-recursive #'test-before-all-recursive)
   (a-run))
