@@ -10,6 +10,8 @@
                 #:create-suite
                 #:once-runner
                 #:create-before-all
+                #:create-after-all
+                #:create-before-each
                 #:run-runner
                 #:result))
 (in-package #:noloop.cacau-test)

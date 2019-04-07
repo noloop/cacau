@@ -41,9 +41,18 @@
     (on bus
         :suite-end
         (lambda (suite)
-          (unless (eq :suite-root (name suite))
-              (next-child (parent suite))
-              (incf (gethash :completed-suites result-hash)))))
+          (let* ((suite-root-p
+                   (eq :suite-root (name suite)))
+                 (suite-next-fn
+                   (lambda ()
+                     (unless suite-root-p
+                       (next-child (parent suite)) 
+                       (incf (gethash :completed-suites result-hash))))))
+            (if (after-all suite)
+                (run-runnable (after-all suite)
+                              (lambda ()
+                                (funcall suite-next-fn)))
+                (funcall suite-next-fn)))))
 
     (on bus
         :test-end

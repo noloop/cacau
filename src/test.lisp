@@ -13,14 +13,20 @@
 
 (defmethod run-runnable ((test test-class) &optional fn)
   (declare (ignore fn))
-  ;;!!!!try-fn pode ficar apenas em (fn test) sem done!!!
-  (try-fn
-   test
+  ;;(start-iterator (parents-before-each (parent test)))
+  ;;(inspect (parents-before-each (parent test)))
+  (setf (current-index (parents-before-each (parent test))) 0)
+  (execute-suites-each
+   (parent test)
+   (parents-before-each (parent test))
    (lambda ()
      (if (>= (get-function-args-length (fn test)) 1)
          (funcall (fn test) (done test))
-         (progn (funcall (fn test))
-                (after-run test))))))
+         (try-fn
+          test
+          (lambda ()
+            (progn (funcall (fn test))
+                   (after-run test))))))))
 
 (defmethod done ((test test-class))
   "The done function accepts an optional argument, which can be either one error or test-fn(function)."
@@ -51,6 +57,7 @@
                      (:result ,(assertion-error-result c))
                      (:stack ,(assertion-error-stack c))))
         (setf (runnable-error test) error-hash)
-       (after-run test)))))
+        (after-run test)))
+    (error (c) (error c))))
 
 ;; TODO: TEST "PENDING"
