@@ -98,7 +98,6 @@
     (once-runner runner-instance
                  :end
                  (lambda ()
-                   ;;(inspect runner-instance)
                    (funcall a-done)))
     (run-runner runner-instance)))
 

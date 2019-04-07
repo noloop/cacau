@@ -13,9 +13,7 @@
 
 (defmethod run-runnable ((test test-class) &optional fn)
   (declare (ignore fn))
-  ;;(start-iterator (parents-before-each (parent test)))
-  ;;(inspect (parents-before-each (parent test)))
-  (setf (current-index (parents-before-each (parent test))) 0)
+  (start-iterator (parents-before-each (parent test)))
   (execute-suites-each
    (parent test)
    (parents-before-each (parent test))
@@ -43,6 +41,7 @@
     (after-run test)))
 
 (defmethod after-run ((test test-class))
+  (format t "~%after-run: ~a~%" (name test))
   (next-child (parent test))
   (emit (eventbus test) :test-end test))
 
@@ -57,7 +56,6 @@
                      (:result ,(assertion-error-result c))
                      (:stack ,(assertion-error-stack c))))
         (setf (runnable-error test) error-hash)
-        (after-run test)))
-    (error (c) (error c))))
+        (after-run test)))))
 
 ;; TODO: TEST "PENDING"

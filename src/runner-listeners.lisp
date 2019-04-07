@@ -45,8 +45,10 @@
                    (eq :suite-root (name suite)))
                  (suite-next-fn
                    (lambda ()
+                     ;;(format t "~%suite-root-p: ~a~%" suite-root-p)
                      (unless suite-root-p
-                       (next-child (parent suite)) 
+                       (format t "~%next-child: ~a~%" (name suite))
+                       (next-child (parent suite))  
                        (incf (gethash :completed-suites result-hash))))))
             (if (after-all suite)
                 (run-runnable (after-all suite)
@@ -57,6 +59,7 @@
     (on bus
         :test-end
         (lambda (test)
+          (format t "~%test-end: ~a~%" (name test))
           (if (runnable-error test)
               (let ((new-error (make-hash-table)))
                 (setf-hash new-error
@@ -69,7 +72,7 @@
               (emit bus :pass))
           (incf (gethash :completed-tests result-hash))
           (when (= (get-run-progress runner) 100)
-            (emit bus :run-end))))
+            (progn (print :fim-do-mundo) (emit bus :run-end)))))
     
     (once bus
           :run-start

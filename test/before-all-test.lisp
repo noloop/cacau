@@ -80,7 +80,6 @@
                                 '(:only-p nil :skip-p nil)))
          (x 0))
     (add-child suite-root suite-1)
-    (add-child suite-1 suite-2)
     (create-before-all suite-1
                        (lambda (done-hook)
                          (setf x 1)
@@ -99,6 +98,7 @@
                               ;;(format t "~%X: ~a~%" x)
                               (eql-p x 1))
                             '(:only-p nil :skip-p nil)))
+    (add-child suite-1 suite-2)
     (create-before-all suite-2
                        (lambda (done-hook)
                          (incf x)

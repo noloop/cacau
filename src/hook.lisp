@@ -14,8 +14,6 @@
                                           (first args)
                                           (second args)))
                    ))
-    ;;(format t "~%p: ~a~%" function-p)
-    ;;(inspect new-hook)
     new-hook))
 
 (defmethod run-runnable ((hook hook-class) &optional after-hook)

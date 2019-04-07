@@ -81,7 +81,7 @@
     (create-before-each suite-1
                         :hook-suite-1
                         (lambda (done-hook)
-                          ;;(print :primeiro)
+                          (print :primeiro)
                           (setf x 0)
                           (funcall done-hook)))
     (add-child suite-1
@@ -104,40 +104,40 @@
     (create-before-each suite-2
                         :hook-suite-2
                         (lambda ()
-                          ;;(print :segundo)
+                          (print :segundo)
                           (incf x 1)))
     (add-child suite-2
                (create-test runner-instance
                             :suite-2-test-1
                             (lambda ()
-                              (incf x 1)
                               (format t "~%s2 - test-1 x: ~a~%" x)
+                              (incf x 1)
                               (eql-p x 2))
                             '(:only-p nil :skip-p nil)))
-    ;; (add-child suite-2
-    ;;            (create-test runner-instance
-    ;;                         :test-2
-    ;;                         (lambda ()
-    ;;                           (format t "~%s2 - test-2 x: ~a~%" x)
-    ;;                           (incf x 1)
-    ;;                           (eql-p x 2))
-    ;;                         '(:only-p nil :skip-p nil)))
-    ;; (add-child suite-1
-    ;;            (create-test runner-instance
-    ;;                         :test-3
-    ;;                         (lambda ()
-    ;;                           (format t "~%s1 - test-3 x: ~a~%" x)
-    ;;                           (incf x 1)
-    ;;                           (eql-p x 1))
-    ;;                         '(:only-p nil :skip-p nil)))
-    ;; (add-child suite-root
-    ;;            (create-test runner-instance
-    ;;                         :test-1
-    ;;                         (lambda ()
-    ;;                           (format t "~%suite root - test-2 x: ~a~%" x)
-    ;;                           (incf x 1)
-    ;;                           (eql-p x 1))
-    ;;                         '(:only-p nil :skip-p nil)))
+    (add-child suite-2
+               (create-test runner-instance
+                            :suite-2-test-2
+                            (lambda ()
+                              (format t "~%s2 - test-2 x: ~a~%" x)
+                              (incf x 1)
+                              (eql-p x 2))
+                            '(:only-p nil :skip-p nil)))
+    (add-child suite-1
+               (create-test runner-instance
+                            :suite-1-test-3
+                            (lambda ()
+                              (format t "~%s1 - test-3 x: ~a~%" x)
+                              (incf x 1)
+                              (eql-p x 1))
+                            '(:only-p nil :skip-p nil)))
+    (add-child suite-root
+               (create-test runner-instance
+                            :suite-root-test-1
+                            (lambda ()
+                              (format t "~%suite root - test-1 x: ~a~%" x)
+                              (incf x 1)
+                              (eql-p x 2))
+                            '(:only-p nil :skip-p nil)))
     (once-runner runner-instance
                  :end
                  (lambda ()

@@ -3,7 +3,7 @@
 (defclass list-iterator ()
   ((itens :initform '()
           :accessor itens)
-   (current-index :initform -1
+   (current-index :initform 0
                   :accessor current-index)))
 
 (defun make-list-iterator ()
@@ -14,15 +14,15 @@
   (push item (itens obj)))
 
 (defmethod start-iterator ((obj list-iterator))
+  (setf (current-index obj) 0))
+
+(defmethod start-iterator-reverse ((obj list-iterator))
   (let ((itens-reverse (reverse (itens obj))))
-    (setf (current-index obj) -1)
+    (setf (current-index obj) 0)
     (setf (itens obj) itens-reverse)))
 
 (defmethod next ((obj list-iterator))
-  "Increment current-index returning the current item if it exists. If there was extrapolation, then returns nil."
-  (incf (current-index obj))
-  (unless (done-p obj)
-    (nth (current-index obj) (itens obj))))
+  (incf (current-index obj)))
 
 (defmethod done-p ((obj list-iterator))
   (>= (current-index obj) (length (itens obj))))

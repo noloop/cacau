@@ -44,12 +44,19 @@
   (declare (ignore fn))
   (collect-before-each-recursive suite (parents-before-each suite))
   ;;(inspect suite)
-  (start-iterator (children suite))
+  (start-iterator-reverse (children suite))
   (if (before-all suite)
       (run-runnable (before-all suite)
                     (lambda ()
-                      (next-child suite)))
-      (next-child suite)))
+                      (init-suite suite)))
+      (init-suite suite)))
+
+(defmethod init-suite ((suite suite-class))
+  (format t "~%init-suite: ~a~%" (name suite))
+  (let ((a (current-item (children suite))))
+    (handler-case (run-runnable a)
+     (division-by-zero (c)
+       (print c)))))
 
 (defmethod collect-before-each-recursive ((suite suite-class) parents-each)
   (when (before-each suite)
@@ -58,20 +65,26 @@
     (collect-before-each-recursive (parent suite) parents-each)))
 
 (defmethod next-child ((suite suite-class))
-  (let ((current-child (next (children suite))))
-    (if current-child
-        (run-runnable current-child)
-        (emit (eventbus suite) :suite-end suite))))
+  ;; (format t "~% index: ~a - length-itens: ~a~%"
+  ;;         (current-index (children suite))
+  ;;         (length (itens (children suite))))
+  (next (children suite))
+  ;;(inspect suite) -> suite-root
+  ;;(format t "~%done-p: ~a~%" (done-p (children suite)))
+  (if (done-p (children suite))
+      (progn (format t "~%suite-end: ~a~%" (name suite))
+             (emit (eventbus suite) :suite-end suite))
+      (progn (format t "~%run-runnable-suite: ~a~%" (name suite))
+             (run-runnable (current-item (children suite))))))
 
 (defmethod execute-suites-each ((suite suite-class) parents-each after-hook-fn)
-  (print "eu aqui")
-  (when (done-p parents-each)
-    (funcall after-hook-fn))
-  (if (last-p parents-each)
-      (progn (print :oi) (run-runnable (current-item parents-each) after-hook-fn))
-      (run-runnable
-       (current-item parents-each)
-       (lambda ()
-         (next parents-each)
-         (execute-suites-each suite parents-each after-hook-fn)))))
+  (if (done-p parents-each)
+      (funcall after-hook-fn)
+      (if (last-p parents-each)
+          (run-runnable (current-item parents-each) after-hook-fn)
+          (run-runnable
+           (current-item parents-each)
+           (lambda ()
+             (next parents-each)
+             (execute-suites-each suite parents-each after-hook-fn))))))
 

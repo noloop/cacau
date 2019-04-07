@@ -60,7 +60,6 @@
                                 '(:only-p nil :skip-p nil)))
          (x 0))
     (add-child suite-root suite-1)
-    (add-child suite-1 suite-2)
     (create-after-all suite-1
                       (lambda (hook-done)
                         (setf x 1)
@@ -71,6 +70,7 @@
                             (lambda ()
                               (eql-p x 0))
                             '(:only-p nil :skip-p nil)))
+    (add-child suite-1 suite-2)
     (create-after-all suite-2
                       (lambda ()
                         (setf x 2)))
@@ -101,8 +101,6 @@
                                 '(:only-p nil :skip-p nil)))
          (x 0))
     (add-child suite-root suite-1)
-    (add-child suite-1 suite-2)
-    (add-child suite-root suite-3)
     (create-after-all suite-1
                       (lambda (hook-done)
                         (incf x 1)
@@ -113,6 +111,7 @@
                             (lambda ()
                               (eql-p x 0))
                             '(:only-p nil :skip-p nil)))
+    (add-child suite-1 suite-2)
     (create-after-all suite-2
                       (lambda ()
                         (incf x 1)))
@@ -128,6 +127,7 @@
                             (lambda ()
                               (eql-p x 1))
                             '(:only-p nil :skip-p nil)))
+    (add-child suite-root suite-3)
     (create-after-all suite-3
                       (lambda ()
                         (incf x 1)))
