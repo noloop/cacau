@@ -36,6 +36,7 @@
                  (:file "before-all-test")
                  (:file "after-all-test")
                  (:file "before-each-test")
+                 (:file "after-each-test")
                  (:file "run" :depends-on ("async-runner" "runner-test")))))
   :perform (test-op (op c)
                     (symbol-call :cacau-test '#:run)))

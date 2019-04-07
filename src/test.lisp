@@ -29,21 +29,24 @@
 (defmethod done ((test test-class))
   "The done function accepts an optional argument, which can be either one error or test-fn(function)."
   (lambda (&optional (arg nil arg-supplied-p))
-    (try-fn
-     test
-     (lambda ()
-       (cond ((and arg-supplied-p
-                   (typep arg 'error))
-              (setf (runnable-error test) arg))
-             ((and arg-supplied-p
-                   (typep arg 'function))
-              (funcall arg)))))
+    (cond ((and arg-supplied-p
+                (typep arg 'error))
+           (setf (runnable-error test) arg))
+          ((and arg-supplied-p
+                (typep arg 'function))
+           (progn (print :demora) (try-fn test arg))))
     (after-run test)))
 
 (defmethod after-run ((test test-class))
-  (format t "~%after-run: ~a~%" (name test))
-  (next-child (parent test))
-  (emit (eventbus test) :test-end test))
+  ;;(format t "~%after-run: ~a~%" (name test))
+  ;;COOCAR START-ITERATOR DENTRO DE EXECUTE-SUITES-EACH!!!
+  (start-iterator (parents-after-each (parent test)))
+  (execute-suites-each
+   (parent test)
+   (parents-after-each (parent test))
+   (lambda ()
+     (next-child (parent test))
+     (emit (eventbus test) :test-end test))))
 
 (defmethod try-fn ((test test-class) try)
   (handler-case (funcall try)

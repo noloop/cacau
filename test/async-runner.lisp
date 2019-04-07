@@ -12,6 +12,7 @@
                 #:create-before-all
                 #:create-after-all
                 #:create-before-each
+                #:create-after-each
                 #:run-runner
                 #:result))
 (in-package #:noloop.cacau-test)

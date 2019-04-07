@@ -18,11 +18,11 @@
 
 (defmethod run-runnable ((hook hook-class) &optional after-hook)
   (setf (pos-hook-fn hook) after-hook)
-  (try-fn
-   hook
-   (lambda ()
-     (if (>= (get-function-args-length (fn hook)) 1)
-         (funcall (fn hook) (done hook))
+  (if (>= (get-function-args-length (fn hook)) 1)
+      (funcall (fn hook) (done hook))
+      (try-fn
+       hook
+       (lambda ()
          (progn (funcall (fn hook))
                 (funcall (pos-hook-fn hook)))))))
 

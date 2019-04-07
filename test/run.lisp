@@ -15,4 +15,8 @@
   (a-test :test-before-each #'test-before-each)
   (a-test :test-async-before-each #'test-async-before-each)
   (a-test :test-before-each-recursive #'test-before-each-recursive)
+  (a-test :test-after-each #'test-after-each)
+  (a-test :test-async-after-each #'test-async-after-each)
+  (a-test :test-after-each-order #'test-after-each-order)
+  (a-test :test-after-each-recursive #'test-after-each-recursive)
   (a-run))

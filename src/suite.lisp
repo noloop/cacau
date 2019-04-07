@@ -36,6 +36,9 @@
 (defmethod create-before-each ((suite suite-class) &rest args)
   (setf (before-each suite) (make-hook args)))
 
+(defmethod create-after-each ((suite suite-class) &rest args)
+  (setf (after-each suite) (make-hook args)))
+
 (defmethod add-child ((suite suite-class) child)
   (setf (parent child) suite)
   (add (children suite) child))
@@ -43,6 +46,8 @@
 (defmethod run-runnable ((suite suite-class) &optional fn)
   (declare (ignore fn))
   (collect-before-each-recursive suite (parents-before-each suite))
+  (collect-after-each-recursive suite (parents-after-each suite))
+  (start-iterator-reverse (parents-after-each suite))
   ;;(inspect suite)
   (start-iterator-reverse (children suite))
   (if (before-all suite)
@@ -52,7 +57,7 @@
       (init-suite suite)))
 
 (defmethod init-suite ((suite suite-class))
-  (format t "~%init-suite: ~a~%" (name suite))
+  ;;(format t "~%init-suite: ~a~%" (name suite))
   (let ((a (current-item (children suite))))
     (handler-case (run-runnable a)
      (division-by-zero (c)
@@ -64,6 +69,12 @@
   (unless (eq :suite-root (name suite))
     (collect-before-each-recursive (parent suite) parents-each)))
 
+(defmethod collect-after-each-recursive ((suite suite-class) parents-each)
+  (when (after-each suite)
+    (add parents-each (after-each suite)))
+  (unless (eq :suite-root (name suite))
+    (collect-after-each-recursive (parent suite) parents-each)))
+
 (defmethod next-child ((suite suite-class))
   ;; (format t "~% index: ~a - length-itens: ~a~%"
   ;;         (current-index (children suite))
@@ -72,9 +83,9 @@
   ;;(inspect suite) -> suite-root
   ;;(format t "~%done-p: ~a~%" (done-p (children suite)))
   (if (done-p (children suite))
-      (progn (format t "~%suite-end: ~a~%" (name suite))
+      (progn ;;(format t "~%suite-end: ~a~%" (name suite))
              (emit (eventbus suite) :suite-end suite))
-      (progn (format t "~%run-runnable-suite: ~a~%" (name suite))
+      (progn ;;(format t "~%run-runnable-suite: ~a~%" (name suite))
              (run-runnable (current-item (children suite))))))
 
 (defmethod execute-suites-each ((suite suite-class) parents-each after-hook-fn)
