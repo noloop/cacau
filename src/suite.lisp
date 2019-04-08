@@ -55,13 +55,12 @@
                     (lambda ()
                       (init-suite suite)))
       (init-suite suite)))
-
+;;empty-p
 (defmethod init-suite ((suite suite-class))
-  ;;(format t "~%init-suite: ~a~%" (name suite))
-  (let ((a (current-item (children suite))))
-    (handler-case (run-runnable a)
-     (division-by-zero (c)
-       (print c)))))
+  ;;(format t "~%init-suite: ~a - ~a~%" (name suite) (empty-p (children suite)))
+  (if (empty-p (children suite))
+      (emit (eventbus suite) :suite-end suite)
+      (run-runnable (current-item (children suite)))))
 
 (defmethod collect-before-each-recursive ((suite suite-class) parents-each)
   (when (before-each suite)
@@ -76,11 +75,7 @@
     (collect-after-each-recursive (parent suite) parents-each)))
 
 (defmethod next-child ((suite suite-class))
-  ;; (format t "~% index: ~a - length-itens: ~a~%"
-  ;;         (current-index (children suite))
-  ;;         (length (itens (children suite))))
   (next (children suite))
-  ;;(inspect suite) -> suite-root
   ;;(format t "~%done-p: ~a~%" (done-p (children suite)))
   (if (done-p (children suite))
       (progn ;;(format t "~%suite-end: ~a~%" (name suite))

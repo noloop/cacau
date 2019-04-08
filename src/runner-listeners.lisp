@@ -46,10 +46,11 @@
                  (suite-next-fn
                    (lambda ()
                      ;;(format t "~%suite-root-p: ~a~%" suite-root-p)
-                     (unless suite-root-p
-                       ;;(format t "~%next-child: ~a~%" (name suite))
-                       (next-child (parent suite))  
-                       (incf (gethash :completed-suites result-hash))))))
+                     (if suite-root-p
+                         ;;(format t "~%next-child: ~a~%" (name suite))
+                         (emit bus :run-end)
+                         (progn (next-child (parent suite))  
+                                (incf (gethash :completed-suites result-hash)))))))
             (if (after-all suite)
                 (run-runnable (after-all suite)
                               (lambda ()

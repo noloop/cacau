@@ -5,6 +5,7 @@
   (a-test :test-runner-create-test-async #'test-runner-create-test-async)
   (a-test :test-runner-create-suite #'test-runner-create-suite)
   (a-test :test-runner-create-suite-recursive #'test-runner-create-suite-recursive)
+  (a-test :test-runner-create-suite-empty #'test-runner-create-suite-empty)
   (a-test :test-before-all #'test-before-all)
   (a-test :test-async-before-all #'test-async-before-all)
   (a-test :test-before-all-recursive #'test-before-all-recursive)
@@ -20,3 +21,4 @@
   (a-test :test-after-each-order #'test-after-each-order)
   (a-test :test-after-each-recursive #'test-after-each-recursive)
   (a-run))
+

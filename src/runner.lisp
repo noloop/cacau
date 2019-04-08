@@ -29,8 +29,12 @@
   (make-test :name name :fn fn))
 
 (defmethod get-run-progress ((obj runner))
-  (round (/ (gethash :completed-tests (result obj))
-            (/ (gethash :tests (result obj)) 100))))
+  (let ((completed-tests (gethash :completed-tests (result obj)))
+        (tests-percent (/ (gethash :tests (result obj)) 100)))
+    (round (/ completed-tests
+              (if (= tests-percent 0)
+                  1
+                  tests-percent)))))
 
 (defmethod once-runner ((obj runner) event-name fn)
   (once (eventbus obj) event-name fn))

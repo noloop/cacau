@@ -81,7 +81,7 @@
     (create-before-each suite-1
                         :hook-suite-1
                         (lambda (done-hook)
-                          ;;(print :primeiro)
+                          ;;(print :hook1)
                           (setf x 0)
                           (funcall done-hook)))
     (add-child suite-1
@@ -104,7 +104,7 @@
     (create-before-each suite-2
                         :hook-suite-2
                         (lambda ()
-                          ;;(print :segundo)
+                          ;;(print :hook2)
                           (incf x 1)))
     (add-child suite-2
                (create-test runner-instance

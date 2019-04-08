@@ -34,7 +34,7 @@
            (setf (runnable-error test) arg))
           ((and arg-supplied-p
                 (typep arg 'function))
-           (progn (print :demora) (try-fn test arg))))
+           (try-fn test arg)))
     (after-run test)))
 
 (defmethod after-run ((test test-class))

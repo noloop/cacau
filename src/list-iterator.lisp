@@ -34,3 +34,6 @@
   (when (done-p obj)
     (error "Iterator Out Of Bounds!"))
   (nth (current-index obj) (itens obj)))
+
+(defmethod empty-p ((obj list-iterator))
+  (<= (length (itens obj)) 0))

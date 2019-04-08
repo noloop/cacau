@@ -101,3 +101,16 @@
                    (funcall a-done)))
     (run-runner runner-instance)))
 
+(defun test-runner-create-suite-empty (a-done)
+  (let* ((runner-instance (make-runner))
+         (suite-root (suite-root runner-instance))
+         (suite-1 (create-suite runner-instance
+                                :suite-1
+                                '(:only-p nil :skip-p nil))))
+    (add-child suite-root suite-1)
+    (once-runner runner-instance
+                 :end
+                 (lambda ()
+                   (funcall a-done)))
+    (run-runner runner-instance)))
+
