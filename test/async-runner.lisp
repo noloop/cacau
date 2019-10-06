@@ -14,7 +14,8 @@
                 #:create-before-each
                 #:create-after-each
                 #:run-runner
-                #:result))
+                #:result
+                #:timeout))
 (in-package #:noloop.cacau-test)
 
 (let ((plan '()))

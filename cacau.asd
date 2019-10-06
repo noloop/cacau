@@ -14,7 +14,8 @@
                 :components
                 ((:file "package")
                  (:file "utils" :depends-on ("package"))
-                 (:file "runnable" :depends-on ("package"))
+                 (:file "timer" :depends-on ("package"))
+                 (:file "runnable" :depends-on ("timer"))
                  (:file "list-iterator" :depends-on ("package"))
                  (:file "test" :depends-on ("runnable" "utils"))
                  (:file "hook" :depends-on ("runnable"))
@@ -37,6 +38,7 @@
                  (:file "after-all-test")
                  (:file "before-each-test")
                  (:file "after-each-test")
+                 (:file "timeout-test")
                  (:file "run" :depends-on ("async-runner" "runner-test")))))
   :perform (test-op (op c)
                     (symbol-call :cacau-test '#:run)))

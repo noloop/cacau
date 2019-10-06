@@ -80,10 +80,9 @@
     (add-child suite-root suite-1)
     (create-before-each suite-1
                         :hook-suite-1
-                        (lambda (done-hook)
+                        (lambda ()
                           ;;(print :hook1)
-                          (setf x 0)
-                          (funcall done-hook)))
+                          (setf x 0)))
     (add-child suite-1
                (create-test runner-instance
                             :suite-1-test-1
@@ -118,7 +117,7 @@
                (create-test runner-instance
                             :suite-2-test-2
                             (lambda ()
-                              ;(format t "~%s2 - test-2 x: ~a~%" x)
+                              ;;(format t "~%s2 - test-2 x: ~a~%" x)
                               (incf x 1)
                               (eql-p x 2))
                             '(:only-p nil :skip-p nil)))

@@ -12,25 +12,31 @@
                                             (first args))
                                   :fn (if function-p
                                           (first args)
-                                          (second args)))
-                   ))
+                                          (second args)))))
     new-hook))
 
 (defmethod run-runnable ((hook hook-class) &optional after-hook)
   (setf (pos-hook-fn hook) after-hook)
+  (inherit-timeout hook)
   (if (>= (get-function-args-length (fn hook)) 1)
       (funcall (fn hook) (done hook))
       (try-fn
        hook
        (lambda ()
          (progn (funcall (fn hook))
+                (after-run hook)
                 (funcall (pos-hook-fn hook)))))))
+
+(defmethod after-run ((hook hook-class))
+  (timout-extrapolated-p hook)
+  (emit (eventbus hook) :hook-end hook))
 
 (defmethod done ((hook hook-class))
   (lambda ()
     (try-fn
      hook
      (lambda ()
+       (after-run hook)
        (funcall (pos-hook-fn hook))))))
 
 (defmethod try-fn ((hook hook-class) try)
@@ -44,4 +50,9 @@
                      (:result ,(assertion-error-result c))
                      (:stack ,(assertion-error-stack c))))
         (setf (runnable-error hook) error-hash)
-        (emit (eventbus hook) :run-abort hook)))))
+        (after-run hook)
+        (emit (eventbus hook) :run-abort hook)))
+    (error (c)
+      (setf-error hook (format nil "~a" c))
+      (after-run hook)
+      (emit (eventbus hook) :run-abort hook))))

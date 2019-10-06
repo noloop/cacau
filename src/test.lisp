@@ -18,6 +18,7 @@
    (parent test)
    (parents-before-each (parent test))
    (lambda ()
+     (inherit-timeout test)
      (if (>= (get-function-args-length (fn test)) 1)
          (funcall (fn test) (done test))
          (try-fn
@@ -25,6 +26,17 @@
           (lambda ()
             (progn (funcall (fn test))
                    (after-run test))))))))
+
+(defmethod after-run ((test test-class))
+  ;;(format t "~%after-run: ~a~%" (name test))
+  (start-iterator (parents-after-each (parent test)))
+  (execute-suites-each
+   (parent test)
+   (parents-after-each (parent test))
+   (lambda ()
+     (next-child (parent test))
+     (timout-extrapolated-p test)
+     (emit (eventbus test) :test-end test))))
 
 (defmethod done ((test test-class))
   "The done function accepts an optional argument, which can be either one error or test-fn(function)."
@@ -37,17 +49,6 @@
            (try-fn test arg)))
     (after-run test)))
 
-(defmethod after-run ((test test-class))
-  ;;(format t "~%after-run: ~a~%" (name test))
-  ;;COOCAR START-ITERATOR DENTRO DE EXECUTE-SUITES-EACH!!!
-  (start-iterator (parents-after-each (parent test)))
-  (execute-suites-each
-   (parent test)
-   (parents-after-each (parent test))
-   (lambda ()
-     (next-child (parent test))
-     (emit (eventbus test) :test-end test))))
-
 (defmethod try-fn ((test test-class) try)
   (handler-case (funcall try)
     (assertion-error (c)
@@ -59,6 +60,9 @@
                      (:result ,(assertion-error-result c))
                      (:stack ,(assertion-error-stack c))))
         (setf (runnable-error test) error-hash)
-        (after-run test)))))
+        (after-run test)))
+    (error (c)
+      (setf-error test (format nil "~a" c))
+      (after-run test))))
 
 ;; TODO: TEST "PENDING"

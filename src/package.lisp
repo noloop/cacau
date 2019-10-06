@@ -12,6 +12,7 @@
                 #:assertion-error-expected
                 #:assertion-error-message
                 #:assertion-error-result
-                #:assertion-error-stack)
+                #:assertion-error-stack
+                #:get-stack-trace)
   (:export #:run-suite
 	   #:run-test))

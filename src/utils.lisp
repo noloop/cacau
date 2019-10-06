@@ -18,6 +18,7 @@
   hash)"
   `(progn
      (dolist (i ,@fields)
+       ;;(format t "~%field: ~a - value: ~a~%" (car i) (cadr i))
        (setf (gethash (car i) ,hash) (cadr i)))
      ,hash))
 
