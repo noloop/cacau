@@ -22,11 +22,16 @@
 
 (defmethod create-suite ((obj runner) name options)
   (emit (eventbus obj) :add-suite options)
-  (make-suite :name name))
+  (make-suite :name name
+              :only-p (second options)
+              :skip-p (fourth options)))
 
 (defmethod create-test ((obj runner) name fn options)
   (emit (eventbus obj) :add-test options)
-  (make-test :name name :fn fn))
+  (make-test :name name
+             :fn fn
+             :only-p (second options)
+             :skip-p (fourth options)))
 
 (defmethod get-run-progress ((obj runner))
   (let ((completed-tests (gethash :completed-tests (result obj)))

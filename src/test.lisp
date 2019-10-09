@@ -1,15 +1,19 @@
 (in-package #:noloop.cacau)
 
 (defclass test-class (runnable)
-  ((only-p :initform nil
+  ((only-p :initarg :only-p
+           :initform nil
            :accessor only-p)
-   (skip-p :initform nil
+   (skip-p :initarg :skip-p
+           :initform nil
            :accessor skip-p)))
 
-(defun make-test (&key name fn)
+(defun make-test (&key name fn only-p skip-p)
   (make-instance 'test-class
                  :name name
-                 :fn fn))
+                 :fn fn
+                 :only-p only-p
+                 :skip-p skip-p))
 
 (defmethod run-runnable ((test test-class) &optional fn)
   (declare (ignore fn))

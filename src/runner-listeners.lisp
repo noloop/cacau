@@ -2,23 +2,17 @@
 
 (defun create-runner-listeners (runner)
   (let ((result-hash (result runner))
-        (bus (eventbus runner))
-        (abortedp nil))
-
-    ;; (setf (gethash :suites result-hash) 0)
-    ;; (setf (gethash :tests result-hash) 0)
-    ;; (setf (gethash :passing result-hash) 0)
-    ;; (setf (gethash :failing result-hash) 0)
-    ;; (setf (gethash :errors result-hash) '())
-    ;; (setf (gethash :run-start result-hash) 0)
-    ;; (setf (gethash :run-end result-hash) 0)
-    ;; (setf (gethash :run-duration result-hash) 0)
-    ;; (setf (gethash :completed-suites result-hash) 0)
-    ;; (setf (gethash :completed-tests result-hash) 0)
+        (bus (eventbus runner)))
     
     (setf-hash result-hash 
                `((:suites ,0)
                  (:tests ,0)
+                 (:only-suites ,0)
+                 (:only-tests ,0)
+                 (:skip-suites ,0)
+                 (:skip-tests ,0)
+                 (:total-suites ,0)
+                 (:total-tests ,0)
                  (:passing ,0)
                  (:failing ,0)
                  (:errors ,(list))
@@ -32,13 +26,23 @@
         :add-suite
         (lambda (options)
           (declare (ignore options))
-          (incf (gethash :suites result-hash))))
+          (incf (gethash :total-suites result-hash))
+          (let ((only-p (second options))
+                (skip-p (fourth options)))
+            (cond (only-p (incf (gethash :only-suites result-hash)))
+                  (skip-p (incf (gethash :skip-suites result-hash)))
+                  (t (incf (gethash :suites result-hash)))))))
 
     (on bus
         :add-test
         (lambda (options)
           (declare (ignore options))
-          (incf (gethash :tests result-hash))))
+          (incf (gethash :total-tests result-hash))
+          (let ((only-p (second options))
+                (skip-p (fourth options)))
+            (cond (only-p (incf (gethash :only-tests result-hash)))
+                  (skip-p (incf (gethash :skip-tests result-hash)))
+                  (t (incf (gethash :tests result-hash)))))))
 
     (on bus
         :pass
@@ -48,9 +52,7 @@
     (on bus
         :fail
         (lambda ()
-          (incf (gethash :failing result-hash))
-          ;;(inspect result-hash)
-          ))
+          (incf (gethash :failing result-hash))))
 
     (on bus
         :suite-end
@@ -59,10 +61,7 @@
                    (eq :suite-root (name suite)))
                  (suite-next-fn
                    (lambda ()
-                     ;;(format t "~%suite-root-p: ~a~%" suite-root-p)
-                     ;;(inspect suite)
                      (unless suite-root-p
-                       ;;(format t "~%next-child: ~a~%" (name suite))
                        (progn (next-child (parent suite))  
                               (incf (gethash :completed-suites result-hash)))))))
             (if (after-all suite)
@@ -74,7 +73,6 @@
     (on bus
         :test-end
         (lambda (test)
-          ;;(format t "~%test-end: ~a~%" (name test))
           (if (runnable-error test)
               (let ((new-error (make-hash-table)))
                 (setf-hash new-error
@@ -100,18 +98,29 @@
                              (:fn ,(fn hook))
                              (:parent ,(parent hook))
                              (:error ,(runnable-error hook))))
-                ;;(format t "~%hook-end-len-1: ~a~%" (length (gethash :errors result-hash)))
                 (push new-error (gethash :errors result-hash))
-                ;;(format t "~%hook-end-len-2: ~a~%" (length (gethash :errors result-hash)))
-                ;; (setf (gethash :errors result-hash)
-                ;;       (cons new-error (gethash :errors result-hash)))
-                ;;(inspect (gethash :errors result-hash))
-                ;;(format t "~%hook-end: ~a~%" "hook")
                 (emit bus :run-abort)))))
     
     (once bus
           :run-start
           (lambda ()
+            (when (or (> (gethash :only-suites result-hash) 0)
+                      (> (gethash :skip-suites result-hash) 0)
+                      (> (gethash :only-tests result-hash) 0)
+                      (> (gethash :skip-tests result-hash) 0))
+              ;; Here dolist setf only-p children of the suite child
+              (inherit-only-recursive (suite-root runner))
+              ;;(inspect (itens (children (suite-root runner))))
+              (remove-not-only-children-recursive (suite-root runner))
+              (setf (gethash :suites result-hash)
+                    (count-suites-recursive (itens (children (suite-root runner)))))
+              (setf (gethash :tests result-hash)
+                    (count-tests-recursive (itens (children (suite-root runner)))))
+              ;;(inspect result-hash)
+              ;; (format t "~%tests: ~a~%" (count-tests-recursive (itens (children (suite-root runner)))))
+              ;; (format t "~%suites: ~a~%" (count-suites-recursive (itens (children (suite-root runner)))))
+              ;;(remove-skip-children (suite-root runner))
+              )
             (setf (gethash :run-start result-hash) (get-internal-real-time))))
 
     (once bus
