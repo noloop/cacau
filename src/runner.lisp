@@ -20,18 +20,18 @@
     (create-runner-listeners new-runner)
     new-runner))
 
-(defmethod create-suite ((obj runner) name options)
-  (emit (eventbus obj) :add-suite options)
+(defmethod create-suite ((obj runner) name &key (only-p nil) (skip-p nil))
+  (emit (eventbus obj) :add-suite (list :only-p only-p :skip-p skip-p))
   (make-suite :name name
-              :only-p (second options)
-              :skip-p (fourth options)))
+              :only-p only-p
+              :skip-p skip-p))
 
-(defmethod create-test ((obj runner) name fn options)
-  (emit (eventbus obj) :add-test options)
+(defmethod create-test ((obj runner) name fn &key (only-p nil) (skip-p nil))
+  (emit (eventbus obj) :add-test (list :only-p only-p :skip-p skip-p))
   (make-test :name name
              :fn fn
-             :only-p (second options)
-             :skip-p (fourth options)))
+             :only-p only-p
+             :skip-p skip-p))
 
 (defmethod get-run-progress ((obj runner))
   (let ((completed-tests (gethash :completed-tests (result obj)))

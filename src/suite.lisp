@@ -123,12 +123,6 @@
                (setf (only-p child) t)))
          (itens (children suite)))))
 
-;; (defmethod remove-skip-children-recursive ((suite suite-class))
-;;   (setf (children suite)
-;;         (remove-if
-;;          #'(lambda (child) (skip-p child))
-;;          (itens (children suite)))))
-
 (defun has-only-recursive (obj)
   (cond ((typep obj 'test-class)
          (only-p obj))
@@ -141,6 +135,15 @@
                               t 
                               (has-only-recursive child)))))
                (itens (children obj))))))
+
+(defmethod remove-skip-children-recursive ((suite suite-class))
+  (setf (itens (children suite))
+        (remove-if
+         #'(lambda (child)
+             (when (typep child 'suite-class)
+               (remove-skip-children-recursive child))
+             (skip-p child))
+         (itens (children suite)))))
 
 (defmethod count-tests-recursive (list)
   (cond ((null list) 0)
