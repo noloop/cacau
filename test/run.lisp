@@ -66,5 +66,12 @@
   (a-test :test-skip-suite-recursive-with-two-skip-test #'test-skip-suite-recursive-with-two-skip-test)
   (a-test :test-skip-suite-recursive-with-two-skip-suite #'test-skip-suite-recursive-with-two-skip-suite)
   (a-test :test-skip-suite-recursive-with-two-skip-suite-and-three-skip-test #'test-skip-suite-recursive-with-two-skip-suite-and-three-skip-test)
+  (a-test :test-skip-only-rule-skip-test-precedes-only-test #'test-skip-only-rule-skip-test-precedes-only-test)
+  (a-test :test-skip-only-rule-skip-test-precedes-only-test-recursive #'test-skip-only-rule-skip-test-precedes-only-test-recursive)
+  (a-test :test-skip-only-rule-skip-test-precedes-only-suite #'test-skip-only-rule-skip-test-precedes-only-suite)
+  (a-test :test-skip-only-rule-skip-only-suite-not-precedes-skip-suite #'test-skip-only-rule-skip-only-suite-not-precedes-skip-suite)
+  (a-test :test-skip-only-rule-skip-suite-precedes-only-test #'test-skip-only-rule-skip-suite-precedes-only-test)
+  (a-test :test-skip-only-rule-skip-suite-precedes-only-suite #'test-skip-only-rule-skip-suite-precedes-only-suite)
+  (a-test :test-skip-only-rule-skip-suite-precedes-only-test-and-only-suite #'test-skip-only-rule-skip-suite-precedes-only-test-and-only-suite)
   (a-run))
 

@@ -42,6 +42,7 @@
                  (:file "timeout-test")
                  (:file "only-test")
                  (:file "skip-test")
+                 (:file "skip-only-rule-test")
                  (:file "run" :depends-on ("async-runner" "runner-test")))))
   :perform (test-op (op c)
                     (symbol-call :cacau-test '#:run)))
