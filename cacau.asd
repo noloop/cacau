@@ -30,19 +30,23 @@
   :license "GPLv3"
   :description "cacau Test."
   :depends-on (:cacau :assert-p)
-  :components ((:module "test"
-                :components
-                ((:file "async-runner")
-                 (:file "runner-test")
-                 (:file "suite-test")
-                 (:file "before-all-test")
-                 (:file "after-all-test")
-                 (:file "before-each-test")
-                 (:file "after-each-test")
-                 (:file "timeout-test")
-                 (:file "only-test")
-                 (:file "skip-test")
-                 (:file "skip-only-rule-test")
-                 (:file "run" :depends-on ("async-runner" "runner-test")))))
+  :components
+  ((:module "test"
+    :components
+    ((:file "async-runner")
+     (:module "unit"
+      :components
+      ((:file "runner-test")
+       (:file "suite-test")
+       (:file "before-all-test")
+       (:file "after-all-test")
+       (:file "before-each-test")
+       (:file "after-each-test")
+       (:file "timeout-test")
+       (:file "only-test")
+       (:file "skip-test")
+       (:file "skip-only-rule-test")))
+     (:file "run"))))
   :perform (test-op (op c)
                     (symbol-call :cacau-test '#:run)))
+

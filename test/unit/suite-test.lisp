@@ -1,8 +1,7 @@
 (in-package #:noloop.cacau-test)
 
 (defun test-suite-with-suite-root-void (a-done)
-  (let* ((runner-instance (make-runner))
-         (suite-root (suite-root runner-instance)))
+  (let* ((runner-instance (make-runner)))
     (once-runner runner-instance
                  :end
                  (lambda ()

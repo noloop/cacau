@@ -18,6 +18,11 @@
                 #:timeout))
 (in-package #:noloop.cacau-test)
 
+;;; How to use:
+;;; (a-test :test-1 #'(lambda (done) (funcall done (= 1 3))))
+;;; (a-test :test-2 #'(lambda (done) (funcall done (= 2 2))))
+;;; (a-test :test-3 #'(lambda (done) (funcall done)))
+;;; (a-run)
 (let ((plan '()))
 
   (defun a-test (name fn)
@@ -65,7 +70,3 @@
       
       (setf plan '()))))
 
-;; (a-test :test-1 #'(lambda (done) (funcall done (= 1 3))))
-;; (a-test :test-2 #'(lambda (done) (funcall done (= 2 2))))
-;; (a-test :test-1 #'(lambda (done) (funcall done)))
-;; (a-run)
