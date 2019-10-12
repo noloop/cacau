@@ -14,5 +14,8 @@
                 #:assertion-error-result
                 #:assertion-error-stack
                 #:get-stack-trace)
+  (:import-from #:cacau-asdf
+                #:cacau-file
+                #:run-cacau-asdf)
   (:export #:run-suite
 	   #:run-test))

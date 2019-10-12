@@ -49,7 +49,7 @@
                   (every #'(lambda (el)
                              (eq t el))
                          results))))))
-  
+
   (defun a-run ()
     (let ((next-test (next-test-class plan))
           (next-results (next-results-class plan)))
@@ -67,6 +67,5 @@
         (error (c)
           (setf plan '())
           (error c)))
-      
       (setf plan '()))))
 

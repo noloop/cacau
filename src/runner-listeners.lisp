@@ -25,7 +25,6 @@
     (on bus
         :add-suite
         (lambda (options)
-          (declare (ignore options))
           (incf (gethash :total-suites result-hash))
           (let ((only-p (second options))
                 (skip-p (fourth options)))
@@ -36,7 +35,6 @@
     (on bus
         :add-test
         (lambda (options)
-          (declare (ignore options))
           (incf (gethash :total-tests result-hash))
           (let ((only-p (second options))
                 (skip-p (fourth options)))

@@ -12,7 +12,8 @@
   :depends-on (:eventbus :assertion-error)
   :components ((:module "src"
                 :components
-                ((:file "package")
+                ((:file "asdf")
+                 (:file "package")
                  (:file "utils" :depends-on ("package"))
                  (:file "timer" :depends-on ("package"))
                  (:file "runnable" :depends-on ("timer"))
@@ -29,24 +30,27 @@
   :maintainer "noloop <noloop@zoho.com>"
   :license "GPLv3"
   :description "cacau Test."
-  :depends-on (:cacau :assert-p)
+  :depends-on (:cacau :assert-p :cl-fad)
+  :defsystem-depends-on (:cacau-asdf)
   :components
   ((:module "test"
     :components
     ((:file "async-runner")
      (:module "unit"
       :components
-      ((:file "runner-test")
-       (:file "suite-test")
-       (:file "before-all-test")
-       (:file "after-all-test")
-       (:file "before-each-test")
-       (:file "after-each-test")
-       (:file "timeout-test")
-       (:file "only-test")
-       (:file "skip-test")
-       (:file "skip-only-rule-test")))
-     (:file "run"))))
-  :perform (test-op (op c)
-                    (symbol-call :cacau-test '#:run)))
+      ((:cacau-file "runner-test")
+       (:cacau-file "suite-test")
+       (:cacau-file "before-all-test")
+       (:cacau-file "after-all-test")
+       (:cacau-file "before-each-test")
+       (:cacau-file "after-each-test")
+       (:cacau-file "timeout-test")
+       (:cacau-file "only-test")
+       (:cacau-file "skip-test")
+       (:cacau-file "skip-only-rule-test"))))))
+  :perform
+  (test-op (op c)
+           (progn
+             (funcall (intern #.(string :run-cacau-asdf) :cacau) c)
+             (symbol-call :cacau-test '#:a-run))))
 
