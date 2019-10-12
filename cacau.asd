@@ -30,7 +30,7 @@
   :maintainer "noloop <noloop@zoho.com>"
   :license "GPLv3"
   :description "cacau Test."
-  :depends-on (:cacau :assert-p :cl-fad)
+  :depends-on (:cacau :assert-p)
   :defsystem-depends-on (:cacau-asdf)
   :components
   ((:module "test"

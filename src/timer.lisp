@@ -28,8 +28,7 @@
 
 (defmethod extrapolated-p ((obj timer-class))
   (let ((limit (limit-ms obj)))
-    (if (or (= limit -1)
-            (= limit 0))
+    (if (= limit -1)
         nil
         (progn (end-timer obj)
                (> (duration-ms obj) limit)))))
