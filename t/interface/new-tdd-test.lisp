@@ -18,13 +18,12 @@
 (a-test
  :test-new-tdd-interface-one-suite
  (lambda (a-done)
-   (let* ((runner-instance (make-runner))
-          (x 0))
+   (let* ((runner-instance (make-runner)))
      (create-new-tdd-interface runner-instance)
      (suite "Suite-1"
             (lambda (&optional (y 0))
               (test "Test-1" (lambda () (eql-p y 0)))
-              (test "Test-2" (lambda () (setf x (incf x)) (eql-p x 1)))))
+              (test "Test-2" (lambda () (setf y (incf y)) (eql-p y 1)))))
      (once-runner runner-instance
                   :end
                   (lambda ()

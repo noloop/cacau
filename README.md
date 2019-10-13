@@ -16,7 +16,7 @@
 IN PROGRESS...
 ```
 
-**2 - Download and load cacau system by github and asdf **
+**2 - Download and load cacau system by github and asdf**
 
 download from github:
 
