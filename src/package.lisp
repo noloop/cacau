@@ -17,5 +17,19 @@
   (:import-from #:cacau-asdf
                 #:cacau-file
                 #:run-cacau-asdf)
-  (:export #:run-suite
-	   #:run-test))
+  (:export #:make-runner
+           #:suite-root
+           #:add-child
+           #:create-test
+           #:create-suite
+           #:once-runner
+           #:create-before-all
+           #:create-after-all
+           #:create-before-each
+           #:create-after-each
+           #:run-runner
+           #:result
+           #:timeout
+           #:create-new-tdd-interface
+           #:suite
+           #:test))

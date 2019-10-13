@@ -22,7 +22,11 @@
                  (:file "hook" :depends-on ("runnable"))
                  (:file "suite" :depends-on ("test" "list-iterator" "hook"))
                  (:file "runner-listeners" :depends-on ("package"))
-                 (:file "runner" :depends-on ("runner-listeners" "suite")))))
+                 (:file "runner" :depends-on ("runner-listeners" "suite"))
+                 (:module "interfaces"
+                  :components
+                  ((:file "common")
+                   (:file "new-tdd"))))))
                 :in-order-to ((test-op (test-op "cacau/test"))))
 
 (defsystem :cacau/test
@@ -33,7 +37,7 @@
   :depends-on (:cacau :assert-p)
   :defsystem-depends-on (:cacau-asdf)
   :components
-  ((:module "test"
+  ((:module "t"
     :components
     ((:file "async-runner")
      (:module "unit"
@@ -47,7 +51,10 @@
        (:cacau-file "timeout-test")
        (:cacau-file "only-test")
        (:cacau-file "skip-test")
-       (:cacau-file "skip-only-rule-test"))))))
+       (:cacau-file "skip-only-rule-test")))
+     (:module "interface"
+      :components
+      ((:cacau-file "new-tdd-test"))))))
   :perform
   (test-op (op c)
            (progn

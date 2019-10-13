@@ -1,21 +1,8 @@
 (defpackage #:noloop.cacau-test
   (:use #:common-lisp
-        #:assert-p)
-  (:nicknames #:cacau-test)
-  (:import-from #:cacau
-                #:make-runner
-                #:suite-root
-                #:add-child
-                #:create-test
-                #:create-suite
-                #:once-runner
-                #:create-before-all
-                #:create-after-all
-                #:create-before-each
-                #:create-after-each
-                #:run-runner
-                #:result
-                #:timeout))
+        #:assert-p
+        #:cacau)
+  (:nicknames #:cacau-test))
 (in-package #:noloop.cacau-test)
 
 ;;; How to use:

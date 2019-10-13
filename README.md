@@ -8,30 +8,23 @@
 
 ### Dependencies
 
-### Download and installation
+### Download and Load
 
-**1 - Download cacau system**
-
-By quicklisp:
+**1 - Load cacau system by quicklisp**
 
 ```
 IN PROGRESS...
 ```
 
-or directly from github:
+**2 - Download and load cacau system by github and asdf **
+
+download from github:
 
 ```
 git clone https://github.com/noloop/cacau.git
 ```
-**2 - Install cacau**
 
-By quicklisp:
-
-```
-IN PROGRESS...
-```
-
-or directly from asdf:
+and load by asdf:
 
 ```lisp
 (asdf:load-system :cacau)
