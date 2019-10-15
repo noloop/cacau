@@ -32,7 +32,6 @@
                    (after-run test))))))))
 
 (defmethod after-run ((test test-class))
-  ;;(format t "~%after-run: ~a~%" (name test))
   (start-iterator (parents-after-each (parent test)))
   (execute-suites-each
    (parent test)
@@ -69,4 +68,3 @@
       (setf-error test (format nil "~a" c))
       (after-run test))))
 
-;; TODO: TEST "PENDING"

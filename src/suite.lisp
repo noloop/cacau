@@ -1,14 +1,14 @@
 (in-package #:noloop.cacau)
 
 (defclass suite-class (runnable)
-  ((before-all :initform nil
-               :accessor before-all)
-   (after-all :initform nil
-              :accessor after-all)
-   (before-each :initform nil
-                :accessor before-each)
-   (after-each :initform nil
-               :accessor after-each)
+  ((suite-before-all :initform nil
+                     :accessor suite-before-all)
+   (suite-after-all :initform nil
+                    :accessor suite-after-all)
+   (suite-before-each :initform nil
+                      :accessor suite-before-each)
+   (suite-after-each :initform nil
+                     :accessor suite-after-each)
    (parents-before-each :initform (make-list-iterator)
                         :accessor parents-before-each)
    (parents-after-each :initform (make-list-iterator)
@@ -30,24 +30,24 @@
                  :skip-p skip-p))
 
 (defmethod create-before-all ((suite suite-class) &rest args)
-  (setf (before-all suite) (make-hook args))
-  (setf (parent (before-all suite)) suite)
-  (before-all suite))
+  (setf (suite-before-all suite) (make-hook args))
+  (setf (parent (suite-before-all suite)) suite)
+  (suite-before-all suite))
 
 (defmethod create-after-all ((suite suite-class) &rest args)
-  (setf (after-all suite) (make-hook args))
-  (setf (parent (after-all suite)) suite)
-  (after-all suite))
+  (setf (suite-after-all suite) (make-hook args))
+  (setf (parent (suite-after-all suite)) suite)
+  (suite-after-all suite))
 
 (defmethod create-before-each ((suite suite-class) &rest args)
-  (setf (before-each suite) (make-hook args))
-  (setf (parent (before-each suite)) suite)
-  (before-each suite))
+  (setf (suite-before-each suite) (make-hook args))
+  (setf (parent (suite-before-each suite)) suite)
+  (suite-before-each suite))
 
 (defmethod create-after-each ((suite suite-class) &rest args)
-  (setf (after-each suite) (make-hook args))
-  (setf (parent (after-each suite)) suite)
-  (after-each suite))
+  (setf (suite-after-each suite) (make-hook args))
+  (setf (parent (suite-after-each suite)) suite)
+  (suite-after-each suite))
 
 (defmethod add-child ((suite suite-class) child)
   (setf (parent child) suite)
@@ -62,10 +62,11 @@
   (start-iterator-reverse (children suite))
   (inherit-timeout suite)
   ;; (format t "~%name: ~a~%" (name suite))
-  ;; (inspect (before-all suite))
-  (if (before-all suite)
-      (run-runnable (before-all suite)
-                    (lambda () (init-suite suite)))
+  ;; (inspect (suite-before-all suite))
+  (if (suite-before-all suite)
+      (run-runnable (suite-before-all suite)
+                     (lambda ()
+                       (init-suite suite)))
       (init-suite suite)))
 
 (defmethod init-suite ((suite suite-class))
@@ -75,14 +76,14 @@
       (run-runnable (current-item (children suite)))))
 
 (defmethod collect-before-each-recursive ((suite suite-class) parents-each)
-  (when (before-each suite)
-    (add parents-each (before-each suite)))
+  (when (suite-before-each suite)
+    (add parents-each (suite-before-each suite)))
   (unless (eq :suite-root (name suite))
     (collect-before-each-recursive (parent suite) parents-each)))
 
 (defmethod collect-after-each-recursive ((suite suite-class) parents-each)
-  (when (after-each suite)
-    (add parents-each (after-each suite)))
+  (when (suite-after-each suite)
+    (add parents-each (suite-after-each suite)))
   (unless (eq :suite-root (name suite))
     (collect-after-each-recursive (parent suite) parents-each)))
 

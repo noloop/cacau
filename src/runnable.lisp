@@ -26,12 +26,6 @@
       ;;(format t "~%limite-ms parent: ~a~%" (limit-ms (timer (parent obj))))
       (timeout obj (limit-ms (timer (parent obj)))))))
 
-;; (defgeneric before-run (obj &optional fn)
-;;   (:documentation "Something to do before the run-runnable function is executed."))
-
-;; (defgeneric after-run (obj &optional fn)
-;;   (:documentation "Something to do after the run-runnable function is executed."))
-
 (defun timeout (obj limit)
   (setf (limit-ms (timer obj)) limit)
   (start-timer (timer obj)))
@@ -64,3 +58,4 @@
                  (:result nil)
                  (:stack ,(get-stack-trace))))
     (setf (runnable-error obj) error-hash)))
+

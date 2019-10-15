@@ -62,8 +62,8 @@
                      (unless suite-root-p
                        (progn (next-child (parent suite))  
                               (incf (gethash :completed-suites result-hash)))))))
-            (if (after-all suite)
-                (run-runnable (after-all suite)
+            (if (suite-after-all suite)
+                (run-runnable (suite-after-all suite)
                               (lambda ()
                                 (funcall suite-next-fn)))
                 (funcall suite-next-fn)))))

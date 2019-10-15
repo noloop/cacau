@@ -14,17 +14,17 @@
           (list (suite-root runner)))
     common-interface-instance))
 
-;; (defmethod common-create-before-all ((common common-interface-class) &rest args)
-;;   (create-before-all (first (suites common)) args))
+(defmethod common-create-before-all ((common common-interface-class) args)
+  (create-before-all (first (suites common)) args))
 
-;; (defmethod common-create-after-all ((common common-interface-class) &rest args)
-;;   (create-after-all (first (suites common)) args))
+(defmethod common-create-after-all ((common common-interface-class) args)
+  (create-after-all (first (suites common)) args))
 
-;; (defmethod common-create-before-each ((common common-interface-class) &rest args)
-;;   (create-before-each (first (suites common)) args))
+(defmethod common-create-before-each ((common common-interface-class) args)
+  (create-before-each (first (suites common)) args))
 
-;; (defmethod common-create-after-each ((common common-interface-class) &rest args)
-;;   (create-after-each (first (suites common)) args))
+(defmethod common-create-after-each ((common common-interface-class)  args)
+  (create-after-each (first (suites common)) args))
 
 (defmethod common-create-suite
     ((common common-interface-class) name fn &key (only-p nil) (skip-p nil))

@@ -10,7 +10,6 @@
   (make-instance 'list-iterator))
 
 (defmethod add ((obj list-iterator) item) 
-  ;; (format t "~%add: ~a in ~a~%" (name item) (itens obj))
   (push item (itens obj)))
 
 (defmethod start-iterator ((obj list-iterator))
@@ -37,3 +36,4 @@
 
 (defmethod empty-p ((obj list-iterator))
   (<= (length (itens obj)) 0))
+

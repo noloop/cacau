@@ -32,4 +32,30 @@
            #:timeout
            #:create-new-tdd-interface
            #:suite
-           #:test))
+           #:only-suite
+           #:skip-suite
+           #:test
+           #:only-test
+           #:skip-test
+           #:before-all
+           #:after-all
+           #:before-each
+           #:after-each
+           #:create-bdd-interface
+           #:context
+           #:only-context
+           #:skip-context
+           #:it
+           #:only-it
+           #:skip-it
+           #:create-cl-interface
+           #:defsuite-fn
+           #:defsuite
+           #:defsuite-only
+           #:defsuite-skip
+           #:deftest
+           #:deftest-only
+           #:deftest-skip
+           #:create-no-spaghetti-interface
+           #:in-suite))
+

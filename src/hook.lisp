@@ -4,8 +4,9 @@
   ((pos-hook-fn :initform nil
                 :accessor pos-hook-fn)))
 
-(defun make-hook (args)  
-  (let* ((function-p (typep (first args) 'function))
+(defun make-hook (arguments)
+  (let* ((args (if (listp (first arguments)) (first arguments) arguments))
+         (function-p (typep (first args) 'function))
          (new-hook (make-instance 'hook-class
                                   :name (if function-p
                                             :Anonymous
@@ -50,9 +51,9 @@
                      (:result ,(assertion-error-result c))
                      (:stack ,(assertion-error-stack c))))
         (setf (runnable-error hook) error-hash)
-        (after-run hook)
+        ;;(after-run hook)
         (emit (eventbus hook) :run-abort hook)))
     (error (c)
       (setf-error hook (format nil "~a" c))
-      (after-run hook)
+      ;;(after-run hook)
       (emit (eventbus hook) :run-abort hook))))

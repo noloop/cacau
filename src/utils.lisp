@@ -18,7 +18,6 @@
   hash)"
   `(progn
      (dolist (i ,@fields)
-       ;;(format t "~%field: ~a - value: ~a~%" (car i) (cadr i))
        (setf (gethash (car i) ,hash) (cadr i)))
      ,hash))
 
@@ -57,44 +56,6 @@ NIL"
                              nil))))
                bindings)))
 
-;; ,@(loop for var in bindings
-;;         do  (if (listp var)
-;;                 (check-type (car var) symbol)
-;;                 (check-type var symbol))
-;;         collect `(defvar
-;;                      ,(if (listp var)
-;;                           (car var)
-;;                           var)
-;;                    ,(if (listp var)
-;;                         (cadr var)
-;;                         nil)))
-
-;;!!!não funciona com lambda, pq vc usa macro! e função irá jogar form em tempo de execução, x ficará undefined! Solução? criar um run-suite-context, onde chama next ou emite um evento q chamará next!
-;; (defmacro create-suite-context (bindings)
-;;   (with-gensyms (childs key value)
-;;     `(let ((,childs '()))
-;;        (let ,bindings
-;;          (lambda (form)
-;;            (car (push (compile nil `(lambda ()
-;;                                       (declare (special ,@(mapcar #'caar (list bindings))))
-;;                                       ,form))
-;;                       ,childs)))))))
-
-;; (let* ((add-test (create-suite-context ((x 9)))))
-;;   (print (funcall (funcall add-test (+ 1 1))))
-;;   (funcall (funcall add-test (+ x 1))))
-
-
-;; (let ((f (lambda () (+ x 1))))
-;;   (macroexpand-1 '(create-suite-context
-;;                    ((x 2))
-;;                    f)))
-
-;; (macroexpand-1 '(create-suite-context
-;;                  ((x 2))
-;;                  (lambda () (+ x 1))))
-
-
 (defun arglist (fn)
   "Return the signature of the function."
   #+allegro (excl:arglist fn)
@@ -119,3 +80,4 @@ NIL"
 
 (defun get-function-args-length (func) 
   (length (arglist func)))
+

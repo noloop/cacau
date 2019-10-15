@@ -1,6 +1,6 @@
 (in-package #:noloop.cacau)
 
-(defun create-cl-interface (runner)
+(defun create-bdd-interface (runner)
   (let ((common (make-common-interface runner)))
     (defun before-all (&rest args)
       (common-create-before-all common args))
@@ -10,21 +10,16 @@
       (common-create-before-each common args))
     (defun after-each (&rest args)
       (common-create-after-each common args))
-    (defun defsuite-fn (name fn &key (only-p nil) (skip-p nil))
-      (common-create-suite common name fn :only-p only-p :skip-p skip-p))
-    (defun deftest (name fn)
+    (defun context (name fn)
+      (common-create-suite common name fn))
+    (defun only-context (name fn)
+      (common-create-suite common name fn :only-p t))
+    (defun skip-context (name fn)
+      (common-create-suite common name fn :skip-p t))
+    (defun it (name fn)
       (common-create-test common name fn))
-    (defun deftest-only (name fn)
+    (defun only-it (name fn)
       (common-create-test common name fn :only-p t))
-    (defun deftest-skip (name fn)
+    (defun skip-it (name fn)
       (common-create-test common name fn :skip-p t))))
-
-(defmacro defsuite (name &body body)
-  `(defsuite-fn ,name (lambda () ,@body)))
-
-(defmacro defsuite-only (name &body body)
-  `(defsuite-fn ,name (lambda () ,@body) :only-p t))
-
-(defmacro defsuite-skip (name &body body)
-  `(defsuite-fn ,name (lambda () ,@body) :skip-p t))
 
