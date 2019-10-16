@@ -25,9 +25,10 @@
                  (:module "interfaces"
                   :components
                   ((:file "common")
-                   (:file "new-tdd")
-                   (:file "bdd")
                    (:file "cl")
-                   (:file "no-spaghetti"))))))
+                   ;; (:file "bdd")
+                   ;; (:file "new-tdd")
+                   ;; (:file "no-spaghetti")
+                   )))))
                 :in-order-to ((test-op (test-op "cacau/test"))))
 

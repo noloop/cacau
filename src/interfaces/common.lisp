@@ -1,43 +1,43 @@
 (in-package #:noloop.cacau)
 
-(defclass common-interface-class ()
-  ((runner :initarg :runner
-           :initform (error "You didn't supply an initial value for slot runner")
-           :accessor runner)
-   (suites :initform nil
-           :accessor suites)))
+(let ((runner nil)
+      (suites nil))
+  
+  (defun common-runner ()
+    runner)
+  
+  (defun common-runner-init ()
+    (setf runner (make-runner))
+    (setf suites (list (suite-root runner))))
 
-(defun make-common-interface (runner)
-  (let ((common-interface-instance
-          (make-instance 'common-interface-class :runner runner)))
-    (setf (suites common-interface-instance)
-          (list (suite-root runner)))
-    common-interface-instance))
+  (defun common-create-before-all (name fn &key (timeout -1))
+    (create-before-all (first suites) name fn :timeout timeout))
 
-(defmethod common-create-before-all ((common common-interface-class) args)
-  (create-before-all (first (suites common)) args))
+  (defun common-create-after-all (name fn &key (timeout -1))
+    (create-after-all (first suites) name fn :timeout timeout))
 
-(defmethod common-create-after-all ((common common-interface-class) args)
-  (create-after-all (first (suites common)) args))
+  (defun common-create-before-each (name fn &key (timeout -1))
+    (create-before-each (first suites) name fn :timeout timeout))
 
-(defmethod common-create-before-each ((common common-interface-class) args)
-  (create-before-each (first (suites common)) args))
+  (defun common-create-after-each (name fn &key (timeout -1))
+    (create-after-each (first suites) name fn :timeout timeout))
 
-(defmethod common-create-after-each ((common common-interface-class)  args)
-  (create-after-each (first (suites common)) args))
+  (defun common-create-suite (name fn &key (only-p nil) (skip-p nil) (timeout -1))
+    (let ((suite (create-suite runner name
+                               :only-p only-p
+                               :skip-p skip-p
+                               :timeout timeout)))
+      (add-child (first suites) suite)
+      (push suite suites)
+      (funcall fn)
+      (setf suites (rest suites))
+      suite))
 
-(defmethod common-create-suite
-    ((common common-interface-class) name fn &key (only-p nil) (skip-p nil))
-  (let ((suite (create-suite (runner common) name :only-p only-p :skip-p skip-p)))
-    (add-child (first (suites common)) suite)
-    (push suite (suites common))
-    (funcall fn)
-    (setf (suites common) (rest (suites common)))
-    suite))
-
-(defmethod common-create-test
-    ((common common-interface-class) name fn &key (only-p nil) (skip-p nil))
-  (let ((test (create-test (runner common) name fn :only-p only-p :skip-p skip-p)))
-    (add-child (first (suites common)) test)
-    test))
+  (defun common-create-test (name fn &key (only-p nil) (skip-p nil) (timeout -1))
+    (let ((test (create-test runner name fn
+                             :only-p only-p
+                             :skip-p skip-p
+                             :timeout timeout)))
+      (add-child (first suites) test)
+      test)))
 

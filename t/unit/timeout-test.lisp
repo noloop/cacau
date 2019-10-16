@@ -14,9 +14,9 @@
                       (create-test runner-instance
                                    :test-1
                                    (lambda ()
-                                     (timeout test-1 0)
                                      (loop for i upto 10 collect i)
-                                     (t-p t)))))
+                                     (t-p t))
+                                   :timeout 0)))
      (once-runner runner-instance
                   :end
                   (lambda ()
@@ -31,10 +31,10 @@
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
-                                 :suite-1))
+                                 :suite-1
+                                 :timeout 0))
           (test-1 nil))
      (add-child suite-root suite-1)
-     (timeout suite-1 0)
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -56,12 +56,12 @@
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
-                                 :suite-1))
+                                 :suite-1
+                                 :timeout 0))
           (test-1 nil)
           (test-2 nil)
           (test-3 nil))
      (add-child suite-root suite-1)
-     (timeout suite-1 0)
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -97,7 +97,8 @@
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
-                                 :suite-1))
+                                 :suite-1
+                                 :timeout 0))
           (suite-2 (create-suite runner-instance
                                  :suite-2))
          
@@ -107,7 +108,6 @@
           (test-4 nil)
           (test-5 nil))
      (add-child suite-root suite-1)
-     (timeout suite-1 0)
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -158,7 +158,8 @@
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
-                                 :suite-1))
+                                 :suite-1
+                                 :timeout 0))
           (suite-2 (create-suite runner-instance
                                  :suite-2))
          
@@ -168,7 +169,6 @@
           (test-4 nil)
           (test-5 nil))
      (add-child suite-root suite-1)
-     (timeout suite-1 0)
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -196,9 +196,9 @@
                       (create-test runner-instance
                                    :test-4
                                    (lambda ()
-                                     (timeout test-4 50000)
                                      (loop for i upto 10 collect i)
-                                     (t-p t)))))
+                                     (t-p t))
+                                   :timeout 50000)))
      (setf test-5
            (add-child suite-1
                       (create-test runner-instance
@@ -220,9 +220,11 @@
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
-                                 :suite-1))
+                                 :suite-1
+                                 :timeout 0))
           (suite-2 (create-suite runner-instance
-                                 :suite-2))
+                                 :suite-2
+                                 :timeout 50000))
          
           (test-1 nil)
           (test-2 nil)
@@ -230,7 +232,6 @@
           (test-4 nil)
           (test-5 nil))
      (add-child suite-root suite-1)
-     (timeout suite-1 0)
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -246,7 +247,6 @@
                                      (loop for i upto 10 collect i)
                                      (t-p t)))))
      (add-child suite-1 suite-2)
-     (timeout suite-2 50000)
      (setf test-3
            (add-child suite-2
                       (create-test runner-instance
@@ -282,9 +282,11 @@
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
-                                 :suite-1))
+                                 :suite-1
+                                 :timeout 0))
           (suite-2 (create-suite runner-instance
-                                 :suite-2))
+                                 :suite-2
+                                 :timeout 50000))
          
           (test-1 nil)
           (test-2 nil)
@@ -292,7 +294,6 @@
           (test-4 nil)
           (test-5 nil))
      (add-child suite-root suite-1)
-     (timeout suite-1 0)
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -308,15 +309,14 @@
                                      (loop for i upto 10 collect i)
                                      (t-p t)))))
      (add-child suite-1 suite-2)
-     (timeout suite-2 50000)
      (setf test-3
            (add-child suite-2
                       (create-test runner-instance
                                    :test-3
                                    (lambda ()
-                                     (timeout test-3 0)
                                      (loop for i upto 10 collect i)
-                                     (t-p t)))))
+                                     (t-p t))
+                                   :timeout 0)))
      (setf test-4
            (add-child suite-2
                       (create-test runner-instance
@@ -351,9 +351,10 @@
      (add-child suite-root suite-1)
      (setf before-all-suite-1
            (create-before-all suite-1
+                              :before-all-suite-1
                               (lambda ()
-                                (timeout before-all-suite-1 0)
-                                (loop for i upto 10 collect i))))
+                                (loop for i upto 10 collect i))
+                              :timeout 0))
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -366,7 +367,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -378,9 +379,10 @@
           (before-all-suite-root nil))
      (setf before-all-suite-root
            (create-before-all suite-root
+                              :before-all-suite-root
                               (lambda ()
-                                (timeout before-all-suite-root 0)
-                                (loop for i upto 10 collect i))))
+                                (loop for i upto 10 collect i))
+                              :timeout 0))
      (setf test-1
            (add-child suite-root
                       (create-test runner-instance
@@ -393,7 +395,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -408,10 +410,11 @@
      (add-child suite-root suite-1)
      (setf before-all-suite-1
            (create-before-all suite-1
+                              :before-all-suite-1
                               (lambda (done-hook)
-                                (timeout before-all-suite-1 0)
                                 (loop for i upto 10 collect i)
-                                (funcall done-hook))))
+                                (funcall done-hook))
+                              :timeout 0))
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -424,7 +427,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -443,9 +446,10 @@
      (add-child suite-root suite-1)
      (setf before-all-suite-1
            (create-before-all suite-1
+                              :before-all-suite-1
                               (lambda ()
-                                (timeout before-all-suite-1 50000)
-                                (loop for i upto 10 collect i))))
+                                (loop for i upto 10 collect i))
+                              :timeout 50000))
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -456,10 +460,11 @@
      (add-child suite-1 suite-2)
      (setf before-all-suite-2
            (create-before-all suite-2
+                              :before-all-suite-2
                               (lambda (done-hook)
-                                (timeout before-all-suite-2 0)
                                 (loop for i upto 10 collect i)
-                                (funcall done-hook))))
+                                (funcall done-hook))
+                              :timeout 0))
      (setf test-2
            (add-child suite-2
                       (create-test runner-instance
@@ -472,7 +477,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -487,9 +492,10 @@
      (add-child suite-root suite-1)
      (setf after-all-suite-1
            (create-after-all suite-1
+                             :after-all-suite-1
                              (lambda ()
-                               (timeout after-all-suite-1 0)
-                               (loop for i upto 10 collect i))))
+                               (loop for i upto 10 collect i))
+                             :timeout 0))
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -502,7 +508,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -514,9 +520,10 @@
           (after-all-suite-root nil))
      (setf after-all-suite-root
            (create-after-all suite-root
+                             :after-all-suite-root
                              (lambda ()
-                               (timeout after-all-suite-root 0)
-                               (loop for i upto 10 collect i))))
+                               (loop for i upto 10 collect i))
+                             :timeout 0))
      (setf test-1
            (add-child suite-root
                       (create-test runner-instance
@@ -529,7 +536,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -544,10 +551,11 @@
      (add-child suite-root suite-1)
      (setf after-all-suite-1
            (create-after-all suite-1
+                             :after-all-suite-1
                              (lambda (done-hook)
-                               (timeout after-all-suite-1 0)
                                (loop for i upto 10 collect i)
-                               (funcall done-hook))))
+                               (funcall done-hook))
+                             :timeout 0))
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -560,7 +568,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -579,9 +587,10 @@
      (add-child suite-root suite-1)
      (setf after-all-suite-1
            (create-after-all suite-1
+                             :after-all-suite-1
                              (lambda ()
-                               (timeout after-all-suite-1 50000)
-                               (loop for i upto 10 collect i))))
+                               (loop for i upto 10 collect i))
+                             :timeout 50000))
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -592,10 +601,11 @@
      (add-child suite-1 suite-2)
      (setf after-all-suite-2
            (create-after-all suite-2
+                             :after-all-suite-2
                              (lambda (done-hook)
-                               (timeout after-all-suite-2 0)
                                (loop for i upto 10 collect i)
-                               (funcall done-hook))))
+                               (funcall done-hook))
+                             :timeout 0))
      (setf test-2
            (add-child suite-2
                       (create-test runner-instance
@@ -608,7 +618,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -623,9 +633,10 @@
      (add-child suite-root suite-1)
      (setf before-each-suite-1
            (create-before-each suite-1
+                               :before-each-suite-1
                                (lambda ()
-                                 (timeout before-each-suite-1 0)
-                                 (loop for i upto 10 collect i))))
+                                 (loop for i upto 10 collect i))
+                               :timeout 0))
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -638,7 +649,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -650,9 +661,10 @@
           (before-each-suite-root nil))
      (setf before-each-suite-root
            (create-before-each suite-root
+                               :before-each-suite-root
                                (lambda ()
-                                 (timeout before-each-suite-root 0)
-                                 (loop for i upto 10 collect i))))
+                                 (loop for i upto 10 collect i))
+                               :timeout 0))
      (setf test-1
            (add-child suite-root
                       (create-test runner-instance
@@ -665,7 +677,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -680,10 +692,11 @@
      (add-child suite-root suite-1)
      (setf before-each-suite-1
            (create-before-each suite-1
+                               :before-each-suite-1
                                (lambda (done-hook)
-                                 (timeout before-each-suite-1 0)
                                  (loop for i upto 10 collect i)
-                                 (funcall done-hook))))
+                                 (funcall done-hook))
+                               :timeout 0))
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -696,7 +709,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -715,9 +728,10 @@
      (add-child suite-root suite-1)
      (setf before-each-suite-1
            (create-before-each suite-1
+                               :before-each-suite-1
                                (lambda ()
-                                 (timeout before-each-suite-1 50000)
-                                 (loop for i upto 10 collect i))))
+                                 (loop for i upto 10 collect i))
+                               :timeout 50000))
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -728,10 +742,11 @@
      (add-child suite-1 suite-2)
      (setf before-each-suite-2
            (create-before-each suite-2
+                               :before-each-suite-2
                                (lambda (done-hook)
-                                 (timeout before-each-suite-2 0)
                                  (loop for i upto 10 collect i)
-                                 (funcall done-hook))))
+                                 (funcall done-hook))
+                               :timeout 0))
      (setf test-2
            (add-child suite-2
                       (create-test runner-instance
@@ -744,7 +759,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -759,9 +774,10 @@
      (add-child suite-root suite-1)
      (setf after-each-suite-1
            (create-after-each suite-1
+                              :after-each-suite-1
                               (lambda ()
-                                (timeout after-each-suite-1 0)
-                                (loop for i upto 10 collect i))))
+                                (loop for i upto 10 collect i))
+                              :timeout 0))
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -774,7 +790,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -785,10 +801,11 @@
           (test-1 nil)
           (after-each-suite-root nil))
      (setf after-each-suite-root
-           (create-before-each suite-root
+           (create-after-each suite-root
+                               :after-each-suite-1
                                (lambda ()
-                                 (timeout after-each-suite-root 0)
-                                 (loop for i upto 10 collect i))))
+                                 (loop for i upto 10 collect i))
+                               :timeout 0))
      (setf test-1
            (add-child suite-root
                       (create-test runner-instance
@@ -801,7 +818,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -816,10 +833,11 @@
      (add-child suite-root suite-1)
      (setf after-each-suite-1
            (create-after-each suite-1
+                              :after-each-suite-1
                               (lambda (done-hook)
-                                (timeout after-each-suite-1 0)
                                 (loop for i upto 10 collect i)
-                                (funcall done-hook))))
+                                (funcall done-hook))
+                              :timeout 0))
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -832,7 +850,7 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
 (a-test
@@ -851,9 +869,10 @@
      (add-child suite-root suite-1)
      (setf after-each-suite-1
            (create-after-each suite-1
+                              :after-each-suite-1
                               (lambda ()
-                                (timeout after-each-suite-1 0)
-                                (loop for i upto 10 collect i))))
+                                (loop for i upto 10 collect i))
+                              :timeout 0))
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -864,10 +883,11 @@
      (add-child suite-1 suite-2)
      (setf after-each-suite-2
            (create-after-each suite-2
+                              :after-each-suite-2
                               (lambda (done-hook)
-                                (timeout after-each-suite-2 50000)
                                 (loop for i upto 10 collect i)
-                                (funcall done-hook))))
+                                (funcall done-hook))
+                              :timeout 50000))
      (setf test-2
            (add-child suite-2
                       (create-test runner-instance
@@ -880,6 +900,6 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (/= 0 (length errors))))))
+                      (funcall a-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 

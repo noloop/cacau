@@ -10,6 +10,7 @@
           (x 0))
      (add-child suite-root suite-1)
      (create-after-each suite-1
+                        :after-each-suite-1
                         (lambda ()
                           (setf x 0)))
      (add-child suite-1
@@ -40,6 +41,7 @@
           (x 0))
      (add-child suite-root suite-1)
      (create-after-each suite-1
+                        :after-each-suite-1
                         (lambda (done-hook)
                           (setf x 0)
                           (funcall done-hook)))
@@ -73,6 +75,7 @@
           (x 0))
      (add-child suite-root suite-1)
      (create-after-each suite-1
+                        :after-each-suite-1
                         (lambda (hook-done)
                           (setf x 1)
                           (funcall hook-done)))
@@ -83,6 +86,7 @@
                                (eql-p x 0))))
      (add-child suite-1 suite-2)
      (create-after-each suite-2
+                        :after-each-suite-2
                         (lambda ()
                           (setf x 2)))
      (add-child suite-2
@@ -108,6 +112,7 @@
           (x 0))
      (add-child suite-root suite-1)
      (create-after-each suite-1
+                        :after-each-suite-1
                         (lambda (done-hook)
                           (incf x 1)
                           (funcall done-hook)))
@@ -125,6 +130,7 @@
                                (eql-p x 3))))
      (add-child suite-1 suite-2)
      (create-after-each suite-2
+                        :after-each-suite-2
                         (lambda ()
                           (setf x 0)))
      (add-child suite-2
@@ -151,5 +157,4 @@
                   (lambda ()
                     (funcall a-done (eql x 3))))
      (run-runner runner-instance))))
-
 

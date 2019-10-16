@@ -1,30 +1,77 @@
 (in-package #:noloop.cacau)
 
-(defun create-cl-interface (runner)
-  (let ((common (make-common-interface runner)))
-    (defun before-all (&rest args)
-      (common-create-before-all common args))
-    (defun after-all (&rest args)
-      (common-create-after-all common args))
-    (defun before-each (&rest args)
-      (common-create-before-each common args))
-    (defun after-each (&rest args)
-      (common-create-after-each common args))
-    (defun defsuite-fn (name fn &key (only-p nil) (skip-p nil))
-      (common-create-suite common name fn :only-p only-p :skip-p skip-p))
-    (defun deftest (name fn)
-      (common-create-test common name fn))
-    (defun deftest-only (name fn)
-      (common-create-test common name fn :only-p t))
-    (defun deftest-skip (name fn)
-      (common-create-test common name fn :skip-p t))))
+(defmacro cond-options (options &body body)
+  `(let ((only-p nil)
+         (skip-p nil)
+         (async nil)
+         (async-done nil)
+         (timeout -1))
+     (dolist (i ,options)
+       (cond ((equal :only i)
+              (setf only-p t))
+             ((equal :skip i)
+              (setf skip-p t))
+             ((listp i)
+              (cond ((equal :timeout (first i))
+                     (setf timeout (second i)))
+                    ((equal :async (first i))
+                     (progn (setf async t)
+                            (setf async-done (second i))))))))
+     ,@body))
 
-(defmacro defsuite (name &body body)
-  `(defsuite-fn ,name (lambda () ,@body)))
+(defmacro defbefore-all (name options &body body)
+  (cond-options options
+    `(common-create-before-all
+      ,name
+      ,(if async
+           `(lambda (,async-done) ,@body)
+           `(lambda () ,@body))
+      :timeout ,timeout)))
 
-(defmacro defsuite-only (name &body body)
-  `(defsuite-fn ,name (lambda () ,@body) :only-p t))
+(defmacro defafter-all (name options &body body)
+  (cond-options options
+    `(common-create-after-all
+      ,name
+      ,(if async
+           `(lambda (,async-done) ,@body)
+           `(lambda () ,@body))
+      :timeout ,timeout)))
 
-(defmacro defsuite-skip (name &body body)
-  `(defsuite-fn ,name (lambda () ,@body) :skip-p t))
+(defmacro defbefore-each (name options &body body)
+  (cond-options options
+    `(common-create-before-each
+      ,name
+      ,(if async
+           `(lambda (,async-done) ,@body)
+           `(lambda () ,@body))
+      :timeout ,timeout)))
+
+(defmacro defafter-each (name options &body body)
+  (cond-options options
+    `(common-create-after-each
+      ,name
+      ,(if async
+           `(lambda (,async-done) ,@body)
+           `(lambda () ,@body))
+      :timeout ,timeout)))
+
+(defmacro defsuite (name options &body body)
+  (cond-options options
+    `(common-create-suite
+      ,name
+      (lambda () ,@body)
+      :only-p ,only-p
+      :skip-p ,skip-p
+      :timeout ,timeout)))
+
+(defmacro deftest (name options &body body)
+  (cond-options options
+    `(common-create-test
+      ,name
+      ,(if async
+           `(lambda (,async-done) ,@body)
+           `(lambda () ,@body))
+      :only-p ,only-p
+      :skip-p ,skip-p
+      :timeout ,timeout)))
 

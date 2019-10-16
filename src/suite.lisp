@@ -22,30 +22,39 @@
            :initform nil
            :accessor skip-p)))
 
-(defun make-suite (&key name parent only-p skip-p)
+(defun make-suite (&key name parent only-p skip-p (timeout -1))
   (make-instance 'suite-class
                  :name name
                  :parent parent
                  :only-p only-p
-                 :skip-p skip-p))
+                 :skip-p skip-p
+                 :timeout timeout))
 
-(defmethod create-before-all ((suite suite-class) &rest args)
-  (setf (suite-before-all suite) (make-hook args))
+(defmethod create-before-all ((suite suite-class) name fn &key (timeout -1))
+  (setf (suite-before-all suite) (make-hook :name name
+                                            :fn fn
+                                            :timeout timeout))
   (setf (parent (suite-before-all suite)) suite)
   (suite-before-all suite))
 
-(defmethod create-after-all ((suite suite-class) &rest args)
-  (setf (suite-after-all suite) (make-hook args))
+(defmethod create-after-all ((suite suite-class) name fn &key (timeout -1))
+  (setf (suite-after-all suite) (make-hook :name name
+                                           :fn fn
+                                           :timeout timeout))
   (setf (parent (suite-after-all suite)) suite)
   (suite-after-all suite))
 
-(defmethod create-before-each ((suite suite-class) &rest args)
-  (setf (suite-before-each suite) (make-hook args))
+(defmethod create-before-each ((suite suite-class) name fn &key (timeout -1))
+  (setf (suite-before-each suite) (make-hook :name name
+                                             :fn fn
+                                             :timeout timeout))
   (setf (parent (suite-before-each suite)) suite)
   (suite-before-each suite))
 
-(defmethod create-after-each ((suite suite-class) &rest args)
-  (setf (suite-after-each suite) (make-hook args))
+(defmethod create-after-each ((suite suite-class) name fn &key (timeout -1))
+  (setf (suite-after-each suite) (make-hook :name name
+                                            :fn fn
+                                            :timeout timeout))
   (setf (parent (suite-after-each suite)) suite)
   (suite-after-each suite))
 
@@ -61,6 +70,7 @@
   (start-iterator-reverse (parents-after-each suite))
   (start-iterator-reverse (children suite))
   (inherit-timeout suite)
+  (start-timeout suite)
   ;; (format t "~%name: ~a~%" (name suite))
   ;; (inspect (suite-before-all suite))
   (if (suite-before-all suite)

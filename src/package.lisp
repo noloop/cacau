@@ -29,33 +29,35 @@
            #:create-after-each
            #:run-runner
            #:result
-           #:timeout
-           #:create-new-tdd-interface
-           #:suite
-           #:only-suite
-           #:skip-suite
-           #:test
-           #:only-test
-           #:skip-test
-           #:before-all
-           #:after-all
-           #:before-each
-           #:after-each
-           #:create-bdd-interface
-           #:context
-           #:only-context
-           #:skip-context
-           #:it
-           #:only-it
-           #:skip-it
-           #:create-cl-interface
-           #:defsuite-fn
+           #:common-runner
+           #:common-runner-init
+           #:common-create-before-all
+           #:common-create-after-all
+           #:common-create-before-each
+           #:common-create-after-each
+           #:common-create-suite
+           #:common-create-test
+           ;; #:suite
+           ;; #:only-suite
+           ;; #:skip-suite
+           ;; #:test
+           ;; #:only-test
+           ;; #:skip-test
+           ;; #:before-all
+           ;; #:after-all
+           ;; #:before-each
+           ;; #:after-each
+           ;; #:context
+           ;; #:only-context
+           ;; #:skip-context
+           ;; #:it
+           ;; #:only-it
+           ;; #:skip-it
            #:defsuite
-           #:defsuite-only
-           #:defsuite-skip
            #:deftest
-           #:deftest-only
-           #:deftest-skip
-           #:create-no-spaghetti-interface
+           #:defbefore-all
+           #:defafter-all
+           #:defbefore-each
+           #:defafter-each
            #:in-suite))
 

@@ -23,10 +23,11 @@
        (:cacau-file "skip-only-rule-test")))
      (:module "interface"
       :components
-      ((:cacau-file "new-tdd-test")
-       (:cacau-file "bdd-test")
-       (:cacau-file "cl-test")
-       (:cacau-file "no-spaghetti-test"))))))
+      ((:cacau-file "cl-test")
+       ;; (:cacau-file "bdd-test")
+       ;; (:cacau-file "new-tdd-test")
+       ;; (:cacau-file "no-spaghetti-test")
+       )))))
   :perform
   (test-op (op c)
            (progn

@@ -13,22 +13,27 @@
              :accessor eventbus
              :allocation :class)
    (timer :initform (make-timer)
-          :accessor timer)))
+          :accessor timer)
+   (timeout :initarg :timeout
+            :initform -1
+            :accessor timeout)))
 
 (defgeneric run-runnable (obj &optional fn)
   (:documentation "Something must be run, such as a test suite that calls run-runnable from each tests, or running a hook."))
 
 (defun inherit-timeout (obj)
   (unless (eq :suite-root (name obj))
-    (when (and (= (limit-ms (timer obj)) -1)
-               (/= (limit-ms (timer (parent obj))) -1))
-      ;;(format t "~%name: ~a~%" (name obj))
-      ;;(format t "~%limite-ms parent: ~a~%" (limit-ms (timer (parent obj))))
-      (timeout obj (limit-ms (timer (parent obj)))))))
+    (when (and (= (timeout obj) -1)
+               (/= (timeout (parent obj)) -1))
+      ;; (format t "~%name: ~a - timeout: ~a~%" (name obj) (timeout obj))
+      ;; (format t "~%timeout parent: ~a~%" (timeout (parent obj)))
+      (setf (timeout obj) (timeout (parent obj)))
+      (start-timeout obj))))
 
-(defun timeout (obj limit)
-  (setf (limit-ms (timer obj)) limit)
-  (start-timer (timer obj)))
+(defun start-timeout (obj)
+  (when (/= (timeout obj) -1)
+    (setf (limit-ms (timer obj)) (timeout obj))
+    (start-timer (timer obj))))
 
 (defun timout-extrapolated-p (obj)
   (let* ((result (extrapolated-p (timer obj))))

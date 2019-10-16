@@ -10,6 +10,7 @@
           (x 0))
      (add-child suite-root suite-1)
      (create-before-all suite-1
+                        :before-all-suite-1
                         (lambda ()
                           (setf x 1)))
      (add-child suite-1
@@ -40,6 +41,7 @@
           (x 0))
      (add-child suite-root suite-1)
      (create-before-all suite-1
+                        :before-all-suite-1
                         (lambda (done-hook)
                           (setf x 1)
                           (funcall done-hook)))
@@ -73,6 +75,7 @@
           (x 0))
      (add-child suite-root suite-1)
      (create-before-all suite-1
+                        :before-all-suite-1
                         (lambda (done-hook)
                           (setf x 1)
                           (funcall done-hook)))
@@ -88,6 +91,7 @@
                                (eql-p x 1))))
      (add-child suite-1 suite-2)
      (create-before-all suite-2
+                        :before-all-suite-2
                         (lambda (done-hook)
                           (incf x)
                           (funcall done-hook)))

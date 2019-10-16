@@ -8,12 +8,13 @@
            :initform nil
            :accessor skip-p)))
 
-(defun make-test (&key name fn only-p skip-p)
+(defun make-test (&key name fn only-p skip-p (timeout -1))
   (make-instance 'test-class
                  :name name
                  :fn fn
                  :only-p only-p
-                 :skip-p skip-p))
+                 :skip-p skip-p
+                 :timeout timeout))
 
 (defmethod run-runnable ((test test-class) &optional fn)
   (declare (ignore fn))
@@ -22,7 +23,11 @@
    (parent test)
    (parents-before-each (parent test))
    (lambda ()
+     ;; (format t "~%1 - name: ~a - timeout: ~a~%" (name test) (timeout test))
      (inherit-timeout test)
+     ;; (format t "~%2 - name: ~a - timeout: ~a~%" (name test) (timeout test))
+     (start-timeout test)
+     ;; (format t "~%3 - name: ~a - timeout: ~a~%" (name test) (timeout test))
      (if (>= (get-function-args-length (fn test)) 1)
          (funcall (fn test) (done test))
          (try-fn

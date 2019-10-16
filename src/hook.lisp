@@ -4,21 +4,16 @@
   ((pos-hook-fn :initform nil
                 :accessor pos-hook-fn)))
 
-(defun make-hook (arguments)
-  (let* ((args (if (listp (first arguments)) (first arguments) arguments))
-         (function-p (typep (first args) 'function))
-         (new-hook (make-instance 'hook-class
-                                  :name (if function-p
-                                            :Anonymous
-                                            (first args))
-                                  :fn (if function-p
-                                          (first args)
-                                          (second args)))))
-    new-hook))
+(defun make-hook (&key name fn (timeout -1))
+  (make-instance 'hook-class
+                 :name name
+                 :fn fn
+                 :timeout timeout))
 
 (defmethod run-runnable ((hook hook-class) &optional after-hook)
   (setf (pos-hook-fn hook) after-hook)
   (inherit-timeout hook)
+  (start-timeout hook)
   (if (>= (get-function-args-length (fn hook)) 1)
       (funcall (fn hook) (done hook))
       (try-fn
