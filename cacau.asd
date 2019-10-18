@@ -26,9 +26,8 @@
                   :components
                   ((:file "common")
                    (:file "cl")
-                   ;; (:file "bdd")
-                   ;; (:file "new-tdd")
-                   ;; (:file "no-spaghetti")
-                   )))))
+                   (:file "bdd")
+                   (:file "tdd")
+                   (:file "no-spaghetti"))))))
                 :in-order-to ((test-op (test-op "cacau/test"))))
 

@@ -37,27 +37,28 @@
            #:common-create-after-each
            #:common-create-suite
            #:common-create-test
-           ;; #:suite
-           ;; #:only-suite
-           ;; #:skip-suite
-           ;; #:test
-           ;; #:only-test
-           ;; #:skip-test
-           ;; #:before-all
-           ;; #:after-all
-           ;; #:before-each
-           ;; #:after-each
-           ;; #:context
-           ;; #:only-context
-           ;; #:skip-context
-           ;; #:it
-           ;; #:only-it
-           ;; #:skip-it
+           #:before-all
+           #:after-all
+           #:before-each
+           #:after-each
+           #:context
+           #:it
+           #:suite
+           #:test
+           #:suite-setup
+           #:suite-teardown
+           #:test-setup
+           #:test-teardown
            #:defsuite
            #:deftest
            #:defbefore-all
            #:defafter-all
            #:defbefore-each
            #:defafter-each
-           #:in-suite))
+           #:in-plan
+           #:defbefore-plan
+           #:defafter-plan
+           #:defbefore-t
+           #:defafter-t
+           #:deft))
 

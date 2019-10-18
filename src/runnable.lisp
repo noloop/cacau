@@ -52,7 +52,8 @@
         'string
         "Timeout Error: Time("
         (write-to-string (limit-ms (timer obj)))
-        ") extrapolated!")))))
+        ") extrapolated!")))
+    result))
 
 (defun setf-error (obj error-msg)
   (let ((error-hash (make-hash-table)))

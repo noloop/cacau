@@ -9,7 +9,7 @@
   ((:module "t"
     :components
     ((:file "async-runner")
-     (:module "unit"
+     (:module "functional"
       :components
       ((:cacau-file "runner-test")
        (:cacau-file "suite-test")
@@ -24,10 +24,10 @@
      (:module "interface"
       :components
       ((:cacau-file "cl-test")
-       ;; (:cacau-file "bdd-test")
-       ;; (:cacau-file "new-tdd-test")
-       ;; (:cacau-file "no-spaghetti-test")
-       )))))
+       (:cacau-file "bdd-test")
+       (:cacau-file "tdd-test")
+       (:cacau-file "no-spaghetti-test")
+       (:cacau-file "mix-test"))))))
   :perform
   (test-op (op c)
            (progn

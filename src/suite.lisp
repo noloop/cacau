@@ -172,3 +172,11 @@
          (count-suites-recursive (itens (children (first list))))
          (+ 1 (count-suites-recursive (rest list))))))
 
+(defmethod child-by-name ((suite suite-class) parent-name)
+  (dolist (child (itens (children suite)))
+    (when (typep child 'suite-class)
+      ;; (format t "~%name: ~a - equal: ~a~%" (name child) (equal parent-name (name child)))
+      (if (equal parent-name (name child))
+          (return-from child-by-name child)
+          (return-from child-by-name (child-by-name child parent-name))))))
+

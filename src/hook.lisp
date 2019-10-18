@@ -12,7 +12,6 @@
 
 (defmethod run-runnable ((hook hook-class) &optional after-hook)
   (setf (pos-hook-fn hook) after-hook)
-  (inherit-timeout hook)
   (start-timeout hook)
   (if (>= (get-function-args-length (fn hook)) 1)
       (funcall (fn hook) (done hook))

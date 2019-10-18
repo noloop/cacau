@@ -1,24 +1,5 @@
 (in-package #:noloop.cacau)
 
-(defmacro cond-options (options &body body)
-  `(let ((only-p nil)
-         (skip-p nil)
-         (async nil)
-         (async-done nil)
-         (timeout -1))
-     (dolist (i ,options)
-       (cond ((equal :only i)
-              (setf only-p t))
-             ((equal :skip i)
-              (setf skip-p t))
-             ((listp i)
-              (cond ((equal :timeout (first i))
-                     (setf timeout (second i)))
-                    ((equal :async (first i))
-                     (progn (setf async t)
-                            (setf async-done (second i))))))))
-     ,@body))
-
 (defmacro defbefore-all (name options &body body)
   (cond-options options
     `(common-create-before-all
