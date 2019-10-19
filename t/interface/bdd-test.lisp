@@ -30,6 +30,7 @@
         (it "Test-1" (lambda () (incf x) (eql-p x 1)))
         (it "Test-2" (lambda () (eql-p x 0))))))
    (cacau-run
+    :reporter :off
     :end-hook
     (lambda (runner)
       (let ((passing
@@ -67,6 +68,7 @@
         (it "Test-1" (lambda () (incf x) (eql-p x 1)))
         (it "Test-2" (lambda () (eql-p x 0))))))
    (cacau-run
+    :reporter :off
     :end-hook
     (lambda (runner)
       (let ((passing
@@ -105,6 +107,7 @@
         (it "Test-1" (lambda () (incf x) (eql-p x 1)) :only t)
         (it "Test-2" (lambda () (eql-p x 0))))))
    (cacau-run
+    :reporter :off
     :end-hook
     (lambda (runner)
       (let ((passing

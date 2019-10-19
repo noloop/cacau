@@ -5,23 +5,21 @@
   
   (defun cacau-runner () runner)
 
-  ;; (defun cacau-reporter (name)
-  ;;   (cond ((equal :min name)
-  ;;          (once-runner
-  ;;           runner
-  ;;           :end
-  ;;           (lambda ()
-  ;;             (funcall fn (result runner))
-  ;;             (setf runner (make-runner)))))))
+  (defun cacau-reporter (name)
+    (cond ((equal :min name)
+           ;;(funcall min-reporter (result runner))
+           )))
 
   (defun cacau-run (&key (reporter :min) (end-hook (lambda (runner) runner)))
-    (declare (ignore reporter))
     (once-runner
      runner
      :end
      (lambda ()
        (when (eq (type-of end-hook) 'function)
-         (funcall end-hook runner))))
+         (funcall end-hook runner)
+         (unless (equal :off reporter)
+           (cacau-reporter reporter)) ;; PAROU AQUI!!!
+         )))
       (run-runner runner)
       (cacau-reset-runner)))
 

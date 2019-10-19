@@ -26,6 +26,7 @@
      (deft :test-2 () (eql-p x 0)))
      
    (cacau-run
+    :reporter :off
     :end-hook
     (lambda (runner)
       (let ((passing
@@ -58,6 +59,7 @@
      (deft :test-2 () (eql-p x 0)))
    
    (cacau-run
+    :reporter :off
     :end-hook
     (lambda (runner)
       (let ((passing
@@ -90,6 +92,7 @@
      (deft :test-2 () (eql-p x 0)))
    
    (cacau-run
+    :reporter :off
     :end-hook
     (lambda (runner)
       (let ((passing

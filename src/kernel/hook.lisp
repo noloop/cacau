@@ -45,9 +45,8 @@
                      (:result ,(assertion-error-result c))
                      (:stack ,(assertion-error-stack c))))
         (setf (runnable-error hook) error-hash)
-        ;;(after-run hook)
         (emit (eventbus hook) :run-abort hook)))
     (error (c)
       (setf-error hook (format nil "~a" c))
-      ;;(after-run hook)
       (emit (eventbus hook) :run-abort hook))))
+

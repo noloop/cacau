@@ -25,6 +25,7 @@
        (deftest "Test-1" () (incf x) (eql-p x 1))
        (deftest "Test-2" ((:async done)) (eql-p x 0) (funcall done))))
    (cacau-run
+    :reporter :off
     :end-hook
     (lambda (runner)
       (let ((passing
@@ -56,6 +57,7 @@
        (deftest "Test-1" () (incf x) (eql-p x 1))
        (deftest "Test-2" ((:async done)) (eql-p x 0) (funcall done))))
    (cacau-run
+    :reporter :off
     :end-hook
     (lambda (runner)
       (let ((passing
@@ -87,6 +89,7 @@
        (deftest "Test-1" () (incf x) (eql-p x 1))
        (deftest "Test-2" (:only (:async done)) (eql-p x 0) (funcall done))))
    (cacau-run
+    :reporter :off
     :end-hook
     (lambda (runner)
       (let ((passing

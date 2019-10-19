@@ -31,6 +31,7 @@
          (deftest "Test-2" ((:async done)) (eql-p x 0) (funcall done)))))
    
    (cacau-run
+    :reporter :off
     :end-hook
     (lambda (runner)
       (let ((passing

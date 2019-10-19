@@ -23,11 +23,8 @@
    (parent test)
    (parents-before-each (parent test))
    (lambda ()
-     ;; (format t "~%1 - name: ~a - timeout: ~a~%" (name test) (timeout test))
      (inherit-timeout test)
-     ;; (format t "~%2 - name: ~a - timeout: ~a~%" (name test) (timeout test))
      (start-timeout test)
-     ;; (format t "~%3 - name: ~a - timeout: ~a~%" (name test) (timeout test))
      (if (>= (get-function-args-length (fn test)) 1)
          (funcall (fn test) (done test))
          (try-fn
