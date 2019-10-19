@@ -3,7 +3,6 @@
 (r-test
  :test-cl-interface
  (lambda (r-done)
-   (cacau-reset-runner)
    (defsuite :suite-1 ()
      (let ((x 0))
        (defbefore-all "Before-all Suite-1" () (setf x 1))
@@ -35,7 +34,6 @@
 (r-test
  :test-cl-interface-timeout
  (lambda (r-done)
-   (cacau-reset-runner)
    (defsuite :suite-1 ((:timeout 0))
      (let ((x 0))
        (defbefore-all "Before-all Suite-1" ((:timeout 50000)) (setf x 1))
@@ -67,7 +65,6 @@
 (r-test
  :test-cl-interface-skip-and-only
  (lambda (r-done)
-   (cacau-reset-runner)
    (defsuite :suite-1 (:only)
      (let ((x 0))
        (defbefore-all "Before-all Suite-1" () (setf x 1))

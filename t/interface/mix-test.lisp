@@ -3,7 +3,6 @@
 (r-test 
  :test-interface-mix
  (lambda (r-done)
-   (cacau-reset-runner)
    (let ((x 0))
      (context
       :suite-1

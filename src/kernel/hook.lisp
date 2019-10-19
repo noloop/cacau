@@ -4,11 +4,12 @@
   ((pos-hook-fn :initform nil
                 :accessor pos-hook-fn)))
 
-(defun make-hook (&key name fn (timeout -1))
+(defun make-hook (&key name fn (timeout -1) eventbus)
   (make-instance 'hook-class
                  :name name
                  :fn fn
-                 :timeout timeout))
+                 :timeout timeout
+                 :eventbus eventbus))
 
 (defmethod run-runnable ((hook hook-class) &optional after-hook)
   (setf (pos-hook-fn hook) after-hook)

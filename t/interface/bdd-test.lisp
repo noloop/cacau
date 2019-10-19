@@ -3,7 +3,6 @@
 (r-test
  :test-bdd-interface
  (lambda (r-done)
-   (cacau-reset-runner)
    (context
     "Suite-1"
     (lambda (&optional (x 0))
@@ -40,7 +39,6 @@
 (r-test
  :test-bdd-interface-timeout
  (lambda (r-done)
-   (cacau-reset-runner)
    (context
     "Suite-1"
     (lambda (&optional (x 0))
@@ -78,7 +76,6 @@
 (r-test
  :test-bdd-interface-skip-and-only
  (lambda (r-done)
-   (cacau-reset-runner)
    (context
     "Suite-1"
     (lambda (&optional (x 0))

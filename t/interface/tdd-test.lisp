@@ -3,7 +3,6 @@
 (r-test
  :test-new-tdd-interface
  (lambda (r-done)
-   (cacau-reset-runner)
    (suite
     "Suite-1"
     (lambda (&optional (x 0))
@@ -40,7 +39,6 @@
 (r-test
  :test-new-tdd-interface-timeout
  (lambda (r-done)
-   (cacau-reset-runner)
    (suite
     "Suite-1"
     (lambda (&optional (x 0))
@@ -78,7 +76,6 @@
 (r-test
  :test-new-tdd-interface-skip-and-only
  (lambda (r-done)
-   (cacau-reset-runner)
    (suite
     "Suite-1"
     (lambda (&optional (x 0))

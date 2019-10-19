@@ -12,12 +12,11 @@
    (current-suite :accessor current-suite)))
 
 (defun make-runner ()
-  (let ((new-runner (make-instance 'runner))
-        (temp-runnable (make-instance 'runnable)))
+  (let ((new-runner (make-instance 'runner)))
     (setf (suite-root new-runner)
           (make-suite :name :suite-root
-                      :parent nil))
-    (setf (eventbus temp-runnable) (eventbus new-runner))
+                      :parent nil
+                      :eventbus (eventbus new-runner)))
     (create-runner-listeners new-runner)
     (setf (current-suite new-runner) (suite-root new-runner))
     new-runner))
@@ -27,7 +26,8 @@
   (make-suite :name name
               :only-p only-p
               :skip-p skip-p
-              :timeout timeout))
+              :timeout timeout
+              :eventbus (eventbus obj)))
 
 (defmethod create-test ((obj runner) name fn &key (only-p nil) (skip-p nil) (timeout -1))
   (emit (eventbus obj) :add-test (list :only-p only-p :skip-p skip-p))
@@ -35,7 +35,8 @@
              :fn fn
              :only-p only-p
              :skip-p skip-p
-             :timeout timeout))
+             :timeout timeout
+             :eventbus (eventbus obj)))
 
 (defmethod get-run-progress ((obj runner))
   (let ((completed-tests (gethash :completed-tests (result obj)))

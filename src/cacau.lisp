@@ -1,9 +1,9 @@
 (in-package #:noloop.cacau)
 
 (let ((runner (make-runner)))
-  (defun cacau-reset-runner () (setf runner (make-runner)))
-  
   (defun cacau-runner () runner)
+  
+  (defun cacau-reset-runner () (setf runner (make-runner)))
 
   (defun cacau-reporter (name)
     (cond ((equal :min name)
@@ -11,15 +11,16 @@
            )))
 
   (defun cacau-run (&key (reporter :min) (end-hook (lambda (runner) runner)))
-    (once-runner
-     runner
-     :end
-     (lambda ()
-       (when (eq (type-of end-hook) 'function)
-         (funcall end-hook runner)
-         (unless (equal :off reporter)
-           (cacau-reporter reporter)) ;; STOP HERE!!!
-         )))
-      (run-runner runner)
-    (cacau-reset-runner)))
+    (let ((old-runner runner))
+      (once-runner
+       old-runner
+       :end
+       (lambda ()
+         (when (eq (type-of end-hook) 'function)
+           (funcall end-hook old-runner)
+           (unless (equal :off reporter)
+             (cacau-reporter reporter)) ;; STOP HERE!!!
+           )))
+      (cacau-reset-runner)
+      (run-runner old-runner))))
 

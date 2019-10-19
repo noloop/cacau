@@ -8,13 +8,14 @@
            :initform nil
            :accessor skip-p)))
 
-(defun make-test (&key name fn only-p skip-p (timeout -1))
+(defun make-test (&key name fn only-p skip-p (timeout -1) eventbus)
   (make-instance 'test-class
                  :name name
                  :fn fn
                  :only-p only-p
                  :skip-p skip-p
-                 :timeout timeout))
+                 :timeout timeout
+                 :eventbus eventbus))
 
 (defmethod run-runnable ((test test-class) &optional fn)
   (declare (ignore fn))

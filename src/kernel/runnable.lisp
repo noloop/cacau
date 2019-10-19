@@ -10,8 +10,7 @@
    (runnable-error :initform nil
                    :accessor runnable-error)
    (eventbus :initarg :eventbus
-             :accessor eventbus
-             :allocation :class)
+             :accessor eventbus)
    (timer :initform (make-timer)
           :accessor timer)
    (timeout :initarg :timeout

@@ -3,7 +3,6 @@
 (r-test
  :test-no-spaghetti-interface
  (lambda (r-done)
-   (cacau-reset-runner)
    (let ((x 0))
      (in-plan :suite-1 ()) ;; or (in-suite :suite-1 ((:parent :suite-root)))
      (defbefore-plan :before-plan-suite-1 () (setf x 1))
@@ -36,7 +35,6 @@
 (r-test
  :test-no-spaghetti-interface-timeout
  (lambda (r-done)
-   (cacau-reset-runner)
    (let ((x 0))
      (in-plan :suite-1 ((:timeout 0)))
      (defbefore-plan :before-plan-suite-1 () (setf x 1))
@@ -69,7 +67,6 @@
 (r-test
  :test-no-spaghetti-interface-skip-and-only
  (lambda (r-done)
-   (cacau-reset-runner)
    (let ((x 0))
      (in-plan :suite-1 (:only))
      (defbefore-plan :before-plan-suite-1 () (setf x 1))
