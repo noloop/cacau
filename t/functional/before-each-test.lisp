@@ -1,8 +1,8 @@
 (in-package #:noloop.cacau-test)
 
-(a-test
+(r-test
  :test-before-each 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -30,12 +30,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 0 failing)))))
+                      (funcall r-done (eql 0 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-async-before-each 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -64,12 +64,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 0 failing)))))
+                      (funcall r-done (eql 0 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-before-each-recursive
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -128,6 +128,6 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 0 failing)))))
+                      (funcall r-done (eql 0 failing)))))
      (run-runner runner-instance))))
 

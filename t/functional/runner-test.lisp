@@ -1,9 +1,8 @@
 (in-package #:noloop.cacau-test)
 
-
-(a-test
+(r-test
  :test-runner-create-test-sync
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance)))
      (add-child suite-root
@@ -14,27 +13,27 @@
      (once-runner runner-instance
                   :end
                   (lambda ()
-                    (funcall a-done)))
+                    (funcall r-done)))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-runner-create-test-async
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance)))  
      (add-child suite-root
                 (create-test runner-instance
                              :test-1
                              (lambda (done)
-                               (funcall done a-done))))
+                               (funcall done r-done))))
      (once-runner runner-instance
                   :end
                   (lambda () ()))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-runner-create-suite
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -58,12 +57,12 @@
      (once-runner runner-instance
                   :end
                   (lambda ()
-                    (funcall a-done)))
+                    (funcall r-done)))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-runner-create-suite-recursive
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -95,6 +94,6 @@
      (once-runner runner-instance
                   :end
                   (lambda ()
-                    (funcall a-done)))
+                    (funcall r-done)))
      (run-runner runner-instance))))
 

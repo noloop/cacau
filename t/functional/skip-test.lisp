@@ -1,8 +1,8 @@
 (in-package #:noloop.cacau-test)
 
-(a-test
+(r-test
  :test-skip-test 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -26,12 +26,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 1 failing)))))
+                      (funcall r-done (eql 1 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-test-with-two-skip-tests 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -66,12 +66,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 1 failing)))))
+                      (funcall r-done (eql 1 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-test-recursive-with-three-skip-tests 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -123,12 +123,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 2 failing)))))
+                      (funcall r-done (eql 2 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-test-recursive-with-two-suites-in-suite-root 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -191,12 +191,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 2 failing)))))
+                      (funcall r-done (eql 2 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-suite 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -220,12 +220,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 0 failing)))))
+                      (funcall r-done (eql 0 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-suite-with-two-suites-in-suite-root 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -258,12 +258,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 1 failing)))))
+                      (funcall r-done (eql 1 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-suite-recursive 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -311,12 +311,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 1 failing)))))
+                      (funcall r-done (eql 1 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-suite-recursive-with-one-skip-test 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -364,12 +364,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 4 failing)))))
+                      (funcall r-done (eql 4 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-suite-recursive-with-two-skip-test 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -418,12 +418,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 3 failing)))))
+                      (funcall r-done (eql 3 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-suite-recursive-with-two-skip-suite 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -481,12 +481,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 1 failing)))))
+                      (funcall r-done (eql 1 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-suite-recursive-with-two-skip-suite-and-three-skip-test 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -547,6 +547,6 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 3 failing)))))
+                      (funcall r-done (eql 3 failing)))))
      (run-runner runner-instance))))
 

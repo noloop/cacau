@@ -1,8 +1,8 @@
 (in-package #:noloop.cacau-test)
 
-(a-test
+(r-test
  :test-cl-interface
- (lambda (a-done)
+ (lambda (r-done)
    (cacau-reset-runner)
    (defsuite :suite-1 ()
      (let ((x 0))
@@ -30,11 +30,11 @@
     (lambda (runner)
       (let ((passing
               (gethash :passing (result runner))))
-        (funcall a-done (eql 8 passing)))))))
+        (funcall r-done (eql 8 passing)))))))
 
-(a-test
+(r-test
  :test-cl-interface-timeout
- (lambda (a-done)
+ (lambda (r-done)
    (cacau-reset-runner)
    (defsuite :suite-1 ((:timeout 0))
      (let ((x 0))
@@ -62,11 +62,11 @@
     (lambda (runner)
       (let ((passing
               (gethash :passing (result runner))))
-        (funcall a-done (eql 4 passing)))))))
+        (funcall r-done (eql 4 passing)))))))
 
-(a-test
+(r-test
  :test-cl-interface-skip-and-only
- (lambda (a-done)
+ (lambda (r-done)
    (cacau-reset-runner)
    (defsuite :suite-1 (:only)
      (let ((x 0))
@@ -94,5 +94,5 @@
     (lambda (runner)
       (let ((passing
               (gethash :passing (result runner))))
-        (funcall a-done (eql 4 passing)))))))
+        (funcall r-done (eql 4 passing)))))))
 

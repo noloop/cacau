@@ -1,8 +1,8 @@
 (in-package #:noloop.cacau-test)
 
-(a-test
+(r-test
  :test-skip-only-rule-skip-test-precedes-only-test  
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -31,14 +31,14 @@
                             (gethash :only-tests (result runner-instance)))
                           (skip-tests
                             (gethash :skip-tests (result runner-instance))))
-                      (funcall a-done (and (eql 1 only-tests)
+                      (funcall r-done (and (eql 1 only-tests)
                                            (eql 1 skip-tests)
                                            (eql 1 failing))))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-only-rule-skip-test-precedes-only-test-recursive  
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -76,14 +76,14 @@
                             (gethash :only-tests (result runner-instance)))
                           (skip-tests
                             (gethash :skip-tests (result runner-instance))))
-                      (funcall a-done (and (eql 1 only-tests)
+                      (funcall r-done (and (eql 1 only-tests)
                                            (eql 1 skip-tests)
                                            (eql 1 failing))))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-only-rule-skip-test-precedes-only-suite  
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -122,14 +122,14 @@
                             (gethash :only-suites (result runner-instance)))
                           (skip-tests
                             (gethash :skip-tests (result runner-instance))))
-                      (funcall a-done (and (eql 1 only-suites)
+                      (funcall r-done (and (eql 1 only-suites)
                                            (eql 2 skip-tests)
                                            (eql 1 failing))))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-only-rule-skip-only-suite-not-precedes-skip-suite  
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -170,15 +170,15 @@
                             (gethash :skip-tests (result runner-instance)))
                           (skip-suites
                             (gethash :skip-suites (result runner-instance))))
-                      (funcall a-done (and (eql 1 only-suites)
+                      (funcall r-done (and (eql 1 only-suites)
                                            (eql 1 skip-tests)
                                            (eql 1 skip-suites)
                                            (eql 1 failing))))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-only-rule-skip-suite-precedes-only-test  
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -214,13 +214,13 @@
                             (gethash :failing (result runner-instance)))
                           (skip-suites
                             (gethash :skip-suites (result runner-instance))))
-                      (funcall a-done (and (eql 1 skip-suites)
+                      (funcall r-done (and (eql 1 skip-suites)
                                            (eql 0 failing))))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-only-rule-skip-suite-precedes-only-suite  
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -256,13 +256,13 @@
                             (gethash :failing (result runner-instance)))
                           (skip-suites
                             (gethash :skip-suites (result runner-instance))))
-                      (funcall a-done (and (eql 1 skip-suites)
+                      (funcall r-done (and (eql 1 skip-suites)
                                            (eql 0 failing))))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-skip-only-rule-skip-suite-precedes-only-test-and-only-suite  
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -301,7 +301,7 @@
                             (gethash :only-suites (result runner-instance)))
                           (skip-suites
                             (gethash :skip-suites (result runner-instance))))
-                      (funcall a-done (and (eql 1 only-suites)
+                      (funcall r-done (and (eql 1 only-suites)
                                            (eql 1 skip-suites)
                                            (eql 2 failing))))))
      (run-runner runner-instance))))

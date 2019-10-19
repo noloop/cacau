@@ -1,8 +1,8 @@
 (in-package #:noloop.cacau-test)
 
-(a-test
+(r-test
  :test-bdd-interface
- (lambda (a-done)
+ (lambda (r-done)
    (cacau-reset-runner)
    (context
     "Suite-1"
@@ -35,11 +35,11 @@
     (lambda (runner)
       (let ((passing
               (gethash :passing (result runner))))
-        (funcall a-done (eql 8 passing)))))))
+        (funcall r-done (eql 8 passing)))))))
 
-(a-test
+(r-test
  :test-bdd-interface-timeout
- (lambda (a-done)
+ (lambda (r-done)
    (cacau-reset-runner)
    (context
     "Suite-1"
@@ -73,11 +73,11 @@
     (lambda (runner)
       (let ((passing
               (gethash :passing (result runner))))
-        (funcall a-done (eql 4 passing)))))))
+        (funcall r-done (eql 4 passing)))))))
 
-(a-test
+(r-test
  :test-bdd-interface-skip-and-only
- (lambda (a-done)
+ (lambda (r-done)
    (cacau-reset-runner)
    (context
     "Suite-1"
@@ -112,5 +112,5 @@
     (lambda (runner)
       (let ((passing
               (gethash :passing (result runner))))
-        (funcall a-done (eql 4 passing)))))))
+        (funcall r-done (eql 4 passing)))))))
 

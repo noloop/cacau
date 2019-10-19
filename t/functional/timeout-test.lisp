@@ -1,8 +1,8 @@
 (in-package #:noloop.cacau-test)
 
-(a-test
+(r-test
  :test-timeout-test
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -22,12 +22,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 1 failing)))))
+                      (funcall r-done (eql 1 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-suite 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -47,12 +47,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 1 failing)))))
+                      (funcall r-done (eql 1 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-suite-with-three-tests 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -88,12 +88,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 3 failing)))))
+                      (funcall r-done (eql 3 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-suite-recursive-with-five-tests 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -149,12 +149,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 5 failing)))))
+                      (funcall r-done (eql 5 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-suite-recursive-with-five-tests-one-test-reconfigured 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -211,12 +211,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 4 failing)))))
+                      (funcall r-done (eql 4 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-suite-recursive-with-five-tests-suite-2-reconfigured 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -273,12 +273,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 3 failing)))))
+                      (funcall r-done (eql 3 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-suite-recursive-with-five-tests-suite-2-reconfigured-with-one-test-reconfigured 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -336,12 +336,12 @@
                   (lambda ()
                     (let ((failing
                             (gethash :failing (result runner-instance))))
-                      (funcall a-done (eql 4 failing)))))
+                      (funcall r-done (eql 4 failing)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-before-all 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -367,12 +367,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-before-all-with-tests-in-suite-root 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (test-1 nil)
@@ -395,12 +395,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-async-before-all 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -427,12 +427,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-before-all-recursive 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -477,12 +477,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-after-all 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -508,12 +508,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-after-all-with-tests-in-suite-root 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (test-1 nil)
@@ -536,12 +536,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-async-after-all 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -568,12 +568,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-after-all-recursive 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -618,12 +618,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-before-each 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -649,12 +649,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-before-each-with-tests-in-suite-root 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (test-1 nil)
@@ -677,12 +677,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-async-before-each 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -709,12 +709,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-before-each-recursive 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -759,12 +759,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-after-each 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -790,12 +790,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-after-each-with-tests-in-suite-root 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (test-1 nil)
@@ -818,12 +818,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-async-after-each 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -850,12 +850,12 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-timeout-after-each-recursive 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -900,6 +900,6 @@
                   (lambda ()
                     (let ((errors
                             (gethash :errors (result runner-instance))))
-                      (funcall a-done (> (length errors) 0)))))
+                      (funcall r-done (> (length errors) 0)))))
      (run-runner runner-instance))))
 

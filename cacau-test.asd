@@ -9,7 +9,7 @@
   ((:module "t"
     :serial t
     :components
-    ((:file "async-runner")
+    ((:file "recursive-runner")
      (:module "functional"
       :components
       ((:cacau-file "runner-test")
@@ -33,5 +33,5 @@
   (test-op (op c)
            (progn
              (funcall (intern #.(string :run-cacau-asdf) :cacau) c)
-             (symbol-call :cacau-test '#:a-run))))
+             (symbol-call :cacau-test '#:r-run))))
 

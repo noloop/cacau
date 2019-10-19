@@ -1,8 +1,8 @@
 (in-package #:noloop.cacau-test)
 
-(a-test
+(r-test 
  :test-interface-mix
- (lambda (a-done)
+ (lambda (r-done)
    (cacau-reset-runner)
    (let ((x 0))
      (context
@@ -36,4 +36,4 @@
     (lambda (runner)
       (let ((passing
               (gethash :passing (result runner))))
-        (funcall a-done (eql 8 passing)))))))
+        (funcall r-done (eql 8 passing)))))))

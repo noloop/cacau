@@ -6,13 +6,13 @@
 (in-package #:noloop.cacau-test)
 
 ;;; How to use:
-;;; (a-test :test-1 #'(lambda (done) (funcall done (= 1 3))))
-;;; (a-test :test-2 #'(lambda (done) (funcall done (= 2 2))))
-;;; (a-test :test-3 #'(lambda (done) (funcall done)))
-;;; (a-run)
+;;; (r-test :test-1 #'(lambda (done) (funcall done (= 1 3))))
+;;; (r-test :test-2 #'(lambda (done) (funcall done (= 2 2))))
+;;; (r-test :test-3 #'(lambda (done) (funcall done)))
+;;; (r-run)
 (let ((plan '()))
 
-  (defun a-test (name fn)
+  (defun r-test (name fn)
     (push (list name fn) plan))
 
   (defun next-test-class (plan-tests)
@@ -24,7 +24,7 @@
           (when (> (length tests) 0)
             (setf tests (cdr tests))
             (format t "Test ~a: " test-name)
-            (funcall test-fn #'async-done))))))
+            (funcall test-fn #'recursive-done))))))
 
   (defun next-results-class (plan-tests)
     (let ((results '())
@@ -37,11 +37,11 @@
                              (eq t el))
                          results))))))
 
-  (defun a-run ()
+  (defun r-run ()
     (let ((next-test (next-test-class plan))
           (next-results (next-results-class plan)))
       
-      (defun async-done (&optional (test nil test-supplied-p))
+      (defun recursive-done (&optional (test nil test-supplied-p))
         (let ((test-result nil))
           (if test-supplied-p
               (setf test-result test)

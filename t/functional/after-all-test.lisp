@@ -1,8 +1,8 @@
 (in-package #:noloop.cacau-test)
 
-(a-test
+(r-test
  :test-after-all
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -21,12 +21,12 @@
      (once-runner runner-instance
                   :end
                   (lambda ()
-                    (funcall a-done (eql x 1))))
+                    (funcall r-done (eql x 1))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-async-after-all 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -46,12 +46,12 @@
      (once-runner runner-instance
                   :end
                   (lambda ()
-                    (funcall a-done (eql x 1))))
+                    (funcall r-done (eql x 1))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-after-all-order 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -83,12 +83,12 @@
      (once-runner runner-instance
                   :end
                   (lambda ()
-                    (funcall a-done (eql x 1))))
+                    (funcall r-done (eql x 1))))
      (run-runner runner-instance))))
 
-(a-test
+(r-test
  :test-after-all-recursive 
- (lambda (a-done)
+ (lambda (r-done)
    (let* ((runner-instance (make-runner))
           (suite-root (suite-root runner-instance))
           (suite-1 (create-suite runner-instance
@@ -137,5 +137,5 @@
      (once-runner runner-instance
                   :end
                   (lambda ()
-                    (funcall a-done (eql x 3))))
+                    (funcall r-done (eql x 3))))
      (run-runner runner-instance))))
