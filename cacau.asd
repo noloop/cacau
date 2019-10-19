@@ -10,24 +10,30 @@
   :description "Test Runner in Common Lisp."
   :depends-on (:eventbus :assertion-error)
   :components ((:module "src"
+                :serial t
                 :components
                 ((:file "asdf")
                  (:file "package")
-                 (:file "utils" :depends-on ("package"))
-                 (:file "timer" :depends-on ("package"))
-                 (:file "runnable" :depends-on ("timer"))
-                 (:file "list-iterator" :depends-on ("package"))
-                 (:file "test" :depends-on ("runnable" "utils"))
-                 (:file "hook" :depends-on ("runnable"))
-                 (:file "suite" :depends-on ("test" "list-iterator" "hook"))
-                 (:file "runner-listeners" :depends-on ("package"))
-                 (:file "runner" :depends-on ("runner-listeners" "suite"))
+                 (:module "kernel"
+                  :serial t
+                  :components
+                  ((:file "utils")
+                   (:file "timer")
+                   (:file "runnable")
+                   (:file "list-iterator")
+                   (:file "test")
+                   (:file "hook")
+                   (:file "suite")
+                   (:file "runner-listeners")
+                   (:file "runner")))
+                 (:file "cacau")
                  (:module "interfaces"
+                  :serial t
                   :components
                   ((:file "common")
                    (:file "cl")
                    (:file "bdd")
                    (:file "tdd")
                    (:file "no-spaghetti"))))))
-                :in-order-to ((test-op (test-op "cacau/test"))))
+  :in-order-to ((test-op (test-op :cacau-test))))
 

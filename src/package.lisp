@@ -29,8 +29,9 @@
            #:create-after-each
            #:run-runner
            #:result
-           #:common-runner
-           #:common-runner-init
+           #:cacau-run
+           #:cacau-runner
+           #:cacau-reset-runner
            #:common-create-before-all
            #:common-create-after-all
            #:common-create-before-each

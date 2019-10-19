@@ -83,7 +83,6 @@
               (emit bus :pass))
           (incf (gethash :completed-tests result-hash))
           (when (= (get-run-progress runner) 100)
-            ;;(format t "~%test-end: ~a~%" "test")
             (emit bus :run-end))))
 
     (on bus
@@ -108,9 +107,7 @@
               (remove-not-only-children-recursive (suite-root runner)))
             (when (or (> (gethash :skip-suites result-hash) 0)
                       (> (gethash :skip-tests result-hash) 0))
-              (remove-skip-children-recursive (suite-root runner))
-              ;;(inspect (itens (children (suite-root runner))))
-              )
+              (remove-skip-children-recursive (suite-root runner)))
             (setf (gethash :suites result-hash)
                   (count-suites-recursive (itens (children (suite-root runner)))))
             (when (zerop (setf (gethash :tests result-hash)
@@ -132,6 +129,5 @@
               (setf (gethash :run-duration result-hash)
                     (/ (if (<= duration 0) 1 duration)
                        internal-time-units-per-second)))
-            ;;(inspect result-hash)
             (emit bus :end)))))
 

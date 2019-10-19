@@ -1,6 +1,5 @@
 (in-package #:noloop.cacau)
 
-;; REPORTER
 (defun reporter (runner-result &key return-string-p)
   (let ((suite-results (car runner-result))
         (end-result (cadr runner-result))

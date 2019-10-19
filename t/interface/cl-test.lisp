@@ -3,7 +3,7 @@
 (a-test
  :test-cl-interface
  (lambda (a-done)
-   (common-runner-init)
+   (cacau-reset-runner)
    (defsuite :suite-1 ()
      (let ((x 0))
        (defbefore-all "Before-all Suite-1" () (setf x 1))
@@ -24,18 +24,17 @@
        (defafter-each "After-each Suite-4" ()  (setf x 0))
        (deftest "Test-1" () (incf x) (eql-p x 1))
        (deftest "Test-2" ((:async done)) (eql-p x 0) (funcall done))))
-   (once-runner (common-runner)
-                :end
-                (lambda ()
-                  (let ((passing
-                          (gethash :passing (result (common-runner)))))
-                    (funcall a-done (eql 8 passing)))))
-   (run-runner (common-runner))))
+   (cacau-run
+    :end-hook
+    (lambda (runner)
+      (let ((passing
+              (gethash :passing (result runner))))
+        (funcall a-done (eql 8 passing)))))))
 
 (a-test
  :test-cl-interface-timeout
  (lambda (a-done)
-   (common-runner-init)
+   (cacau-reset-runner)
    (defsuite :suite-1 ((:timeout 0))
      (let ((x 0))
        (defbefore-all "Before-all Suite-1" ((:timeout 50000)) (setf x 1))
@@ -56,18 +55,17 @@
        (defafter-each "After-each Suite-4" ((:timeout 50000))  (setf x 0))
        (deftest "Test-1" () (incf x) (eql-p x 1))
        (deftest "Test-2" ((:async done)) (eql-p x 0) (funcall done))))
-   (once-runner (common-runner)
-                :end
-                (lambda ()
-                  (let ((passing
-                          (gethash :passing (result (common-runner)))))
-                    (funcall a-done (eql 4 passing)))))
-   (run-runner (common-runner))))
+   (cacau-run
+    :end-hook
+    (lambda (runner)
+      (let ((passing
+              (gethash :passing (result runner))))
+        (funcall a-done (eql 4 passing)))))))
 
 (a-test
  :test-cl-interface-skip-and-only
  (lambda (a-done)
-   (common-runner-init)
+   (cacau-reset-runner)
    (defsuite :suite-1 (:only)
      (let ((x 0))
        (defbefore-all "Before-all Suite-1" () (setf x 1))
@@ -88,11 +86,10 @@
        (defafter-each "After-each Suite-4" () (setf x 0))
        (deftest "Test-1" () (incf x) (eql-p x 1))
        (deftest "Test-2" (:only (:async done)) (eql-p x 0) (funcall done))))
-   (once-runner (common-runner)
-                :end
-                (lambda ()
-                  (let ((passing
-                          (gethash :passing (result (common-runner)))))
-                    (funcall a-done (eql 4  passing)))))
-   (run-runner (common-runner))))
+   (cacau-run
+    :end-hook
+    (lambda (runner)
+      (let ((passing
+              (gethash :passing (result runner))))
+        (funcall a-done (eql 4 passing)))))))
 

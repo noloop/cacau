@@ -7,6 +7,7 @@
   :defsystem-depends-on (:cacau-asdf)
   :components
   ((:module "t"
+    :serial t
     :components
     ((:file "async-runner")
      (:module "functional"

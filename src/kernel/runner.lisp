@@ -8,7 +8,8 @@
    (abort-p :initarg :abort-p
             :accessor abort-p)
    (result :initform (make-hash-table)
-           :accessor result)))
+           :accessor result)
+   (current-suite :accessor current-suite)))
 
 (defun make-runner ()
   (let ((new-runner (make-instance 'runner))
@@ -18,6 +19,7 @@
                       :parent nil))
     (setf (eventbus temp-runnable) (eventbus new-runner))
     (create-runner-listeners new-runner)
+    (setf (current-suite new-runner) (suite-root new-runner))
     new-runner))
 
 (defmethod create-suite ((obj runner) name &key (only-p nil) (skip-p nil) (timeout -1))

@@ -3,7 +3,7 @@
 (a-test
  :test-bdd-interface
  (lambda (a-done)
-   (common-runner-init)
+   (cacau-reset-runner)
    (context
     "Suite-1"
     (lambda (&optional (x 0))
@@ -29,18 +29,17 @@
         (after-each "After-each Suite-4" (lambda ()  (setf x 0)))
         (it "Test-1" (lambda () (incf x) (eql-p x 1)))
         (it "Test-2" (lambda () (eql-p x 0))))))
-   (once-runner (common-runner)
-                :end
-                (lambda ()
-                  (let ((passing
-                          (gethash :passing (result (common-runner)))))
-                    (funcall a-done (eql 8 passing)))))
-   (run-runner (common-runner))))
+   (cacau-run
+    :end-hook
+    (lambda (runner)
+      (let ((passing
+              (gethash :passing (result runner))))
+        (funcall a-done (eql 8 passing)))))))
 
 (a-test
  :test-bdd-interface-timeout
  (lambda (a-done)
-   (common-runner-init)
+   (cacau-reset-runner)
    (context
     "Suite-1"
     (lambda (&optional (x 0))
@@ -67,18 +66,17 @@
         (after-each "After-each Suite-4" (lambda ()  (setf x 0)))
         (it "Test-1" (lambda () (incf x) (eql-p x 1)))
         (it "Test-2" (lambda () (eql-p x 0))))))
-   (once-runner (common-runner)
-                :end
-                (lambda ()
-                  (let ((passing
-                          (gethash :passing (result (common-runner)))))
-                    (funcall a-done (eql 4 passing)))))
-   (run-runner (common-runner))))
+   (cacau-run
+    :end-hook
+    (lambda (runner)
+      (let ((passing
+              (gethash :passing (result runner))))
+        (funcall a-done (eql 4 passing)))))))
 
 (a-test
  :test-bdd-interface-skip-and-only
  (lambda (a-done)
-   (common-runner-init)
+   (cacau-reset-runner)
    (context
     "Suite-1"
     (lambda (&optional (x 0))
@@ -106,11 +104,10 @@
         (after-each "After-each Suite-4" (lambda ()  (setf x 0)))
         (it "Test-1" (lambda () (incf x) (eql-p x 1)) :only t)
         (it "Test-2" (lambda () (eql-p x 0))))))
-   (once-runner (common-runner)
-                :end
-                (lambda ()
-                  (let ((passing
-                          (gethash :passing (result (common-runner)))))
-                    (funcall a-done (eql 4 passing)))))
-   (run-runner (common-runner))))
+   (cacau-run
+    :end-hook
+    (lambda (runner)
+      (let ((passing
+              (gethash :passing (result runner))))
+        (funcall a-done (eql 4 passing)))))))
 
