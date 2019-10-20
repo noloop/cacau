@@ -14,11 +14,11 @@
                 :components
                 ((:file "asdf")
                  (:file "package")
+                 (:file "utils")
                  (:module "kernel"
                   :serial t
                   :components
-                  ((:file "utils")
-                   (:file "timer")
+                  ((:file "timer")
                    (:file "runnable")
                    (:file "list-iterator")
                    (:file "test")
@@ -26,6 +26,11 @@
                    (:file "suite")
                    (:file "runner-listeners")
                    (:file "runner")))
+                 (:module "reporters"
+                  :serial t
+                  :components
+                  ((:file "base")
+                   (:file "min")))
                  (:file "cacau")
                  (:module "interfaces"
                   :serial t

@@ -28,7 +28,10 @@
        (:cacau-file "bdd-test")
        (:cacau-file "tdd-test")
        (:cacau-file "no-spaghetti-test")
-       (:cacau-file "mix-test"))))))
+       (:cacau-file "mix-test")))
+     (:module "reporter"
+      :components
+      ((:cacau-file "min-test"))))))
   :perform
   (test-op (op c)
            (progn
