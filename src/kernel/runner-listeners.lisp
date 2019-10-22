@@ -44,13 +44,20 @@
 
     (on bus
         :pass
-        (lambda ()
+        (lambda (test)
+          (declare (ignore test))
           (incf (gethash :passing result-hash))))
 
     (on bus
         :fail
-        (lambda ()
+        (lambda (test)
+          (declare (ignore test))
           (incf (gethash :failing result-hash))))
+
+    (on bus
+        :suite-start
+        (lambda (suite)
+          (declare (ignore suite))))
 
     (on bus
         :suite-end
@@ -59,9 +66,10 @@
                    (eq :suite-root (name suite)))
                  (suite-next-fn
                    (lambda ()
-                     (unless suite-root-p
-                       (progn (next-child (parent suite))  
-                              (incf (gethash :completed-suites result-hash)))))))
+                     (if suite-root-p
+                         (emit bus :run-end)
+                         (progn (next-child (parent suite))  
+                                (incf (gethash :completed-suites result-hash)))))))
             (if (suite-after-all suite)
                 (run-runnable (suite-after-all suite)
                               (lambda ()
@@ -69,8 +77,13 @@
                 (funcall suite-next-fn)))))
 
     (on bus
-        :test-end
+        :test-start
         (lambda (test)
+          (declare (ignore test))))
+
+    (on bus
+        :test-end
+        (lambda (test) 
           (if (runnable-error test)
               (let ((new-error (make-hash-table)))
                 (setf-hash new-error
@@ -79,11 +92,9 @@
                              (:parent ,(parent test))
                              (:error ,(runnable-error test))))
                 (push new-error (gethash :errors result-hash))
-                (emit bus :fail))
-              (emit bus :pass))
-          (incf (gethash :completed-tests result-hash))
-          (when (= (get-run-progress runner) 100)
-            (emit bus :run-end))))
+                (emit bus :fail test))
+              (emit bus :pass test))
+          (incf (gethash :completed-tests result-hash))))
 
     (on bus
         :hook-end

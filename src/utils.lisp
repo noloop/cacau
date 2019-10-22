@@ -108,3 +108,11 @@ NIL"
                           (t ""))))
     (format nil (concatenate 'string "~c[" style color background "m" stg "~c[0m") #\ESC #\ESC)))
 
+(defun read-yes ()
+  (find (read-line) '("yes" "y" "t") :test #'string-equal))
+
+(defun string-if-not-string (value)
+  (if (typep value 'string)
+      value
+      (write-to-string value)))
+

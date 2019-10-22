@@ -38,7 +38,7 @@
              :timeout timeout
              :eventbus (eventbus obj)))
 
-(defmethod get-run-progress ((obj runner))
+(defmethod run-progress ((obj runner))
   (let ((completed-tests (gethash :completed-tests (result obj)))
         (tests-percent (/ (gethash :tests (result obj)) 100)))
     (round (/ completed-tests

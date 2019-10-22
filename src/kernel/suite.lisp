@@ -70,6 +70,7 @@
 
 (defmethod run-runnable ((suite suite-class) &optional fn)
   (declare (ignore fn))
+  (emit (eventbus suite) :suite-start suite)
   (collect-before-each-recursive suite (parents-before-each suite))
   (collect-after-each-recursive suite (parents-after-each suite))
   (start-iterator-reverse (parents-after-each suite))

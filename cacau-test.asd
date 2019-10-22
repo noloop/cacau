@@ -31,7 +31,9 @@
        (:cacau-file "mix-test")))
      (:module "reporter"
       :components
-      ((:cacau-file "min-test"))))))
+      ((:cacau-file "min-test")
+       (:cacau-file "list-test")))
+     )))
   :perform
   (test-op (op c)
            (progn

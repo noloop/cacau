@@ -19,6 +19,7 @@
 
 (defmethod run-runnable ((test test-class) &optional fn)
   (declare (ignore fn))
+  (emit (eventbus test) :test-start test)
   (start-iterator (parents-before-each (parent test)))
   (execute-suites-each
    (parent test)
@@ -40,9 +41,9 @@
    (parent test)
    (parents-after-each (parent test))
    (lambda ()
-     (next-child (parent test))
      (timout-extrapolated-p test)
-     (emit (eventbus test) :test-end test))))
+     (emit (eventbus test) :test-end test)
+     (next-child (parent test)))))
 
 (defmethod done ((test test-class))
   "The done function accepts an optional argument, which can be either one error or test-fn(function)."

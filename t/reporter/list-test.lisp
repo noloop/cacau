@@ -1,7 +1,7 @@
 (in-package #:noloop.cacau-test)
 
 (r-test
- :test-min-reporter
+ :test-list-reporter
  (lambda (r-done)
    (defsuite :suite-1 ()
      (let ((x 0))
@@ -17,27 +17,42 @@
              (let ((x 0))
                (defbefore-each "Before-each Suite-3" () (setf x 1))
                (deftest "Test-1" () (incf x) (eql-p x 2))
-               (deftest "Test-2" () (eql-p x 1))))))))
+               (deftest "Test-2" () (eql-p x 0))))))))
    (defsuite :suite-4 ()
      (let ((x 0))
        (defafter-each "After-each Suite-4" ()  (setf x 0))
        (deftest "Test-1" () (incf x) (eql-p x 1))
        (deftest "Test-2" ((:async done)) (eql-p x 0) (funcall done))))
+   
    (let ((out (with-output-to-string (*standard-output*)
                 (cacau-run
-                 :reporter :min
+                 :reporter :list
                  :colorful nil))))
      (funcall r-done (equal out "
 <=> Cacau <=>
 
+:SUITE-1
+ -> Test-1
+ -> Test-2
+ :SUITE-2
+  -> Test-1
+  -> Test-2
+ :SUITE-3
+  -> Test-1
+  <- Test-2: 1 EQL 0
+:SUITE-4
+ -> Test-1
+ -> Test-2
+
+-------------------------
 From 8 running tests: 
 
-8 passed
-0 failed
+7 passed
+1 failed
 ")))))
 
 (r-test
- :test-min-reporter-colorful
+ :test-list-reporter-colorful
  (lambda (r-done)
    (defsuite :suite-1 ()
      (let ((x 0))
@@ -53,7 +68,7 @@ From 8 running tests:
              (let ((x 0))
                (defbefore-each "Before-each Suite-3" () (setf x 1))
                (deftest "Test-1" () (incf x) (eql-p x 2))
-               (deftest "Test-2" () (eql-p x 1))))))))
+               (deftest "Test-2" () (eql-p x 0))))))))
    (defsuite :suite-4 ()
      (let ((x 0))
        (defafter-each "After-each Suite-4" ()  (setf x 0))
@@ -61,14 +76,28 @@ From 8 running tests:
        (deftest "Test-2" ((:async done)) (eql-p x 0) (funcall done))))
    (let ((out (with-output-to-string (*standard-output*)
                 (cacau-run
-                 :reporter :min
+                 :reporter :list
                  :colorful t))))
      (funcall r-done (equal out "
 [4;31;43m<=> Cacau <=>[0m
 
+[34m:SUITE-1[0m
+[32m -> Test-1[0m
+[32m -> Test-2[0m
+ [34m:SUITE-2[0m
+ [32m -> Test-1[0m
+ [32m -> Test-2[0m
+ [34m:SUITE-3[0m
+ [32m -> Test-1[0m
+[4;31m  <- Test-2:[0m [37m1 EQL 0[0m
+[34m:SUITE-4[0m
+[32m -> Test-1[0m
+[32m -> Test-2[0m
+
+[0m-------------------------[0m
 [37mFrom [0m[34m8[0m[37m running tests: [0m
 
-[32m8 passed[0m
-[31m0 failed[0m
+[32m7 passed[0m
+[31m1 failed[0m
 ")))))
 
