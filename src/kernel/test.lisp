@@ -33,20 +33,6 @@
            (try-fn test (lambda () (funcall (fn test))))
            (after-run test))))))
 
-;; (defmethod try-fn ((test test-class) try)
-;;   (handler-case (funcall try)
-;;     (assertion-error (c)
-;;       (let ((error-hash (make-hash-table)))
-;;         (setf-hash error-hash 
-;;                    `((:actual ,(assertion-error-actual c))
-;;                      (:expected ,(assertion-error-expected c))
-;;                      (:message ,(assertion-error-message c))
-;;                      (:result ,(assertion-error-result c))
-;;                      (:stack ,(assertion-error-stack c))))
-;;         (setf (runnable-error test) error-hash)))
-;;     (error (c)
-;;       (setf-error test (format nil "~a" c)))))
-
 (defmethod after-run ((test test-class))
   (start-iterator (parents-after-each (parent test)))
   (execute-suites-each

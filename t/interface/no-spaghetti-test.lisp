@@ -7,7 +7,9 @@
      (in-plan :suite-1 ()) ;; or (in-suite :suite-1 ((:parent :suite-root)))
      (defbefore-plan :before-plan-suite-1 () (setf x 1))
      (deft :test-1 () (eql-p x 1))
-     (deft :test-2 ((:async done)) (incf x) (eql-p x 2) (funcall done))
+     (deft :test-2 ((:async done))
+       (incf x)
+       (funcall done (lambda () (eql-p x 2))))
 
      (in-plan :suite-2 ((:parent :suite-1)))
      (defafter-plan :after-plan-suite-2 ((:async done-hook)) (setf x 1) (funcall done-hook))
@@ -39,7 +41,9 @@
      (in-plan :suite-1 ((:timeout 0)))
      (defbefore-plan :before-plan-suite-1 () (setf x 1))
      (deft :test-1 ((:timeout 50000)) (eql-p x 1))
-     (deft :test-2 ((:async done)) (incf x) (eql-p x 2) (funcall done))
+     (deft :test-2 ((:async done))
+       (incf x)
+       (funcall done (lambda () (eql-p x 2))))
 
      (in-plan :suite-2 ((:parent :suite-1)))
      (defafter-plan :after-plan-suite-2 ((:async done-hook)) (setf x 1) (funcall done-hook))
@@ -70,8 +74,9 @@
    (let ((x 0))
      (in-plan :suite-1 (:only))
      (defbefore-plan :before-plan-suite-1 () (setf x 1))
-     (deft :test-1 () (eql-p x 1))
-     (deft :test-2 ((:async done)) (incf x) (eql-p x 2) (funcall done))
+     (deft :test-1 ((:async done))
+       (funcall done (lambda () (eql-p x 1))))
+     (deft :test-2 () (incf x) (eql-p x 2))
 
      (in-plan :suite-2 ((:parent :suite-1)))
      (defafter-plan :after-plan-suite-2 ((:async done-hook)) (setf x 1) (funcall done-hook))

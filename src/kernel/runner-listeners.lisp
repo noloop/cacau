@@ -88,7 +88,7 @@
             (setf-hash error-hash
                        `((:name ,(name obj))
                          (:fn ,(fn obj))
-                         (:parent ,(parent obj))
+                         (:parent ,(name (parent obj)))
                          (:error ,new-error)))
             (push error-hash (gethash :errors result-hash)))))
 
@@ -96,14 +96,6 @@
         :test-end
         (lambda (test)
           (if (runnable-error test)
-              ;; (let ((new-error (make-hash-table)))
-              ;;   (setf-hash new-error
-              ;;              `((:name ,(name test))
-              ;;                (:fn ,(fn test))
-              ;;                (:parent ,(parent test))
-              ;;                (:error ,(runnable-error test))))
-              ;;   (push new-error (gethash :errors result-hash))
-              ;;   )
               (progn
                 (emit bus :new-error test (runnable-error test))
                 (emit bus :fail test))
@@ -114,14 +106,6 @@
         :hook-end
         (lambda (hook)
           (when (runnable-error hook)
-              ;; (let ((new-error (make-hash-table)))
-              ;;   (setf-hash new-error
-              ;;              `((:name ,(name hook))
-              ;;                (:fn ,(fn hook))
-              ;;                (:parent ,(parent hook))
-              ;;                (:error ,(runnable-error hook))))
-              ;;   (push new-error (gethash :errors result-hash))
-            ;; )
             (emit bus :new-error hook (runnable-error hook))
             (emit bus :run-abort))))
     

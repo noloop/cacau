@@ -92,7 +92,9 @@
           "Suite-3"
           (lambda (&optional (x 0))
             (before-each "Before-each Suite-3" (lambda () (setf x 1)))
-            (it "Test-1" (lambda () (incf x) (eql-p x 2)))
+            (it "Test-1" (lambda (done)
+                           (incf x)
+                           (funcall done (lambda () (eql-p x 2)))))
             (it "Test-2" (lambda () (eql-p x 1))))
           :skip t))))
     :only t)

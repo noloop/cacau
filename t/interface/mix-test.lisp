@@ -8,7 +8,7 @@
       :suite-1
       (lambda ()
         (before-all "Before-all Suite-1" (lambda () (setf x 1)))
-        (it "Test-1" (lambda () (eql-p x 1)))
+        (it "Test-1" (lambda (done) (funcall done (lambda () (eql-p x 1)))))
         (it "Test-2" (lambda () (incf x) (eql-p x 2)))
         
         (in-plan :suite-2 ((:parent :suite-1)))
@@ -27,7 +27,8 @@
        (let ((x 0))
          (defafter-each "After-each Suite-4" ()  (setf x 0))
          (deftest "Test-1" () (incf x) (eql-p x 1))
-         (deftest "Test-2" ((:async done)) (eql-p x 0) (funcall done)))))
+         (deftest "Test-2" ((:async done))
+           (funcall done (lambda () (eql-p x 0)))))))
    
    (cacau-run
     :reporter :off

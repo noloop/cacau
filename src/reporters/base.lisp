@@ -159,26 +159,34 @@
          :completed-suites
          :completed-tests))))
 
-;; (defun stack-test-errors (runner-result)
-;;   (inspect runner-result)
-;;   (format t "~%~a" (cacau-string-color  "Errors" "red"))
-;;   (dolist (test-err (gethash :errors runner-result))
-;;     (inspect test-err)
-;;     (separation-bar "red")
-;;     (format t "~a~%"
-;;             (cacau-string-color
-;;              (concatenate 'string
-;;                           "In Test: "
-;;                           (gethash :name test-err))
-;;              "red"))
-;;     (format t "~a~%"
-;;             (cacau-string-color
-;;              (concatenate 'string
-;;                           "Message: "
-;;                           (gethash :message (gethash :error test-err)))
-;;              "red"))
-;;     (format t "~%~a" (cacau-string-color "Read Stack (y/n)? " "red"))
-;;     (when (read-yes)
-;;       (dolist (line (gethash :stack (gethash :error test-err)))
-;;         (format t "~a~%" (cacau-string-color (write-to-string line) "red"))))))
+(defun stack-test-errors (runner-result &key (reverse-list t))
+  (let ((errors (if reverse-list
+                    (reverse (gethash :errors runner-result))
+                    (gethash :errors runner-result))))
+    (when (> (length errors) 0)
+      (format t "~%~a" (cacau-string-color  "Errors" "red")))
+    (dolist (test-err errors)
+      (separation-bar "red")
+      (format t "~a~%"
+              (cacau-string-color
+               (concatenate 'string
+                            "Suite: "
+                            (string-if-not-string (gethash :parent test-err)))
+               "red"))
+      (format t "~a~%"
+              (cacau-string-color
+               (concatenate 'string
+                            "Test: "
+                            (string-if-not-string (gethash :name test-err)))
+               "red"))
+      (format t "~a~%"
+              (cacau-string-color
+               (concatenate 'string
+                            "Message: "
+                            (string-if-not-string (gethash :message (gethash :error test-err))))
+               "red"))
+      (format t "~a" (cacau-string-color "Read Stack (y/n)? " "red"))
+      (when (read-yes)
+        (dolist (line (gethash :stack (gethash :error test-err)))
+          (format t "~a~%" (cacau-string-color (write-to-string line) "red")))))))
 

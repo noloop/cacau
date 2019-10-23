@@ -28,9 +28,10 @@
        old-runner
        :end
        (lambda ()
-         (when (eq (type-of end-hook) 'function)
+         (when (typep end-hook 'function)
            (funcall end-hook old-runner))
-         (funcall reporter-fn)))
+         (when (typep reporter-fn 'function)
+           (funcall reporter-fn))))
       (cacau-reset-runner)
       (run-runner old-runner))))
 

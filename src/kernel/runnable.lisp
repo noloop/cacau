@@ -30,17 +30,30 @@
           ((typep arg 'function) (try-fn obj arg)))
     (after-run obj)))
 
+(defmethod setf-assertion-error ((obj runnable) c)
+  (let ((error-hash (make-hash-table)))
+    (setf-hash error-hash 
+               `((:actual ,(assertion-error-actual c))
+                 (:expected ,(assertion-error-expected c))
+                 (:message ,(assertion-error-message c))
+                 (:result ,(assertion-error-result c))
+                 (:stack ,(assertion-error-stack c))))
+    (setf (runnable-error obj) error-hash)))
+
+(defmethod setf-error ((obj runnable) error-msg)
+  (let ((error-hash (make-hash-table)))
+    (setf-hash error-hash 
+               `((:actual nil)
+                 (:expected nil)
+                 (:message ,error-msg)
+                 (:result nil)
+                 (:stack ,(get-stack-trace))))
+    (setf (runnable-error obj) error-hash)))
+
 (defmethod try-fn ((obj runnable) try &key after-error-fn)
   (handler-case (funcall try)
     (assertion-error (c)
-      (let ((error-hash (make-hash-table)))
-        (setf-hash error-hash 
-                   `((:actual ,(assertion-error-actual c))
-                     (:expected ,(assertion-error-expected c))
-                     (:message ,(assertion-error-message c))
-                     (:result ,(assertion-error-result c))
-                     (:stack ,(assertion-error-stack c))))
-        (setf (runnable-error obj) error-hash))
+      (setf-assertion-error obj c)
       (when after-error-fn
         (funcall after-error-fn)))
     (error (c)
@@ -48,30 +61,20 @@
       (when after-error-fn
         (funcall after-error-fn)))))
 
-(defun inherit-timeout (obj)
+(defmethod inherit-timeout ((obj runnable))
   (unless (eq :suite-root (name obj))
     (when (and (= (timeout obj) -1)
                (/= (timeout (parent obj)) -1))
-      ;; (format t "~%name: ~a - timeout: ~a~%" (name obj) (timeout obj))
-      ;; (format t "~%timeout parent: ~a~%" (timeout (parent obj)))
       (setf (timeout obj) (timeout (parent obj)))
       (start-timeout obj))))
 
-(defun start-timeout (obj)
+(defmethod start-timeout ((obj runnable))
   (when (/= (timeout obj) -1)
     (setf (limit-ms (timer obj)) (timeout obj))
     (start-timer (timer obj))))
 
-(defun timeout-extrapolated-p (obj)
+(defmethod timeout-extrapolated-p ((obj runnable))
   (let* ((result (extrapolated-p (timer obj))))
-    ;; (format t "~%name: ~a~%limit-ms: ~a~%start-ms: ~a~%end-ms: ~a~%duration-ms: ~a~%"
-    ;;         (name obj)
-    ;;         (limit-ms (timer obj))
-    ;;         (start-ms (timer obj))
-    ;;         (end-ms (timer obj))
-    ;;         (duration-ms (timer obj)))
-    ;; (format t "~%result-time: ~a~%" result)
-    ;; (format t "~%name: ~a~%" (name obj))
     (when result
       (setf-error
        obj
@@ -81,14 +84,4 @@
         (write-to-string (limit-ms (timer obj)))
         ") extrapolated!")))
     result))
-
-(defun setf-error (obj error-msg)
-  (let ((error-hash (make-hash-table)))
-    (setf-hash error-hash 
-               `((:actual nil)
-                 (:expected nil)
-                 (:message ,error-msg)
-                 (:result nil)
-                 (:stack ,(get-stack-trace))))
-    (setf (runnable-error obj) error-hash)))
 
