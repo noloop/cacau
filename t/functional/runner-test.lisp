@@ -25,7 +25,8 @@
                 (create-test runner-instance
                              :test-1
                              (lambda (done)
-                               (funcall done r-done))))
+                               (funcall done (lambda ()
+                                               (funcall r-done))))))
      (once-runner runner-instance
                   :end
                   (lambda () ()))

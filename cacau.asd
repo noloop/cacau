@@ -31,7 +31,8 @@
                   :components
                   ((:file "base")
                    (:file "min")
-                   (:file "list")))
+                   (:file "list")
+                   (:file "full")))
                  (:file "cacau")
                  (:module "interfaces"
                   :serial t

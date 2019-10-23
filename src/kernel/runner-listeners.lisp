@@ -82,16 +82,30 @@
           (declare (ignore test))))
 
     (on bus
+        :new-error
+        (lambda (obj new-error)
+          (let ((error-hash (make-hash-table)))
+            (setf-hash error-hash
+                       `((:name ,(name obj))
+                         (:fn ,(fn obj))
+                         (:parent ,(parent obj))
+                         (:error ,new-error)))
+            (push error-hash (gethash :errors result-hash)))))
+
+    (on bus
         :test-end
-        (lambda (test) 
+        (lambda (test)
           (if (runnable-error test)
-              (let ((new-error (make-hash-table)))
-                (setf-hash new-error
-                           `((:name ,(name test))
-                             (:fn ,(fn test))
-                             (:parent ,(parent test))
-                             (:error ,(runnable-error test))))
-                (push new-error (gethash :errors result-hash))
+              ;; (let ((new-error (make-hash-table)))
+              ;;   (setf-hash new-error
+              ;;              `((:name ,(name test))
+              ;;                (:fn ,(fn test))
+              ;;                (:parent ,(parent test))
+              ;;                (:error ,(runnable-error test))))
+              ;;   (push new-error (gethash :errors result-hash))
+              ;;   )
+              (progn
+                (emit bus :new-error test (runnable-error test))
                 (emit bus :fail test))
               (emit bus :pass test))
           (incf (gethash :completed-tests result-hash))))
@@ -100,14 +114,16 @@
         :hook-end
         (lambda (hook)
           (when (runnable-error hook)
-              (let ((new-error (make-hash-table)))
-                (setf-hash new-error
-                           `((:name ,(name hook))
-                             (:fn ,(fn hook))
-                             (:parent ,(parent hook))
-                             (:error ,(runnable-error hook))))
-                (push new-error (gethash :errors result-hash))
-                (emit bus :run-abort)))))
+              ;; (let ((new-error (make-hash-table)))
+              ;;   (setf-hash new-error
+              ;;              `((:name ,(name hook))
+              ;;                (:fn ,(fn hook))
+              ;;                (:parent ,(parent hook))
+              ;;                (:error ,(runnable-error hook))))
+              ;;   (push new-error (gethash :errors result-hash))
+            ;; )
+            (emit bus :new-error hook (runnable-error hook))
+            (emit bus :run-abort))))
     
     (once bus
           :run-start

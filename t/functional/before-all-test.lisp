@@ -43,8 +43,8 @@
      (create-before-all suite-1
                         :before-all-suite-1
                         (lambda (done-hook)
-                          (setf x 1)
-                          (funcall done-hook)))
+                          (funcall done-hook (lambda ()
+                                               (setf x 1)))))
      (add-child suite-1
                 (create-test runner-instance
                              :test-1

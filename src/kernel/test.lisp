@@ -28,12 +28,24 @@
      (inherit-timeout test)
      (start-timeout test)
      (if (>= (get-function-args-length (fn test)) 1)
-         (funcall (fn test) (done test))
-         (try-fn
-          test
-          (lambda ()
-            (progn (funcall (fn test))
-                   (after-run test))))))))
+         (funcall (fn test) (done-runnable test))
+         (progn
+           (try-fn test (lambda () (funcall (fn test))))
+           (after-run test))))))
+
+;; (defmethod try-fn ((test test-class) try)
+;;   (handler-case (funcall try)
+;;     (assertion-error (c)
+;;       (let ((error-hash (make-hash-table)))
+;;         (setf-hash error-hash 
+;;                    `((:actual ,(assertion-error-actual c))
+;;                      (:expected ,(assertion-error-expected c))
+;;                      (:message ,(assertion-error-message c))
+;;                      (:result ,(assertion-error-result c))
+;;                      (:stack ,(assertion-error-stack c))))
+;;         (setf (runnable-error test) error-hash)))
+;;     (error (c)
+;;       (setf-error test (format nil "~a" c)))))
 
 (defmethod after-run ((test test-class))
   (start-iterator (parents-after-each (parent test)))
@@ -41,34 +53,7 @@
    (parent test)
    (parents-after-each (parent test))
    (lambda ()
-     (timout-extrapolated-p test)
+     (timeout-extrapolated-p test)
      (emit (eventbus test) :test-end test)
      (next-child (parent test)))))
-
-(defmethod done ((test test-class))
-  "The done function accepts an optional argument, which can be either one error or test-fn(function)."
-  (lambda (&optional (arg nil arg-supplied-p))
-    (cond ((and arg-supplied-p
-                (typep arg 'error))
-           (setf (runnable-error test) arg))
-          ((and arg-supplied-p
-                (typep arg 'function))
-           (try-fn test arg)))
-    (after-run test)))
-
-(defmethod try-fn ((test test-class) try)
-  (handler-case (funcall try)
-    (assertion-error (c)
-      (let ((error-hash (make-hash-table)))
-        (setf-hash error-hash 
-                   `((:actual ,(assertion-error-actual c))
-                     (:expected ,(assertion-error-expected c))
-                     (:message ,(assertion-error-message c))
-                     (:result ,(assertion-error-result c))
-                     (:stack ,(assertion-error-stack c))))
-        (setf (runnable-error test) error-hash)
-        (after-run test)))
-    (error (c)
-      (setf-error test (format nil "~a" c))
-      (after-run test))))
 
