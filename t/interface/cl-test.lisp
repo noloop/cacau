@@ -30,7 +30,7 @@
          (funcall done (lambda () (eql-p x 0))))))
    (cacau-run
     :reporter :off
-    :end-hook
+    :after-run
     (lambda (runner)
       (let ((passing
               (gethash :passing (result runner))))
@@ -65,7 +65,7 @@
          (funcall done (lambda () (eql-p x 0))))))
    (cacau-run
     :reporter :off
-    :end-hook
+    :after-run
     (lambda (runner)
       (let ((passing
               (gethash :passing (result runner))))
@@ -101,7 +101,7 @@
          (funcall done (lambda () (eql-p x 0))))))
    (cacau-run
     :reporter :off
-    :end-hook
+    :after-run
     (lambda (runner)
       (let ((passing
               (gethash :passing (result runner))))

@@ -32,6 +32,7 @@
            #:cacau-run
            #:cacau-runner
            #:cacau-reset-runner
+           #:cacau-cl-debugger
            #:common-create-before-all
            #:common-create-after-all
            #:common-create-before-each

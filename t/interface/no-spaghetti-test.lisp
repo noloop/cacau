@@ -28,7 +28,7 @@
      
    (cacau-run
     :reporter :off
-    :end-hook
+    :after-run
     (lambda (runner)
       (let ((passing
               (gethash :passing (result runner))))
@@ -62,7 +62,7 @@
    
    (cacau-run
     :reporter :off
-    :end-hook
+    :after-run
     (lambda (runner)
       (let ((passing
               (gethash :passing (result runner))))
@@ -95,7 +95,7 @@
    
    (cacau-run
     :reporter :off
-    :end-hook
+    :after-run
     (lambda (runner)
       (let ((passing
               (gethash :passing (result runner))))
