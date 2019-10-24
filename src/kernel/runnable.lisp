@@ -13,6 +13,9 @@
              :accessor eventbus)
    (timer :initform (make-timer)
           :accessor timer)
+   (cl-debugger-p :initform nil
+                  :accessor cl-debugger-p
+                  :allocation :class)
    (timeout :initarg :timeout
             :initform -1
             :accessor timeout)))
@@ -53,10 +56,14 @@
 (defmethod try-fn ((obj runnable) try &key after-error-fn)
   (handler-case (funcall try)
     (assertion-error (c)
+      (when (cl-debugger-p obj)
+        (error c))
       (setf-assertion-error obj c)
       (when after-error-fn
         (funcall after-error-fn)))
     (error (c)
+      (when (cl-debugger-p obj)
+        (error c))
       (setf-error obj (format nil "~a" c))
       (when after-error-fn
         (funcall after-error-fn)))))
