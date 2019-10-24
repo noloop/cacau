@@ -30,7 +30,7 @@
         (test-teardown "Test-teardown Suite-4" (lambda ()  (setf x 0)))
         (test "Test-1" (lambda () (incf x) (eql-p x 1)))
         (test "Test-2" (lambda () (eql-p x 0))))))
-   (cacau-run
+   (run
     :reporter :off
     :after-run
     (lambda (runner)
@@ -67,7 +67,7 @@
         (test-teardown "Test-teardown Suite-4" (lambda ()  (setf x 0)))
         (test "Test-1" (lambda () (incf x) (eql-p x 1)))
         (test "Test-2" (lambda () (eql-p x 0)) :timeout 0))))
-   (cacau-run
+   (run
     :reporter :off
     :after-run
     (lambda (runner)
@@ -105,7 +105,7 @@
         (test-teardown "Test-teardown Suite-4" (lambda ()  (setf x 0)))
         (test "Test-1" (lambda () (incf x) (eql-p x 1)) :only t)
         (test "Test-2" (lambda () (eql-p x 0))))))
-   (cacau-run
+   (run
     :reporter :off
     :after-run
     (lambda (runner)

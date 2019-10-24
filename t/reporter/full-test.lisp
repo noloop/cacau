@@ -31,7 +31,7 @@
          (funcall done (lambda () (eql-p x 1))))))
    (let ((out (with-output-to-string (*standard-output*) 
                 (with-input-from-string (*standard-input* (format nil "n~%n"))
-                  (cacau-run
+                  (run
                   :reporter :full
                   :colorful nil
                   :reporter-options
@@ -125,7 +125,7 @@ Read Stack (y/n)? ")))))
          (funcall done (lambda () (eql-p x 1))))))
    (let ((out (with-output-to-string (*standard-output*) 
                 (with-input-from-string (*standard-input* (format nil "n~%n"))
-                  (cacau-run
+                  (run
                    :reporter :full
                    :colorful t
                    :reporter-options

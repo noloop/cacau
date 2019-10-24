@@ -29,7 +29,7 @@
        (deftest "Test-2" ((:async done))
          (funcall done (lambda () (eql-p x 0))))))
    (let ((out (with-output-to-string (*standard-output*)
-                (cacau-run
+                (run
                  :reporter :min
                  :colorful nil))))
      (funcall r-done (equal out "
@@ -70,7 +70,7 @@ From 8 running tests:
        (deftest "Test-2" ((:async done))
          (funcall done (lambda () (eql-p x 0))))))
    (let ((out (with-output-to-string (*standard-output*)
-                (cacau-run
+                (run
                  :reporter :min
                  :colorful t))))
      (funcall r-done (equal out "

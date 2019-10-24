@@ -1,5 +1,10 @@
 # cacau Test
 
+### Dependencies
+
+[:cacau](https://github.com/noloop/cacau)
+[:assert-p](https://github.com/noloop/assert-p)
+
 ## How to test cacau?
 
 It's quite simple, in REPL:

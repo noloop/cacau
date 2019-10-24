@@ -26,7 +26,7 @@
      (deft :test-1 () (incf x) (eql-p x 2))
      (deft :test-2 () (eql-p x 0)))
      
-   (cacau-run
+   (run
     :reporter :off
     :after-run
     (lambda (runner)
@@ -60,7 +60,7 @@
      (deft :test-1 () (incf x) (eql-p x 2))
      (deft :test-2 () (eql-p x 0)))
    
-   (cacau-run
+   (run
     :reporter :off
     :after-run
     (lambda (runner)
@@ -93,7 +93,7 @@
      (deft :test-1 (:only) (incf x) (eql-p x 2))
      (deft :test-2 () (eql-p x 0)))
    
-   (cacau-run
+   (run
     :reporter :off
     :after-run
     (lambda (runner)

@@ -29,10 +29,10 @@
            #:create-after-each
            #:run-runner
            #:result
-           #:cacau-run
+           #:run
            #:cacau-runner
-           #:cacau-reset-runner
-           #:cacau-cl-debugger
+           #:reset-runner
+           #:cl-debugger
            #:common-create-before-all
            #:common-create-after-all
            #:common-create-before-each

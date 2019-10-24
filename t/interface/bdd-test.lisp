@@ -28,7 +28,7 @@
         (after-each "After-each Suite-4" (lambda ()  (setf x 0)))
         (it "Test-1" (lambda () (incf x) (eql-p x 1)))
         (it "Test-2" (lambda () (eql-p x 0))))))
-   (cacau-run
+   (run
     :reporter :off
     :after-run
     (lambda (runner)
@@ -65,7 +65,7 @@
         (after-each "After-each Suite-4" (lambda ()  (setf x 0)))
         (it "Test-1" (lambda () (incf x) (eql-p x 1)))
         (it "Test-2" (lambda () (eql-p x 0))))))
-   (cacau-run
+   (run
     :reporter :off
     :after-run
     (lambda (runner)
@@ -105,7 +105,7 @@
         (after-each "After-each Suite-4" (lambda ()  (setf x 0)))
         (it "Test-1" (lambda () (incf x) (eql-p x 1)) :only t)
         (it "Test-2" (lambda () (eql-p x 0))))))
-   (cacau-run
+   (run
     :reporter :off
     :after-run
     (lambda (runner)
