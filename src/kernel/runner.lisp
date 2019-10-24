@@ -5,7 +5,7 @@
              :accessor eventbus)
    (suite-root :initarg :suite-root
                :accessor suite-root)
-   (abort-p :initarg :abort-p
+   (abort-p :initform nil
             :accessor abort-p)
    (result :initform (make-hash-table)
            :accessor result)

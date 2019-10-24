@@ -24,8 +24,7 @@
         (after-run hook))))
 
 (defmethod after-run ((hook hook-class))
-  (when (timeout-extrapolated-p hook)
-    (emit (eventbus hook) :run-abort hook))
+  (timeout-extrapolated-p hook)
   (emit (eventbus hook) :hook-end hook)
   (funcall (pos-hook-fn hook)))
 

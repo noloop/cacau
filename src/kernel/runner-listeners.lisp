@@ -62,19 +62,20 @@
     (on bus
         :suite-end
         (lambda (suite)
-          (let* ((suite-root-p
-                   (eq :suite-root (name suite)))
-                 (suite-next-fn
-                   (lambda ()
-                     (if suite-root-p
-                         (emit bus :run-end)
-                         (progn (next-child (parent suite))  
-                                (incf (gethash :completed-suites result-hash)))))))
-            (if (suite-after-all suite)
-                (run-runnable (suite-after-all suite)
-                              (lambda ()
-                                (funcall suite-next-fn)))
-                (funcall suite-next-fn)))))
+          (unless (abort-p runner)
+            (let* ((suite-root-p
+                     (eq :suite-root (name suite)))
+                   (suite-next-fn
+                     (lambda ()
+                       (if suite-root-p
+                           (emit bus :run-end)
+                           (progn (next-child (parent suite))  
+                                  (incf (gethash :completed-suites result-hash)))))))
+              (if (suite-after-all suite)
+                  (run-runnable (suite-after-all suite)
+                                (lambda ()
+                                  (funcall suite-next-fn)))
+                  (funcall suite-next-fn))))))
 
     (on bus
         :test-start
@@ -95,12 +96,13 @@
     (on bus
         :test-end
         (lambda (test)
-          (if (runnable-error test)
-              (progn
-                (emit bus :new-error test (runnable-error test))
-                (emit bus :fail test))
-              (emit bus :pass test))
-          (incf (gethash :completed-tests result-hash))))
+          (unless (abort-p runner)
+            (if (runnable-error test)
+                (progn
+                  (emit bus :new-error test (runnable-error test))
+                  (emit bus :fail test))
+                (emit bus :pass test))
+            (incf (gethash :completed-tests result-hash)))))
 
     (on bus
         :hook-end
@@ -129,6 +131,7 @@
     (once bus
           :run-abort
           (lambda ()
+            (setf (abort-p runner) t)
             (emit bus :run-end)))
 
     (once bus
