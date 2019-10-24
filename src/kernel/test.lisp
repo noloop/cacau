@@ -28,7 +28,7 @@
      (inherit-timeout test)
      (start-timeout test)
      (if (>= (get-function-args-length (fn test)) 1)
-         (funcall (fn test) (done-runnable test))
+         (try-fn test (lambda () (funcall (fn test) (done-runnable test))))
          (progn
            (try-fn test (lambda () (funcall (fn test))))
            (after-run test))))))

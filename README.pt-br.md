@@ -233,6 +233,11 @@ de ganchos sem estarem dentro de alguma suite:
 
 Para entender melhor veja o arquivo de [exemplo de ganchos](examples/cacau-examples-hooks.lisp).
 
+Esteja atento que quando ganchos lançam erros com exceção do erro de timeout extrapolado, 
+eles irão abortar a corrida dos testes e o resultado será dado. Isso acontece porque a 
+cacau pensa que para que os testes rodem corretamente antes de tudo seus ganchos 
+configurados devem rodar corretamente.
+
 ### Only e Skip
 
 Você pode querer rodar alguns testes isoladamente ou então pular alguns testes por 
@@ -325,31 +330,93 @@ os tópicos abaixo, pois existem diferenças entre as três possiblidades.
 #### definindo timeout nas suítes
 
 Ao definir um timeout para uma suite, isso fará com que todos os testes daquela suite tenham 
-o mesmo timeout que foi definido para a mesma.
+o mesmo timeout que foi definido nela.
 
 ```lisp
+(defpackage #:cacau-examples-timeout
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-timeout)
 
+(defsuite :suite-1 ((:timeout 0))
+  (deftest "Test-1" () (t-p t)) ;; Timeout Error: Time(0) extrapolated!
+  (deftest "Test-2" () (t-p t))) ;; Timeout Error: Time(0) extrapolated!
+  
+(run)
 ```
 
 #### definindo timeout nas ganchos
 
 Ao definir um `timeout` para um gancho, esse tempo limite só importará para o gancho configurado.
+Quando falhar a corrida dos testes não será abortada, como acontece quando ganchos falham por 
+lançamentos de qualquer outro erro.
 
 ```lisp
+(defpackage #:cacau-examples-timeout
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-timeout)
 
+(defsuite :suite-1 ()
+  (defbefore-all "Before-all" ((:timeout 0))) ;; Timeout Error: Time(0) extrapolated!
+  (deftest "Test-1" () (t-p t))
+  (deftest "Test-2" () (t-p t)))
+          
+(run)
 ```
 
 #### definindo timeout nas testes
 
 Ao definir um `timeout` para um teste, esse tempo limite só importará para o teste configurado. 
-E se caso o teste estiver dentro de alguma suite que já tenha sido configurada com um `timeout`, 
-o mesmo é ignorado, e o que predomina é o `timeout` do teste que foi configurado.
+Quando falhar a corrida dos testes não será abortada.
 
 ```lisp
+(defpackage #:cacau-examples-timeout
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-timeout)
 
+(defsuite :suite-1 ()
+  (deftest "Test-1" ((:timeout 0)) (t-p t)) ;; Timeout Error: Time(0) extrapolated!
+  (deftest "Test-2" () (t-p t)))
+
+(run)
 ```
 
+E se caso o teste ou suíte estiver dentro de alguma suite que já tenha sido configurada com 
+um `timeout`, o mesmo é ignorado, e o que predomina é o `timeout` do teste ou suíte 
+filho que foi configurado.
+
+```lisp
+(defpackage #:cacau-examples-timeout
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-timeout)
+
+(defsuite :suite-1 ((:timeout 0))
+  (deftest "Test-1" () (t-p t))   ;; Timeout Error: Time(0) extrapolated!
+  (deftest "Test-2" () (t-p t))   ;; Timeout Error: Time(0) extrapolated!
+  (defsuite :suite-2 ((:timeout 50000))
+    (deftest "Test-1" ((:timeout 0)) (t-p t)) ;; Timeout Error: Time(0) extrapolated!
+    (deftest "Test-2" () (t-p t))))
+
+(run)
+```
+
+Você pode querer olhar para o arquivo de 
+[exemplos de timeout](examples/cacau-examples-timeout.lisp)
+para melhor compreensão.
+
 ### Testando código assíncrono
+
+Você pode precisar testar algum código assíncrono, e a cacau foi construída de maneira a 
+aguardar cada teste antes da execução do próximo. Você precisará chamar uma função `done` 
+e também dizer a cacau o teste ou gancho que é assíncrono. Veja um exemplo de como escrever 
+um teste para testar seu código assíncrono:
 
 ```lisp
 
