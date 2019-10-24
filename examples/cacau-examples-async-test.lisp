@@ -5,11 +5,6 @@
 (in-package #:cacau-examples-async-test)
 
 (defsuite :suite-1 ()
-  (deftest "Test-1" ((:async done))
-    (funcall done (lambda () (t-p t))))
-  (deftest "Test-2" () (t-p t)))
-
-(defsuite :suite-1 ()
   (let ((x 0))
     ;;; only call done
     (defbefore-each "Before-each" ((:async done))
@@ -33,7 +28,10 @@
     (deftest "Test-3" ((:async done))
       (handler-case (t-p nil)
         (error (c)
-               (funcall done c))))))
+          (funcall done c))))
+    ;;; call done as you want
+    (deftest "Test-4" ((:async something))
+      (funcall something))))
 
 (run :colorful t
      :reporter :full)

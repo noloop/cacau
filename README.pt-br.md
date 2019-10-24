@@ -67,7 +67,7 @@ E você terá a saída do repórter `:min` que é o padrão da cacau:
 Também há outros repórteres.
 
 Perceba que a cacau retornou `T`, isso acontece porque nenhum teste falhou, 
-quando há testes falhando ela retorna `NIL`.
+quando há testes falhando ou erros (erros de ganchos por exemplo) ela retorna `NIL`.
 
 ## Asserções
 
@@ -419,8 +419,68 @@ e também dizer a cacau o teste ou gancho que é assíncrono. Veja um exemplo de
 um teste para testar seu código assíncrono:
 
 ```lisp
+(defpackage #:cacau-examples-async-test
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-async-test)
 
+(defsuite :suite-1 ()
+  (deftest "Test-1" ((:async done))
+    (funcall done))
+  (deftest "Test-2" () (t-p t)))
+  
+  (run)
 ```
+Acima é configurado um teste passando `(:async done)` em suas configurações, onde `done` é o nome da 
+função que você precisa chamar para o teste ser finalizado, você pode chamar `done`de qualquer nome 
+que desejar como, por exemplo:
+
+```lisp
+(deftest "Test-1" ((:async something))
+    (funcall something))
+```
+
+Esteja atento que se você não chamar `done` ou o nome que escolheu, a cacau esperará eternamente por 
+essa chamada, então você não vai querer esquecer de chamar `done` para finalizar seu teste.
+
+Pode ser passado 3 tipos de argumentos diferentes para a função `done`, ela aceita um 
+`assertion-error`, um `error`, ou uma `lambda`. Isso é útil para você capturar erros de asserção, 
+um exemplo, passando um `assertion-error`:
+
+```lisp
+(defpackage #:cacau-examples-async-test
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-async-test)
+
+(deftest "Test-1" ((:async done))
+      (handler-case (t-p nil)
+        (error (c)
+          (funcall done c))))
+          
+ (run)
+```
+Ou passando uma função `lambda` onde você pode chamar funções de asserção que serão capturadas 
+pela cacau como nos testes para testar coisas síncronas:
+
+```lisp
+(defpackage #:cacau-examples-async-test
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-async-test)
+
+(deftest "Test-2" ((:async done))
+      (funcall done (lambda () (t-p t))))
+          
+ (run)
+``` 
+
+Você pode querer olhar para o arquivo de 
+[exemplos de testes assíncronos](examples/cacau-examples-async-test.lisp)
+para melhor compreensão.
 
 ### Interfaces
 

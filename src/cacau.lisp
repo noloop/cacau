@@ -41,7 +41,8 @@
         (funcall before-run old-runner))
       (once-runner old-runner :end
                    (lambda ()
-                     (setf result (zerop (gethash :failing (result old-runner))))
+                     (setf result (and (zerop (gethash :failing (result old-runner)))
+                                       (zerop (length (gethash :errors (result old-runner))))))
                      (when (typep after-run 'function)
                        (funcall after-run old-runner))
                      (when (typep reporter-fn 'function)
