@@ -34,16 +34,19 @@
            (reporter-fn (create-reporter-fn old-runner
                                             colorful
                                             reporter
-                                            reporter-options)))
+                                            reporter-options))
+           (result nil))
       (cacau-cl-debugger (suite-root old-runner) cl-debugger)
       (when (typep before-run 'function)
         (funcall before-run old-runner))
       (once-runner old-runner :end
                    (lambda ()
+                     (setf result (zerop (gethash :failing (result old-runner))))
                      (when (typep after-run 'function)
                        (funcall after-run old-runner))
                      (when (typep reporter-fn 'function)
                        (funcall reporter-fn))))
       (cacau-reset-runner)
-      (run-runner old-runner))))
+      (run-runner old-runner)
+      result)))
 
