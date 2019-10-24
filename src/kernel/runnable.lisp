@@ -29,8 +29,12 @@
 (defmethod done-runnable ((obj runnable))
   (lambda (&optional arg)
     "The done function accepts an optional argument, which can be either one error or function (useful for catch assertion-error)."
-    (cond ((typep arg 'error) (setf (runnable-error obj) arg))
-          ((typep arg 'function) (try-fn obj arg)))
+    (cond ((typep arg 'assertion-error)
+           (setf (runnable-error obj) (setf-assertion-error obj arg)))
+          ((typep arg 'error)
+           (setf (runnable-error obj) (setf-error obj (format nil "~a" arg))))
+          ((typep arg 'function)
+           (try-fn obj arg)))
     (after-run obj)))
 
 (defmethod setf-assertion-error ((obj runnable) c)
