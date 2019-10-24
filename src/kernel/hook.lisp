@@ -15,7 +15,7 @@
   (setf (pos-hook-fn hook) after-hook)
   (start-timeout hook)
   (if (>= (get-function-args-length (fn hook)) 1)
-      (try-fn hook (lambda () (funcall (fn hook) (done-runnable hook))))
+      (funcall (fn hook) (done-runnable hook))
       (progn
         (try-fn hook
                 (lambda () (funcall (fn hook)))
