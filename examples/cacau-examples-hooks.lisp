@@ -35,3 +35,55 @@
 
 (run :colorful t)
 
+;;;; hooks inheritance
+;;;; ------------------------------------
+;;; before-each
+(defsuite :suite-1 ()
+  (defbefore-each "Before-each Suite-1" ()
+    (print "run Before-each Suite-1"))
+  (deftest "Test-1" () (print "run Test-1") (t-p t))
+  (defsuite :suite-1 ()
+    (defbefore-each "Before-each Suite-2" ()
+      (print "run Before-each Suite-2"))
+    (deftest "Test-1" () (print "run Test-2") (t-p t))))
+
+(run :colorful t)
+
+;;; after-each
+(defsuite :suite-1 ()
+  (defafter-each "After-each Suite-1" ()
+    (print "run After-each Suite-1"))
+  (deftest "Test-1" () (print "run Test-1") (t-p t))
+  (defsuite :suite-1 ()
+    (defafter-each "After-each Suite-2" ()
+      (print "run After-each Suite-2"))
+    (deftest "Test-1" () (print "run Test-2") (t-p t))))
+
+(run :colorful t)
+
+;;;; hooks not inheritance
+;;;; ------------------------------------
+;;; before-all
+(defsuite :suite-1 ()
+  (defbefore-all "Before-all Suite-1" ()
+    (print "run Before-all Suite-1"))
+  (deftest "Test-1" () (print "run Test-1") (t-p t))
+  (defsuite :suite-1 ()
+    (defbefore-all "Before-all Suite-2" ()
+      (print "run Before-all Suite-2"))
+    (deftest "Test-1" () (print "run Test-2") (t-p t))))
+
+(run :colorful t)
+
+;;; after-all
+(defsuite :suite-1 ()
+  (defafter-all "After-all Suite-1" ()
+    (print "run After-all Suite-1"))
+  (deftest "Test-1" () (print "run Test-1") (t-p t))
+  (defsuite :suite-1 ()
+    (defafter-all "After-all Suite-2" ()
+      (print "run After-all Suite-2"))
+    (deftest "Test-1" () (print "run Test-2") (t-p t))))
+
+(run :colorful t)
+

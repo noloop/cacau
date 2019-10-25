@@ -22,6 +22,7 @@
            #:add-child
            #:create-test
            #:create-suite
+           #:on-runner
            #:once-runner
            #:create-before-all
            #:create-after-all

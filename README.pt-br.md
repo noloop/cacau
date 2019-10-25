@@ -12,8 +12,8 @@ Leia em outras linguagens: [English](https://github.com/noloop/cacau/blob/master
 
 ### Portabilidade
 
-Testei apenas no Linux usando o SBCL, em breve irei providenciar testes nas 
-demais plataformas utilizando alguma ferramente CI.
+Testei apenas no Linux usando o SBCL, em breve irei providenciar testes 
+nas demais plataformas utilizando alguma ferramente CI.
 
 ### Dependências
 
@@ -207,7 +207,7 @@ Faça algo depois de todos os testes de uma suíte.
     
 (run)
 ```
-#### Ganchos na :suite-root
+#### ganchos na :suite-root
 
 Para utilizar ganhos na `:suite-root` é tão simples quanto chamar as funções 
 de ganchos sem estarem dentro de alguma suite:
@@ -231,6 +231,46 @@ de ganchos sem estarem dentro de alguma suite:
 (run)
 ```
 
+#### herança de ganchos antes/depois de cada teste
+
+Os ganchos que executam algo antes da suíte ou depois da suíte são executados apenas uma vez,
+e apenas naquela suíte.
+
+Já os ganchos que executam algo antes ou depois de cada teste serão herdados,
+sendo assim se uma suíte pai de nome `:suite-1` tem um gancho para executar algo antes de cada 
+teste, por exemplo, e essa suíte tem uma suíte filha `:suite-2`, que também possuí um gancho 
+para executar algo antes dos testes, então, ao rodar os testes da `:suite-1` apenas o gancho
+dela será executado, porém ao rodar os testes da `:suite-2`, será executado primeiro o gancho 
+da suíte pai e depois o da suíte filha. Veja um exemplo para melhor entendimento:
+
+```lisp
+(defpackage #:cacau-examples-hooks
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-hooks)
+
+(defsuite :suite-1 ()
+  (defbefore-each "Before-each Suite-1" ()
+    (print "run Before-each Suite-1"))
+  (deftest "Test-1" () (print "run Test-1") (t-p t))
+  (defsuite :suite-1 ()
+    (defbefore-each "Before-each Suite-2" ()
+      (print "run Before-each Suite-2"))
+    (deftest "Test-1" () (print "run Test-2") (t-p t))))
+    
+(run)
+```
+
+Isso irá imprimir:
+
+```lisp
+"run Before-each Suite-1" 
+"run Test-1" 
+"run Before-each Suite-1" 
+"run Before-each Suite-2" 
+"run Test-2" 
+```
 Para entender melhor veja o arquivo de [exemplo de ganchos](examples/cacau-examples-hooks.lisp).
 
 Esteja atento que quando ganchos lançam erros com exceção do erro de timeout extrapolado, 
@@ -484,60 +524,372 @@ para melhor compreensão.
 
 ### Interfaces
 
+A cacau foi construída a suportar a criação de novas interfaces, assim você poderá usar a que mais te 
+agradar, ou até mesmo contribuir com o projeto cacau criando uma nova interface.
+
+Você não precisa configurar nada ou passar nada ao chamar `(run)` para usar uma interface, todas 
+estão disponíveis para você utilizar a que preferir, e pode até misturar elas, mas não aconselho 
+fazer isso, mantenha um padrão, e utilize apenas uma, para melhor legibilidade do código.
+
 #### cl
 
-```lisp
+Essa é a que foi utilizada nos exemplos acima. Ela funciona definindo suíte no corpo de outra suíte,
+e fornece as macros:
 
+```lisp
+(defsuite name options &body body)
+(defbefore-all name options &body body)
+(defbefore-each name options &body body)
+(defafter-each name options &body body)
+(defafter-all name options &body body)
+(deftest name options &body body)
+```
+O parâmetro `options` recebe uma lista que pode ter zero ou mais dos seguintes itens, nos ganchos:
+
+```lisp
+((:async done) (:timeout 0))
+```
+
+em `defsuite` ou `deftest`:
+
+```lisp
+(:skip :only (:async done) (:timeout 0))
+```
+
+Veja um exemplo de uso:
+
+```lisp
+(defpackage #:cacau-examples-interfaces
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-interfaces)
+
+(defsuite :suite-1 ()
+  (let ((x 0))
+    (defbefore-all "Before-all Suite-1" () (setf x 1))
+    (defbefore-each "Before-each Suite-1" () (setf x 0))
+    (defafter-each "After-each Suite-1" () (setf x 1))
+    (defafter-all "After-all Suite-1" ((:async done))
+      (setf x 1)
+      (funcall done))
+    (deftest "Test-1" () (eql-p x 0))
+    (deftest "Test-2" ((:async done))
+      (funcall done (lambda () (eql-p x 0))))))
+      
+(run)
 ```
 
 #### bdd
 
-```lisp
+Ela funciona definindo suíte no corpo de outra suíte, porém não é fornecido macros, 
+e sim funções que necessitam do uso de `lambda`.
 
+```lisp
+(before-all name fn &key (timeout -1))
+(before-each name fn &key (timeout -1))
+(after-each name fn &key (timeout -1))
+(after-all name fn &key (timeout -1))
+(context name fn &key only skip (timeout -1))
+(it name fn &key only skip (timeout -1))
+```
+Veja um exemplo de uso:
+
+```lisp
+(defpackage #:cacau-examples-interfaces
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-interfaces)
+
+(context
+ "Suite-1"
+ (lambda (&optional (x 0))
+   (before-all "Before-all Suite-1" (lambda () (setf x 1)))
+   (before-each "Before-each Suite-1" (lambda () (setf x 1)))
+   (after-each "After-each Suite-1" (lambda () (setf x 1)))
+   (after-all "After-all Suite-1" (lambda (done) (funcall done)))
+   (it "Test-1" (lambda () (eql-p x 1)))
+   (it "Test-2" (lambda () (incf x) (eql-p x 2)))
+   (context
+    "Suite-2"
+    (lambda (&optional (x 0))
+      (it "Test-1" (lambda () (incf x) (eql-p x 1)))
+      (it "Test-2" (lambda () (eql-p x 1)))))))
+      
+(run)
 ```
 
 #### tdd
 
-```lisp
+Ela funciona definindo suíte no corpo de outra suíte, porém não é fornecido macros, 
+e sim funções que necessitam do uso de `lambda`.
 
+```lisp
+(suite-setup name fn &key (timeout -1))
+(suite-teardown name fn &key (timeout -1))
+(test-setup name fn &key (timeout -1))
+(test-teardown name fn &key (timeout -1))
+(suite name fn &key only skip (timeout -1))
+(test name fn &key only skip (timeout -1))
+```
+Veja um exemplo de uso:
+
+```lisp
+(defpackage #:cacau-examples-interfaces
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-interfaces)
+
+(suite
+ "Suite-1"
+ (lambda (&optional (x 0))
+   (suite-setup "Suite-setup Suite-1" (lambda () (setf x 1)))
+   (test-setup "Test-setup Suite-1" (lambda () (setf x 1)))
+   (test-teardown "Test-teardown Suite-1" (lambda () (setf x 1)))
+   (suite-teardown "Suite-teardown Suite-1" (lambda (done) (funcall done)))
+   (test "Test-1" (lambda () (eql-p x 1)))
+   (test "Test-2" (lambda () (incf x) (eql-p x 2)))
+   (suite
+    "Suite-2"
+    (lambda (&optional (x 0))
+      (test "Test-1" (lambda () (incf x) (eql-p x 1)))
+      (test "Test-2" (lambda () (eql-p x 1)))))))
+      
+(run)
 ```
 
 #### no-spaghetti
 
-```lisp
+Ela funciona sem definir suíte no corpo de outra suíte, funciona de modo serial 
+e fornece as macros:
 
+```lisp
+(defbefore-plan name options &body body)
+(defbefore-t name options &body body)
+(defafter-t name options &body body)
+(defafter-plan name options &body body)
+(in-plan name &optional (options ()))
+(deft name &optional (options ()))
+```
+
+O parâmetro `options` recebe uma lista que pode ter zero ou mais dos seguintes itens, nos ganchos:
+
+```lisp
+((:async done) (:timeout 0))
+```
+
+em `in-plan`:
+
+```lisp
+(:skip :only (:async done) (:timeout 0) (:parent :suite-name))
+```
+e em `deft`:
+
+```lisp
+(:skip :only (:async done) (:timeout 0))
+```
+Isso funciona assim para evitar que você precise especificar quem é a suíte pai de 
+cada de teste que escrever, ao chamar `in-plan`, todas as chamadas de `deft` ou chamadas de 
+ganchos terão esta suíte como pai, até você chamar outro `in-plan`.
+
+Veja um exemplo de uso:
+
+```lisp
+(defpackage #:cacau-examples-interfaces
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-interfaces)
+
+(let ((x 0))
+  (in-plan :suite-1 ()) ;; or (in-suite :suite-1 ((:parent :suite-root)))
+  (defbefore-plan :before-plan-suite-1 () (setf x 1))
+  (deft :test-1 () (eql-p x 1))
+  (deft :test-2 ((:async done))
+    (incf x)
+    (funcall done (lambda () (eql-p x 2))))
+
+  (in-plan :suite-2 ((:parent :suite-1)))
+  (defafter-plan :after-plan-suite-2 ((:async done-hook)) (setf x 1) (funcall done-hook))
+  (deft :test-1 () (eql-p x 2))
+  (deft :test-2 () (incf x) (eql-p x 3))
+
+  (in-plan :suite-3 ((:parent :suite-2)))
+  (defbefore-t :before-t-suite-3 () (setf x 0))
+  (deft :test-1 () (incf x) (eql-p x 1))
+  (deft :test-2 () (eql-p x 0))
+
+  (in-plan :suite-4) ;; or (in-suite :suite-4 ((:parent :suite-root)))
+  (defafter-t :after-t-suite-4 () (setf x 0))
+  (deft :test-1 () (incf x) (eql-p x 2))
+  (deft :test-2 () (eql-p x 0)))
+  
+  (run)
+```
+
+Você pode querer olhar para o arquivo de 
+[exemplos de interfaces](examples/cacau-examples-interfaces.lisp)
+para melhor compreensão.
+
+### Cacau com cores
+
+A cacau por padrão não entrega resultados coloridos, mas você pode 
+ativar as cores na saída da cacau e ter um visualização colorida do resultado dos 
+repórteres, você precisa configurar a cacau passando a key `:colorful` com o valor `t` 
+para a função `(run)`, veja como:
+
+```lisp
+(run :colorful t)
 ```
 
 ### Repórteres 
 
+A cacau foi construída a suportar a criação de novos repórteres, assim você poderá usar o que mais te 
+agradar, ou até mesmo contribuir com o projeto cacau criando um novo repórter.
+
+Você precisa configurar o repórter que deseja utilizar passando para `(run)` a key `:reporter` 
+configurada com o nome do repórter.
+
+Irei apresentar os repórteres em ordem detalhes de suas saídas, do mais básico ao mais detalhado. 
+
 #### min
 
-```lisp
+Esse repórter padrão da cacau, quando você chamar `(run)` sem especificar um repórter 
+a cacau irá usar o repórter `:min`.
 
+Este repórter apresenta informações muito básicas, sua saída consiste em um epílogo 
+dizendo a quantidade de testes rodados e quantos passaram e falharam.
+
+Para o código:
+
+```lisp
+(defpackage #:cacau-examples-reporters
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-reporters)
+
+(defsuite :suite-1 ()
+  (deftest "Test-1" () (t-p t))
+  (deftest "Test-2" (:skip) (t-p t))
+  (deftest "Test-3" () (t-p nil)))
+
+(run :colorful t) ;; or (run :colorful t :reporter :min)
 ```
+A saída será:
+
+![reporter min output](images/cacau-examples-reporter-min.png)
 
 #### list
 
-```lisp
+Este repórter apresenta informações um pouco mais detalhas que o repórter `:min` 
+ele lista as suítes e testes que estão sendo executadas, e por fim entrega um epílogo 
+dizendo a quantidade de testes rodados e quantos passaram e falharam, porém ainda irá 
+fornecer suítes e testes que foram configurados com `:skip`.
 
+Para o código:
+
+```lisp
+(defpackage #:cacau-examples-reporters
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-reporters)
+
+(defsuite :suite-1 ()
+  (deftest "Test-1" () (t-p t))
+  (deftest "Test-2" (:skip) (t-p t))
+  (deftest "Test-3" () (t-p nil)))
+
+(run :colorful t :reporter :list)
 ```
+A saída será:
+
+![reporter list output](images/cacau-examples-reporter-list.png)
 
 #### full
 
-```lisp
+Este repórter apresenta informações um pouco mais detalhas que o repórter `:list` 
+ele lista as suítes e testes que estão sendo executadas, e depois entrega um epílogo 
+completo com todas as informações que a cacau possue da corrida dos testes, e por 
+fim mostra os testes que falharam com as mensagens de erro, dando opção de
+analisar o stack completo que levou até aquele erro.
 
+Para o código:
+
+```lisp
+(defpackage #:cacau-examples-reporters
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-reporters)
+
+(defsuite :suite-1 ()
+  (deftest "Test-1" () (t-p t))
+  (deftest "Test-2" () (t-p t))
+  (deftest "Test-3" () (t-p nil)))
+
+(run :colorful t :reporter :full)
+```
+A saída será:
+
+![reporter full output](images/cacau-examples-reporter-full.png)
+
+Você pode configurar a saída do repórter `:full` passando a key `:reporter-options` para `(run)` 
+e com isso mostrar na ordem que quiser as informações, ou ocultar as que não deseja 
+ver.
+
+Para o código:
+
+```lisp
+(defsuite :suite-1 ()
+  (deftest "Test-1" () (t-p t))
+  (deftest "Test-2" () (t-p t))
+  (deftest "Test-3" () (t-p nil)))
+
+(run :colorful t
+     :reporter :full
+     :reporter-options
+     '(:tests-list
+       (:epilogue
+        (:run-start
+         :run-end
+         :run-duration
+         :running-suites
+         :running-tests
+         :passing
+         :failing
+         :errors))
+       :stack))
 ```
 
-### Cacau com cores
+A saída será:
 
-```lisp
+![reporter full with reporter options output](images/cacau-examples-reporter-full-with-reporter-options.png)
 
-```
+Você pode querer olhar para o arquivo de 
+[exemplos de repórteres](examples/cacau-examples-reporters.lisp)
+para melhor compreensão.
 
 ### Ativando o cl-debugger
 
-```lisp
+Se você quiser chamar o cl-debugger evitando que a cacau capture os erros, você pode fazer isso 
+configurando a cacau passando a key `:cl-debugger` com o valor `t` para a função `(run)`, veja:
 
+```lisp
+(run :cl-debugger t)
+```
+
+### Ganchos run
+
+Caso precise executar algo antes ou depois da execução da função `(run)`, existem dois ganchos disponivéis 
+para isso, você só precisar passar uma key para `(run)`:
+
+```lisp
+(run :before-run (lambda () (print "before-run")) 
+            :after-run (lambda () (print "after-run"))) 
 ```
 
 ## Cacau com cores no SLIME
@@ -581,18 +933,95 @@ E na cacau você só precisa chamar `run` com a key `:colorful` configurada para
 
 ## Integração ASDF
 
+Você pode querer chamar a cacau em seu sistema ASDF, configure
+seu sistema de teste como mostrado abaixo:
+
+```lisp
+(defsystem :cacau-examples-asdf-integration-test
+  :depends-on (:cacau-examples-asdf-integration
+               :cacau
+               :assert-p)
+  :defsystem-depends-on (:cacau-asdf)
+  :components ((:cacau-file "cacau-examples-asdf-integration-test"))
+  :perform
+  (test-op (op c)
+           (progn
+             (funcall (intern #.(string :run-cacau-asdf) :cacau) c)
+             (symbol-call :cacau '#:run))))
+```
+
+Você pode querer olhar para o diretório de 
+[exemplo de integração ASDF](examples/asdf-integration/)
+para melhor compreensão.
+
 ## Contribuindo
 
 A cacau foi construída de maneira visando facilitar adicionar novas 
 funcionalidades, como também escrever novas interfaces ou repórteres.
-Se você tem um idéia nova para torná-la melhor, ou encontrou algum bug,
-não deixe de abrir uma nova [questão](https://github.com/noloop/cacau/issues). 
+Se você tem um idéia nova para torná-la melhor, ou encontrou algum bug, 
+ou deseja contribuir de qualquer outro modo não deixe de abrir 
+uma nova [questão](https://github.com/noloop/cacau/issues). 
 
 ## TODO
 
+* Escrever teste unitários para as funções do kernel da cacau
+
 ## API
 
-function **(lib-function-name args)**
+function **(context name fn &key only skip (timeout -1))** => suite
+
+function **(before-all name fn &key (timeout -1))** => suite-before-all
+
+function **(after-all name fn &key (timeout -1))** => suite-after-all
+
+function **(before-each name fn &key (timeout -1))** => suite-before-each
+
+function **(after-each name fn &key (timeout -1))** => suite-after-all
+
+function **(it name fn &key only skip (timeout -1))** => test
+
+function **(suite name fn &key only skip (timeout -1))** => suite
+
+function **(suite-setup name fn &key (timeout -1))** => suite-before-all
+
+function **(suite-teardown name fn &key (timeout -1))** => suite-after-all
+
+function **(test-setup name fn &key (timeout -1))** => suite-before-each
+
+function **(test-teardown name fn &key (timeout -1))** => suite-after-each
+
+function **(test name fn &key only skip (timeout -1))** => test
+
+macro **(defsuite name options &body body)** => suite
+
+macro **(defbefore-all name options &body body)** => suite-before-all
+
+macro **(defafter-all name options &body body)** => suite-after-all
+
+macro **(defbefore-each name options &body body)** => suite-before-each
+
+macro **(defafter-each name options &body body)** => suite-after-each
+
+macro **(deftest name options &body body)** => test
+
+macro **(in-plan name &optional (options ()))** => suite
+
+macro **(defbefore-plan name options &body body)** => => suite-before-all
+
+macro **(defafter-plan name options &body body)** => suite-after-all
+
+macro **(defbefore-t name options &body body)** => suite-before-each
+
+macro **(defafter-t name options &body body)** => suite-after-each
+
+macro **(deft name options &body body)** => test
+
+function **(run &key (reporter :min)
+                   before-run
+                   after-run
+                   colorful
+                   reporter-options
+                   cl-debugger)** => result
 
 ### LICENSE
 
