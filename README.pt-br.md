@@ -1,26 +1,97 @@
 # cacau
-
+ 
 <p align="center">
-  <img width="500" height="500" src="./images/cacau-logo-background-white.png">
+  <img width="500" height="500" src="./images/cacau-logo-background-white-test-runner.png">
 </p>
 
-### _Corredor de teste em Common Lisp._
+## <a name="read-in-other-languages">Leia em outros idiomas</a>
 
-Leia em outras linguagens: [English](https://github.com/noloop/cacau/blob/master/README.md), [Portuguese-br](https://github.com/noloop/cacau/blob/master/README.pt-br.md)
+Leia em outras linguagens: [English](https://github.com/noloop/cacau/blob/master/README.md),
+[Portuguese-br](https://github.com/noloop/cacau/blob/master/README.pt-br.md)
 
-## Começando na cacau
+## <a name="quickstart">Começo rápido</a>
 
-### Portabilidade
+```lisp
+(defpackage #:cacau-examples-quickstart
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-quickstart)
+
+(deftest "Test-1" () (eql-p 1 1))
+(deftest "Test-2" () (eql-p 2 2))
+(deftest "Test-3" () (eql-p 3 3))
+
+(run :colorful t)
+```
+E você terá a saída do repórter `:min` que é o padrão da cacau:
+
+![cacau quickstart output by :min reporter](images/cacau-quickstart.png)
+
+Também há outros [repórteres](#reporters).
+
+Perceba que a cacau retornou `T`, isso acontece porque nenhum teste falhou, 
+quando há testes falhando ou erros (erros de ganchos por exemplo) ela retorna `NIL`.
+
+## <a name="getting-started">Começando na cacau</a>
+
+### <a name="summary">Sumário</a>
+* [cacau](#cacau)
+  * [Leia em outros idiomas](#read-in-other-languages)
+  * [Começo rápido](#quickstart)
+  * [Começando na cacau](#getting-started)
+    * [Sumário](#summary)
+    * [Portabilidade](#portability)
+    * [Dependências](#dependencies)
+    * [Download e Load](#download-and-load)
+    * [Funcionalidades](#functionalities)
+      * [Suítes](#suites)
+      * [Ganchos](#hooks)
+        * [antes de todos](#before-all)
+        * [antes de cada teste](#before-each)
+        * [depois de cada teste](#after-each)
+        * [depois de todos](#after-all)
+        * [ganchos na :suite-root](#hooks-in-suite-root)
+        * [herança de ganchos antes/depois de cada teste](#before-after-each-inheritance)
+      * [Only e Skip](#only-and-skip)
+        * [correndo testes e suítes isoladamente](#onlys)
+        * [pulando testes e suítes](#skips)
+        * [ordem de precedência "skip -> only"](#skip-only-rules)
+      * [Timeout](#timeout)
+        * [definindo timeout nas suítes](#timeout-suites)
+        * [definindo timeout nos ganchos](#timeout-hooks)
+        * [definindo timeout nos testes](#timeout-tests)
+      * [Testando código assíncrono](#async-test)
+      * [Interfaces](#interfaces)
+        * [cl](#cl)
+        * [bdd](#bdd)
+        * [tdd](#tdd)
+        * [no-spaghetti](#no-spaghetti)
+      * [Cacau com cores](#cacau-with-colors)
+      * [Repórteres](#reporters)
+        * [min](#min)
+        * [list](#list)
+        * [full](#full)
+      * [Ativando o cl-debugger](#enabling-cl-debugger)
+      * [Ganchos run](#run-hooks)
+  * [Cacau com cores no SLIME](#cacau-with-colors-in-slime)
+  * [Integração ASDF](#asdf-integration)
+  * [Contribuindo](#contributing)
+  * [TODO](#todo)
+  * [API](#api)
+  * [LICENÇA](#license)
+
+### <a name="portability">Portabilidade</a>
 
 Testei apenas no Linux usando o SBCL, em breve irei providenciar testes 
 nas demais plataformas utilizando alguma ferramente CI.
 
-### Dependências
+### <a name="dependencies">Dependências</a>
 
 [:eventbus](https://github.com/noloop/eventbus)
 [:assertion-error](https://github.com/noloop/assertion-error)
 
-### Download e Load
+### <a name="download-and-load">Download e Load</a>
 
 **1 - Carregue o sistema cacau com o quicklisp**
 
@@ -43,33 +114,15 @@ e carregue com o asdf:
 ```
 
 **Nota: Lembre-se de configurar o asdf para procurar o diretório onde você está guardando seus sistemas, para que o asdf consiga
-carregá-los corretamente, você pode saber mais aqui:  https://common-lisp.net/project/asdf/asdf/Configuring-ASDF-to-find-your-systems.html ou https://lisp-lang.org/learn/writing-libraries.**_
+carregá-los corretamente, você pode saber mais aqui:**
 
-## Começo rápido
+https://common-lisp.net/project/asdf/asdf/Configuring-ASDF-to-find-your-systems.html 
 
-```lisp
-(defpackage #:cacau-examples-quickstart
-  (:use #:common-lisp
-        #:assert-p
-        #:cacau))
-(in-package #:cacau-examples-quickstart)
+**ou**
 
-(deftest "Test-1" () (eql-p 1 1))
-(deftest "Test-2" () (eql-p 2 2))
-(deftest "Test-3" () (eql-p 3 3))
+https://lisp-lang.org/learn/writing-libraries
 
-(run :colorful t)
-```
-E você terá a saída do repórter `:min` que é o padrão da cacau:
-
-![cacau quickstart output by :min reporter](images/cacau-quickstart.png)
-
-Também há outros repórteres.
-
-Perceba que a cacau retornou `T`, isso acontece porque nenhum teste falhou, 
-quando há testes falhando ou erros (erros de ganchos por exemplo) ela retorna `NIL`.
-
-## Asserções
+## <a name="assertions">Asserções</a>
 
 A cacau foi construída para ser indenpendente de sistemas de asserção, é
 verdade que no Common Lisp não temos muitos sistemas de asserção, mas 
@@ -77,8 +130,8 @@ estou tentando com a cacau criar esse padrão para que possa facilitar o uso
 de um mesmo sistema de asserção em diferentes sistemas corredores de testes. 
 Assim o usuário fica livre para escolher o que lhe agrada mais. 
 Eu construí o sistema de asserção [:assert-p](https://github.com/noloop/assert-p),
-e no exemplo [quickstart](examples/cacau-examples-quickstart.lisp) eu utilizo os dos sistemas 
-em conjuto para criar meus testes.
+e no exemplo [quickstart](examples/cacau-examples-quickstart.lisp) eu utilizo os dois sistemas 
+em conjuto para criar os testes.
 
 É simples, existe o sistema corredo de teste `:cacau` e o sistema de asserção `:assert-p`,
 quando uma asserção falha é lançado um 
@@ -88,9 +141,9 @@ e armazenado pela cacau para entregar o resultado final da corrida dos testes.
 Com isso fica fácil surgir novos sistemas de asserção para casos específicos ou 
 visando sintaxes diferentes, quais a cacau conseguirá trabalhar.
 
-## Funcionalidades
+## <a name="functionalities">Funcionalidades</a>
 
-### Suítes
+### <a name="suites">Suítes</a>
 
 Você pode organizar seus testes em suites:
 
@@ -118,7 +171,7 @@ Você pode organizar seus testes em suites:
 O corredor de testes cacau possui uma `:suite-root`, então sempre que você 
 chamar a função `(run)` um novo corredor é criado com uma nova `:suite-root`. 
 
-### Ganchos
+### <a name="hooks">Ganchos</a>
 
 A ordem de execução dos ganchos segue a ordem dos tópicos abaixo, 
 sendo assim é executado:
@@ -128,7 +181,7 @@ sendo assim é executado:
 3. after-each hook
 4. after-all hook
 
-#### antes de todos
+#### <a name="before-all">antes de todos</a>
 
 Faça algo antes de todos os testes de uma suíte.
 
@@ -148,7 +201,7 @@ Faça algo antes de todos os testes de uma suíte.
 (run)
 ```
 
-#### antes de cada teste
+#### <a name="before-each">antes de cada teste</a>
 
 Faça algo antes de cada teste de uma suíte.
 
@@ -168,7 +221,7 @@ Faça algo antes de cada teste de uma suíte.
 (run)
 ```
 
-#### depois de cada teste
+#### <a name="after-each">depois de cada teste</a>
 
 Faça algo depois de cada teste de uma suíte.
 
@@ -188,7 +241,7 @@ Faça algo depois de cada teste de uma suíte.
 (run)
 ```
 
-#### depois de todos
+#### <a name="after-all">depois de todos</a>
 
 Faça algo depois de todos os testes de uma suíte.
 
@@ -207,7 +260,8 @@ Faça algo depois de todos os testes de uma suíte.
     
 (run)
 ```
-#### ganchos na :suite-root
+
+#### <a name="hooks-in-suite-root">ganchos na :suite-root</a>
 
 Para utilizar ganhos na `:suite-root` é tão simples quanto chamar as funções 
 de ganchos sem estarem dentro de alguma suite:
@@ -231,14 +285,14 @@ de ganchos sem estarem dentro de alguma suite:
 (run)
 ```
 
-#### herança de ganchos antes/depois de cada teste
+#### <a name="before-after-each-inheritance">herança de ganchos antes/depois de cada teste</a>
 
 Os ganchos que executam algo antes da suíte ou depois da suíte são executados apenas uma vez,
 e apenas naquela suíte.
 
-Já os ganchos que executam algo antes ou depois de cada teste serão herdados,
-sendo assim se uma suíte pai de nome `:suite-1` tem um gancho para executar algo antes de cada 
-teste, por exemplo, e essa suíte tem uma suíte filha `:suite-2`, que também possuí um gancho 
+Já os ganchos que executam algo antes ou depois de cada teste serão herdados, por exemplo, 
+se uma suíte pai de nome `:suite-1` tem um gancho para executar algo antes de cada 
+teste, e essa suíte tem uma suíte filha `:suite-2`, que também possuí um gancho 
 para executar algo antes dos testes, então, ao rodar os testes da `:suite-1` apenas o gancho
 dela será executado, porém ao rodar os testes da `:suite-2`, será executado primeiro o gancho 
 da suíte pai e depois o da suíte filha. Veja um exemplo para melhor entendimento:
@@ -278,12 +332,12 @@ eles irão abortar a corrida dos testes e o resultado será dado. Isso acontece 
 cacau pensa que para que os testes rodem corretamente antes de tudo seus ganchos 
 configurados devem rodar corretamente.
 
-### Only e Skip
+### <a name="only-and-skip">Only e Skip</a>
 
 Você pode querer rodar alguns testes isoladamente ou então pular alguns testes por 
 algum tempo. Com a cacau você pode fazer isso, e tanto isolar/pular suites ou testes.
 
-#### correndo testes e suítes isoladamente
+#### <a name="onlys">correndo testes e suítes isoladamente</a>
 
 ```lisp
 (defpackage #:cacau-examples-onlys
@@ -309,7 +363,7 @@ algum tempo. Com a cacau você pode fazer isso, e tanto isolar/pular suites ou t
 Com o código acima 3 testes são executados, o "Test-1" da "Suite-1", 
 e ambos os testes da "Suite-3".
 
-#### pulando testes e suítes
+#### <a name="skips">pulando testes e suítes</a>
 
 ```lisp
 (defpackage #:cacau-examples-skips
@@ -335,7 +389,7 @@ e ambos os testes da "Suite-3".
 
 Com o código acima apenas o "Test-2" da "Suite-1" é executado.
 
-#### ordem de precedência "skip -> only"
+#### <a name="skip-only-rules">ordem de precedência "skip -> only"</a>
 
 A regra é simples:
 
@@ -362,12 +416,12 @@ Você pode querer olhar para o arquivo de
 [exemplos da regra skip->only](examples/cacau-examples-skips-onlys-rules.lisp)
 para melhor compreensão.
 
-### Testes com Timeout
+### <a name="timeout">Timeout</a>
 
 Você também pode determinar um tempo limite para seus testes, suites e ganchos. Leia atentamente
 os tópicos abaixo, pois existem diferenças entre as três possiblidades.
 
-#### definindo timeout nas suítes
+#### <a name="timeout-suites">definindo timeout nas suítes</a>
 
 Ao definir um timeout para uma suite, isso fará com que todos os testes daquela suite tenham 
 o mesmo timeout que foi definido nela.
@@ -386,7 +440,7 @@ o mesmo timeout que foi definido nela.
 (run)
 ```
 
-#### definindo timeout nas ganchos
+#### <a name="timeout-hooks">definindo timeout nos ganchos</a>
 
 Ao definir um `timeout` para um gancho, esse tempo limite só importará para o gancho configurado.
 Quando falhar a corrida dos testes não será abortada, como acontece quando ganchos falham por 
@@ -407,7 +461,7 @@ lançamentos de qualquer outro erro.
 (run)
 ```
 
-#### definindo timeout nas testes
+#### <a name="timeout-tests">definindo timeout nos testes</a>
 
 Ao definir um `timeout` para um teste, esse tempo limite só importará para o teste configurado. 
 Quando falhar a corrida dos testes não será abortada.
@@ -451,7 +505,7 @@ Você pode querer olhar para o arquivo de
 [exemplos de timeout](examples/cacau-examples-timeout.lisp)
 para melhor compreensão.
 
-### Testando código assíncrono
+### <a name="async-test">Testando código assíncrono</a>
 
 Você pode precisar testar algum código assíncrono, e a cacau foi construída de maneira a 
 aguardar cada teste antes da execução do próximo. Você precisará chamar uma função `done` 
@@ -522,7 +576,7 @@ Você pode querer olhar para o arquivo de
 [exemplos de testes assíncronos](examples/cacau-examples-async-test.lisp)
 para melhor compreensão.
 
-### Interfaces
+### <a name="interfaces">Interfaces</a>
 
 A cacau foi construída a suportar a criação de novas interfaces, assim você poderá usar a que mais te 
 agradar, ou até mesmo contribuir com o projeto cacau criando uma nova interface.
@@ -531,7 +585,7 @@ Você não precisa configurar nada ou passar nada ao chamar `(run)` para usar um
 estão disponíveis para você utilizar a que preferir, e pode até misturar elas, mas não aconselho 
 fazer isso, mantenha um padrão, e utilize apenas uma, para melhor legibilidade do código.
 
-#### cl
+#### <a name="cl">cl</a>
 
 Essa é a que foi utilizada nos exemplos acima. Ela funciona definindo suíte no corpo de outra suíte,
 e fornece as macros:
@@ -580,7 +634,7 @@ Veja um exemplo de uso:
 (run)
 ```
 
-#### bdd
+#### <a name="bdd">bdd</a>
 
 Ela funciona definindo suíte no corpo de outra suíte, porém não é fornecido macros, 
 e sim funções que necessitam do uso de `lambda`.
@@ -620,7 +674,7 @@ Veja um exemplo de uso:
 (run)
 ```
 
-#### tdd
+#### <a name="tdd">tdd</a>
 
 Ela funciona definindo suíte no corpo de outra suíte, porém não é fornecido macros, 
 e sim funções que necessitam do uso de `lambda`.
@@ -660,7 +714,7 @@ Veja um exemplo de uso:
 (run)
 ```
 
-#### no-spaghetti
+#### <a name="no-spaghetti">no-spaghetti</a>
 
 Ela funciona sem definir suíte no corpo de outra suíte, funciona de modo serial 
 e fornece as macros:
@@ -733,7 +787,7 @@ Você pode querer olhar para o arquivo de
 [exemplos de interfaces](examples/cacau-examples-interfaces.lisp)
 para melhor compreensão.
 
-### Cacau com cores
+### <a name="cacau-with-colors">Cacau com cores</a>
 
 A cacau por padrão não entrega resultados coloridos, mas você pode 
 ativar as cores na saída da cacau e ter um visualização colorida do resultado dos 
@@ -744,7 +798,7 @@ para a função `(run)`, veja como:
 (run :colorful t)
 ```
 
-### Repórteres 
+#### <a name="reporters">Repórteres</a>
 
 A cacau foi construída a suportar a criação de novos repórteres, assim você poderá usar o que mais te 
 agradar, ou até mesmo contribuir com o projeto cacau criando um novo repórter.
@@ -754,7 +808,7 @@ configurada com o nome do repórter.
 
 Irei apresentar os repórteres em ordem detalhes de suas saídas, do mais básico ao mais detalhado. 
 
-#### min
+#### <a name="min">min</a>
 
 Esse repórter padrão da cacau, quando você chamar `(run)` sem especificar um repórter 
 a cacau irá usar o repórter `:min`.
@@ -782,7 +836,7 @@ A saída será:
 
 ![reporter min output](images/cacau-examples-reporter-min.png)
 
-#### list
+#### <a name="list">list</a>
 
 Este repórter apresenta informações um pouco mais detalhas que o repórter `:min` 
 ele lista as suítes e testes que estão sendo executadas, e por fim entrega um epílogo 
@@ -809,7 +863,7 @@ A saída será:
 
 ![reporter list output](images/cacau-examples-reporter-list.png)
 
-#### full
+#### <a name="full">full</a>
 
 Este repórter apresenta informações um pouco mais detalhas que o repórter `:list` 
 ele lista as suítes e testes que estão sendo executadas, e depois entrega um epílogo 
@@ -873,7 +927,7 @@ Você pode querer olhar para o arquivo de
 [exemplos de repórteres](examples/cacau-examples-reporters.lisp)
 para melhor compreensão.
 
-### Ativando o cl-debugger
+### <a name="enabling-cl-debugger">Ativando o cl-debugger</a>
 
 Se você quiser chamar o cl-debugger evitando que a cacau capture os erros, você pode fazer isso 
 configurando a cacau passando a key `:cl-debugger` com o valor `t` para a função `(run)`, veja:
@@ -882,7 +936,7 @@ configurando a cacau passando a key `:cl-debugger` com o valor `t` para a funç�
 (run :cl-debugger t)
 ```
 
-### Ganchos run
+### <a name="run-hooks">Ganchos run</a>
 
 Caso precise executar algo antes ou depois da execução da função `(run)`, existem dois ganchos disponivéis 
 para isso, você só precisar passar uma key para `(run)`:
@@ -892,7 +946,7 @@ para isso, você só precisar passar uma key para `(run)`:
             :after-run (lambda () (print "after-run"))) 
 ```
 
-## Cacau com cores no SLIME
+## <a name="cacau-with-colors-in-slime">Cacau com cores no SLIME</a>
 
 1. Copiar arquivo slime-repl-ansi-color.el
 
@@ -931,7 +985,7 @@ E na cacau você só precisa chamar `run` com a key `:colorful` configurada para
 (cacau:run :colorful t)
 ```
 
-## Integração ASDF
+## <a name="asdf-integration">Integração ASDF</a>
 
 Você pode querer chamar a cacau em seu sistema ASDF, configure
 seu sistema de teste como mostrado abaixo:
@@ -954,7 +1008,7 @@ Você pode querer olhar para o diretório de
 [exemplo de integração ASDF](examples/asdf-integration/)
 para melhor compreensão.
 
-## Contribuindo
+## <a name="contributing">Contribuindo</a>
 
 A cacau foi construída de maneira visando facilitar adicionar novas 
 funcionalidades, como também escrever novas interfaces ou repórteres.
@@ -962,11 +1016,12 @@ Se você tem um idéia nova para torná-la melhor, ou encontrou algum bug,
 ou deseja contribuir de qualquer outro modo não deixe de abrir 
 uma nova [questão](https://github.com/noloop/cacau/issues). 
 
-## TODO
+## <a name="todo">TODO</a>
 
-* Escrever teste unitários para as funções do kernel da cacau
+* Providenciar testes nos demais compiladores/interpretadores CL utilizando alguma ferramente CI.
+* Escrever testes unitários para as funções do kernel da cacau.
 
-## API
+## <a name="api">API</a>
 
 function **(context name fn &key only skip (timeout -1))** => suite
 
@@ -1023,7 +1078,7 @@ function **(run &key (reporter :min)
                    reporter-options
                    cl-debugger)** => result
 
-### LICENSE
+### <a name="license">LICENÇA</a>
 
 Copyright (C) 2019 noloop
 
