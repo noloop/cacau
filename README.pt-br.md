@@ -325,6 +325,7 @@ Isso irá imprimir:
 "run Before-each Suite-2" 
 "run Test-2" 
 ```
+
 Para entender melhor veja o arquivo de [exemplo de ganchos](examples/cacau-examples-hooks.lisp).
 
 Esteja atento que quando ganchos lançam erros com exceção do erro de timeout extrapolado, 
@@ -360,7 +361,8 @@ algum tempo. Com a cacau você pode fazer isso, e tanto isolar/pular suites ou t
 
 (run)
 ```
-Com o código acima 3 testes são executados, o "Test-1" da "Suite-1", 
+
+Com o código acima 3 testes são executados: O "Test-1" da "Suite-1", 
 e ambos os testes da "Suite-3".
 
 #### <a name="skips">pulando testes e suítes</a>
@@ -418,8 +420,8 @@ para melhor compreensão.
 
 ### <a name="timeout">Timeout</a>
 
-Você também pode determinar um tempo limite para seus testes, suites e ganchos. Leia atentamente
-os tópicos abaixo, pois existem diferenças entre as três possiblidades.
+Você também pode determinar um tempo limite para seus testes, suítes e ganchos. Leia atentamente
+os tópicos abaixo, pois existem diferenças entre as três possibilidades.
 
 #### <a name="timeout-suites">definindo timeout nas suítes</a>
 
@@ -442,9 +444,10 @@ o mesmo timeout que foi definido nela.
 
 #### <a name="timeout-hooks">definindo timeout nos ganchos</a>
 
-Ao definir um `timeout` para um gancho, esse tempo limite só importará para o gancho configurado.
-Quando falhar a corrida dos testes não será abortada, como acontece quando ganchos falham por 
-lançamentos de qualquer outro erro.
+Ao definir um timeout para um gancho, esse tempo limite só importará para o gancho configurado.
+Quando houver falha de timeout nos ganchos a corrida dos testes não será 
+abortada, como acontece quando ganchos falham por lançamentos de 
+qualquer outro erro.
 
 ```lisp
 (defpackage #:cacau-examples-timeout
@@ -463,8 +466,8 @@ lançamentos de qualquer outro erro.
 
 #### <a name="timeout-tests">definindo timeout nos testes</a>
 
-Ao definir um `timeout` para um teste, esse tempo limite só importará para o teste configurado. 
-Quando falhar a corrida dos testes não será abortada.
+Ao definir um timeout para um teste, esse tempo limite só importará para o teste configurado. 
+Quando houver falha de timeout a corrida dos testes não será abortada.
 
 ```lisp
 (defpackage #:cacau-examples-timeout
@@ -481,7 +484,7 @@ Quando falhar a corrida dos testes não será abortada.
 ```
 
 E se caso o teste ou suíte estiver dentro de alguma suite que já tenha sido configurada com 
-um `timeout`, o mesmo é ignorado, e o que predomina é o `timeout` do teste ou suíte 
+um timeout, o mesmo é ignorado, e o que predomina é o timeout do teste ou suíte 
 filho que foi configurado.
 
 ```lisp
@@ -526,8 +529,9 @@ um teste para testar seu código assíncrono:
   
   (run)
 ```
+
 Acima é configurado um teste passando `(:async done)` em suas configurações, onde `done` é o nome da 
-função que você precisa chamar para o teste ser finalizado, você pode chamar `done`de qualquer nome 
+função que você precisa chamar para o teste ser finalizado, você pode chamar `done` de qualquer nome 
 que desejar como, por exemplo:
 
 ```lisp
@@ -556,8 +560,9 @@ um exemplo, passando um `assertion-error`:
           
  (run)
 ```
+
 Ou passando uma função `lambda` onde você pode chamar funções de asserção que serão capturadas 
-pela cacau como nos testes para testar coisas síncronas:
+pela cacau, como nos testes para testar coisas síncronas:
 
 ```lisp
 (defpackage #:cacau-examples-async-test
@@ -587,7 +592,7 @@ fazer isso, mantenha um padrão, e utilize apenas uma, para melhor legibilidade 
 
 #### <a name="cl">cl</a>
 
-Essa é a que foi utilizada nos exemplos acima. Ela funciona definindo suíte no corpo de outra suíte,
+Essa interface é a que foi utilizada nos exemplos acima. Ela funciona definindo suítes no corpo de outras suítes,
 e fornece as macros:
 
 ```lisp
@@ -598,6 +603,7 @@ e fornece as macros:
 (defafter-all name options &body body)
 (deftest name options &body body)
 ```
+
 O parâmetro `options` recebe uma lista que pode ter zero ou mais dos seguintes itens, nos ganchos:
 
 ```lisp
@@ -618,7 +624,7 @@ Veja um exemplo de uso:
         #:assert-p
         #:cacau))
 (in-package #:cacau-examples-interfaces)
-
+  
 (defsuite :suite-1 ()
   (let ((x 0))
     (defbefore-all "Before-all Suite-1" () (setf x 1))
@@ -628,9 +634,9 @@ Veja um exemplo de uso:
       (setf x 1)
       (funcall done))
     (deftest "Test-1" () (eql-p x 0))
-    (deftest "Test-2" ((:async done))
+    (deftest "Test-2" ()
       (funcall done (lambda () (eql-p x 0))))))
-      
+
 (run)
 ```
 
@@ -647,6 +653,7 @@ e sim funções que necessitam do uso de `lambda`.
 (context name fn &key only skip (timeout -1))
 (it name fn &key only skip (timeout -1))
 ```
+
 Veja um exemplo de uso:
 
 ```lisp
@@ -676,8 +683,9 @@ Veja um exemplo de uso:
 
 #### <a name="tdd">tdd</a>
 
-Ela funciona definindo suíte no corpo de outra suíte, porém não é fornecido macros, 
-e sim funções que necessitam do uso de `lambda`.
+Esta interface funciona definindo suítes no corpo de outras suítes, 
+porém não é fornecido macros, e sim funções que necessitam do 
+uso de `lambda`.
 
 ```lisp
 (suite-setup name fn &key (timeout -1))
@@ -687,6 +695,7 @@ e sim funções que necessitam do uso de `lambda`.
 (suite name fn &key only skip (timeout -1))
 (test name fn &key only skip (timeout -1))
 ```
+
 Veja um exemplo de uso:
 
 ```lisp
@@ -716,8 +725,8 @@ Veja um exemplo de uso:
 
 #### <a name="no-spaghetti">no-spaghetti</a>
 
-Ela funciona sem definir suíte no corpo de outra suíte, funciona de modo serial 
-e fornece as macros:
+Esta interface funciona sem definir suíte no corpo de outra suíte, 
+ela trabalha de modo serial e fornece as seguintes macros:
 
 ```lisp
 (defbefore-plan name options &body body)
@@ -739,13 +748,15 @@ em `in-plan`:
 ```lisp
 (:skip :only (:async done) (:timeout 0) (:parent :suite-name))
 ```
+
 e em `deft`:
 
 ```lisp
 (:skip :only (:async done) (:timeout 0))
 ```
+
 Isso funciona assim para evitar que você precise especificar quem é a suíte pai de 
-cada de teste que escrever, ao chamar `in-plan`, todas as chamadas de `deft` ou chamadas de 
+cada de teste que escrever, ao chamar `in-plan`, todas as seguintes chamadas de `deft` ou chamadas de 
 ganchos terão esta suíte como pai, até você chamar outro `in-plan`.
 
 Veja um exemplo de uso:
@@ -790,9 +801,9 @@ para melhor compreensão.
 ### <a name="cacau-with-colors">Cacau com cores</a>
 
 A cacau por padrão não entrega resultados coloridos, mas você pode 
-ativar as cores na saída da cacau e ter um visualização colorida do resultado dos 
-repórteres, você precisa configurar a cacau passando a key `:colorful` com o valor `t` 
-para a função `(run)`, veja como:
+ativar as cores na saída da cacau e ter um visualização colorida do resultado dos repórteres. 
+Você precisa configurar a cacau passando o argumento key `:colorful` com o 
+valor `t` para a função `(run)`, veja como:
 
 ```lisp
 (run :colorful t)
@@ -813,7 +824,7 @@ Irei apresentar os repórteres em ordem detalhes de suas saídas, do mais básic
 Esse repórter padrão da cacau, quando você chamar `(run)` sem especificar um repórter 
 a cacau irá usar o repórter `:min`.
 
-Este repórter apresenta informações muito básicas, sua saída consiste em um epílogo 
+Este repórter mostra informações muito básicas, sua saída consiste em um epílogo 
 dizendo a quantidade de testes rodados e quantos passaram e falharam.
 
 Para o código:
@@ -832,6 +843,7 @@ Para o código:
 
 (run :colorful t) ;; or (run :colorful t :reporter :min)
 ```
+
 A saída será:
 
 ![reporter min output](images/cacau-examples-reporter-min.png)
@@ -841,7 +853,7 @@ A saída será:
 Este repórter apresenta informações um pouco mais detalhas que o repórter `:min` 
 ele lista as suítes e testes que estão sendo executadas, e por fim entrega um epílogo 
 dizendo a quantidade de testes rodados e quantos passaram e falharam, porém ainda irá 
-fornecer suítes e testes que foram configurados com `:skip`.
+fornecer a quantidade de suítes e testes que foram configurados com `:skip`.
 
 Para o código:
 
@@ -859,6 +871,7 @@ Para o código:
 
 (run :colorful t :reporter :list)
 ```
+
 A saída será:
 
 ![reporter list output](images/cacau-examples-reporter-list.png)
@@ -887,6 +900,7 @@ Para o código:
 
 (run :colorful t :reporter :full)
 ```
+
 A saída será:
 
 ![reporter full output](images/cacau-examples-reporter-full.png)
@@ -948,24 +962,29 @@ para isso, você só precisar passar uma key para `(run)`:
 
 ## <a name="cacau-with-colors-in-slime">Cacau com cores no SLIME</a>
 
-1. Copiar arquivo slime-repl-ansi-color.el
+A cacau utiliza os códigos de escape ANSI para imprimir suas saídas 
+coloridas, e por padrão o SLIME não suportar isso.
+
+Para ativar a utilização de cores ANSI no SLIME, você irá precisar seguir os seguintes passos abaixo:
+
+**1. Copiar arquivo "slime-repl-ansi-color.el"**
 
 Você irá precisar copiar o arquivo 
 [slime-repl-ansi-color.el](https://github.com/noloop/cacau/blob/master/contrib/slime-repl-ansi-color/slime-repl-ansi-color.el) 
-para o diretório "contrib" do slime, algo como "~/.emacs.d/site-lisp/slime/contrib/", isso irá
-depender de como está configurado o seu emacs + slime.
+para o diretório "contrib" do SLIME, algo como "~/.emacs.d/site-lisp/slime/contrib/", isso irá
+depender de como está configurado o seu EMACS + SLIME.
 
-2. Configurar seu arquivo .emacs 
+**2. Configurar seu arquivo ".emacs"**
 
-Adicione a seguinte linha no arquivo de configuração do seu emacs:
+Adicione a seguinte linha no arquivo de configuração do seu EMACS:
 
 ```lisp
 (slime-setup '(slime-repl-ansi-color))
 ```
 
-Isso também irá depender de como você configurou seu emacs.
+Isso também irá depender de como você configurou seu EMACS.
 
-3. Ative/desative slime-repl-ansi
+**3. Ative/desative slime-repl-ansi**
 
 Para ativar:
 
@@ -979,7 +998,8 @@ Para desativar:
 (slime-repl-ansi-off)
 ```
 
-E na cacau você só precisa chamar `run` com a key `:colorful` configurada para `t`:
+E por fim, na cacau você só precisa chamar `(run)` passando o 
+argumento key `:colorful` configurada para `t`:
 
 ```lisp
 (cacau:run :colorful t)
@@ -987,8 +1007,8 @@ E na cacau você só precisa chamar `run` com a key `:colorful` configurada para
 
 ## <a name="asdf-integration">Integração ASDF</a>
 
-Você pode querer chamar a cacau em seu sistema ASDF, configure
-seu sistema de teste como mostrado abaixo:
+Você pode querer chamar a cacau em seu sistema ASDF,
+para conseguir isso, configure seu sistema de teste como mostrado abaixo:
 
 ```lisp
 (defsystem :cacau-examples-asdf-integration-test

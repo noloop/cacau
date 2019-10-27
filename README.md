@@ -6,9 +6,7 @@
   <img width="500" height="500" src="./images/cacau-logo-background-white-test-runner.png">
 </p>
 
-## <a name="read-in-other-languages">Leia em outros idiomas</a>
-
-# <font color="red">I am learning English, should be many english errors over here, I would be grateful that when you find them, let me know with a new issue in this repository. </font>
+## <a name="read-in-other-languages">Read in other languages</a>
 
 Read this in other languages: [English](https://github.com/noloop/cacau/blob/master/README.md),
 [Portuguese-br](https://github.com/noloop/cacau/blob/master/README.pt-br.md)
@@ -118,7 +116,7 @@ and load by asdf:
 (asdf:load-system :cacau)
 ```
 
-_**Note: Remember to configure asdf to find your directory where you downloaded the libraries (asdf call them "systems")
+**Note: Remember to configure asdf to find your directory where you downloaded the libraries (asdf call them "systems")
  above, if you do not know how to make a read at:**
  
  https://common-lisp.net/project/asdf/asdf/Configuring-ASDF-to-find-your-systems.html 
@@ -346,8 +344,785 @@ correctly.
 
 ### <a name="only-and-skip">Only and Skip</a>
 
+You can want run some tests in isolation or skip some tests for sometime.
+With the cacau you can do this, and you can isolate or skip both suites and tests.
 
-### LICENSE
+#### <a name="onlys">run only tests/suites</a>
+
+```lisp
+(defpackage #:cacau-examples-onlys
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-onlys)
+
+(defsuite :suite-1 ()
+  (deftest "Test-1" (:only) (t-p t))
+  (deftest "Test-2" () (t-p t)))
+
+(defsuite :suite-2 ()
+  (let ((x 0))
+    (deftest "Test-1" () (eql-p x 0))
+    (deftest "Test-2" () (t-p t))
+    (defsuite :suite-3 (:only)
+      (deftest "Test-1" () (t-p t))
+      (deftest "Test-2" () (t-p t)))))
+
+(run)
+```
+With the code above three tests are executed: The "Test-1" of the 
+"Suite-1", and both the tests of the "Suite-3".
+
+#### <a name="skips">skip tests/suites</a>
+
+```lisp
+(defpackage #:cacau-examples-skips
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-skips)
+
+(defsuite :suite-1 ()
+  (deftest "Test-1" (:skip) (t-p t))
+  (deftest "Test-2" () (t-p t)))
+
+(defsuite :suite-2 (:skip)
+  (let ((x 0))
+    (deftest "Test-1" () (eql-p x 0))
+    (deftest "Test-2" () (t-p t))
+    (defsuite :suite-3 ()
+      (deftest "Test-1" () (t-p t))
+      (deftest "Test-2" () (t-p t)))))
+
+(run :colorful t)
+```
+
+With the code above just the "Test-2" of the "Suite-1" is executed.
+
+#### <a name="skip-only-rules">precedence order "skip -> only</a>
+
+The rule is simple:
+
+The tests or suites `skip` have precedence to tests or suites `only`.
+See one example:
+
+```lisp
+(defpackage #:cacau-examples-skips-onlys-rules
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-skips-onlys-rules)
+
+(defsuite :suite-1 (:only)
+  (deftest "Test-1" () (t-p t)) ;; run!
+  (deftest "Test-2" () (t-p t)) ;; run!
+  (defsuite :suite-2 (:skip)
+    (deftest "Test-1" () (t-p t))
+    (deftest "Test-2" () (t-p t))))
+(run :colorful t)
+```
+
+You can want see the file of the [examples of skip->only rule](examples/cacau-examples-skips-onlys-rules.lisp) for 
+better comprehension.
+
+### <a name="timeout">Timeout</a>
+
+You can define one limit time for your tests, suites and hooks.
+Read with attention the topics below, because there are differences 
+between the three possibilities.
+
+#### <a name="timeout-suites">defining suite timeout</a>
+
+When define one timeout for one suite, this will make with that 
+all tests of that suite acquire the same timeout of that suite.
+
+```lisp
+(defpackage #:cacau-examples-timeout
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-timeout)
+
+(defsuite :suite-1 ((:timeout 0))
+  (deftest "Test-1" () (t-p t)) ;; Timeout Error: Time(0) extrapolated!
+  (deftest "Test-2" () (t-p t))) ;; Timeout Error: Time(0) extrapolated!
+  
+(run)
+```
+
+#### <a name="timeout-hooks">defining hook timeout</a>
+
+When define one timeout for one hook, this limit timeout only will 
+have importance for the hook configured.
+When there are timeout fail the tests race will not aborted, 
+as happen when hooks fail for throw of any others errors.
+
+```lisp
+(defpackage #:cacau-examples-timeout
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-timeout)
+
+(defsuite :suite-1 ()
+  (defbefore-all "Before-all" ((:timeout 0))) ;; Timeout Error: Time(0) extrapolated!
+  (deftest "Test-1" () (t-p t))
+  (deftest "Test-2" () (t-p t)))
+          
+(run)
+```
+
+#### <a name="timeout-tests">defining test timeout</a>
+
+When define one timeout for the one test, this limit time only 
+have importance for the test configured.
+When there are timeout fail the tests race will not aborted.
+
+```lisp
+(defpackage #:cacau-examples-timeout
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-timeout)
+
+(defsuite :suite-1 ()
+  (deftest "Test-1" ((:timeout 0)) (t-p t)) ;; Timeout Error: Time(0) extrapolated!
+  (deftest "Test-2" () (t-p t)))
+
+(run)
+```
+
+If the test or suite are inside the some suite that already has 
+configured with one timeout, the same is ignored, and what predominate 
+is the timeout of the test or suite daughter that was configured.
+
+```lisp
+(defpackage #:cacau-examples-timeout
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-timeout)
+
+(defsuite :suite-1 ((:timeout 0))
+  (deftest "Test-1" () (t-p t))   ;; Timeout Error: Time(0) extrapolated!
+  (deftest "Test-2" () (t-p t))   ;; Timeout Error: Time(0) extrapolated!
+  (defsuite :suite-2 ((:timeout 50000))
+    (deftest "Test-1" ((:timeout 0)) (t-p t)) ;; Timeout Error: Time(0) extrapolated!
+    (deftest "Test-2" () (t-p t))))
+
+(run)
+```
+
+You can want see the file of the [examples of timeout](examples/cacau-examples-timeout.lisp) for 
+better comprehension. 
+
+### <a name="async-test">Test asynchronous code</a>
+
+You may need test some asynchronous code, and the cacau was built in 
+a way to wait each test before the next execution test. 
+You will need call one `done` function and also tell to cacau which 
+test or hook is asynchronous. See one example of as write one test 
+to test your async code:
+
+```lisp
+(defpackage #:cacau-examples-async-test
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-async-test)
+
+(defsuite :suite-1 ()
+  (deftest "Test-1" ((:async done))
+    (funcall done))
+  (deftest "Test-2" () (t-p t)))
+  
+  (run)
+```
+
+Above is configured one test passing `(:async done)` as configurations, 
+where `done` is the name of the function that you need call for the 
+test be end, you can give to `done` any name that wish, by example:
+
+```lisp
+(deftest "Test-1" ((:async something))
+    (funcall something))
+```
+
+Attention for that if you don't call `done` or the name that you choice, 
+the cacau going to waits forever by the call. So you will not want 
+forget of call `done` for end your test.
+
+Can be passed three types of different arguments for the `done` 
+function, it accept one `assertion-error`, one `error`, or one `lambda`. 
+This is useful for you catch assertion errors. By example, passing 
+one `assertion-error`:
+
+```lisp
+(defpackage #:cacau-examples-async-test
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-async-test)
+
+(deftest "Test-1" ((:async done))
+      (handler-case (t-p nil)
+        (error (c)
+          (funcall done c))))
+          
+ (run)
+```
+
+Or passing one function `lambda` where you can call assertion functions 
+that will be catches by cacau, as in the tests to test synchronous things:
+
+```lisp
+(defpackage #:cacau-examples-async-test
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-async-test)
+
+(deftest "Test-2" ((:async done))
+      (funcall done (lambda () (t-p t))))
+          
+ (run)
+``` 
+
+You can want see the file of the [examples of async test](examples/cacau-examples-async-tests.lisp) for 
+better comprehension. 
+
+### <a name="interfaces">Interfaces</a>
+
+The cacau was built in a way support the create new interfaces, so 
+you can use whichever you prefer, or even contribute with the cacau 
+project building one new interface.
+
+You don't need setting nothing or passing nothing when call `(run)` to 
+use some interface. All interfaces are available for you use whichever 
+you wish, and until mix them, but I don't recommend do this, keep one 
+pattern, and use just one interface for better readability of the code.
+
+#### <a name="cl">cl</a>
+
+This interface was one that was used in the examples above. 
+It works by define suites inside others suites, and provides the macros:
+
+```lisp
+(defsuite name options &body body)
+(defbefore-all name options &body body)
+(defbefore-each name options &body body)
+(defafter-each name options &body body)
+(defafter-all name options &body body)
+(deftest name options &body body)
+```
+
+The `options` parameter receive one list that should have zero or more 
+of the following items, in the hooks:
+
+```lisp
+((:async done) (:timeout 0))
+```
+
+in `defsuite` or `deftest`:
+
+```lisp
+(:skip :only (:async done) (:timeout 0))
+```
+
+See one example of use:
+
+```lisp
+(defpackage #:cacau-examples-interfaces
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-interfaces)
+  
+(defsuite :suite-1 ()
+  (let ((x 0))
+    (defbefore-all "Before-all Suite-1" () (setf x 1))
+    (defbefore-each "Before-each Suite-1" () (setf x 0))
+    (defafter-each "After-each Suite-1" () (setf x 1))
+    (defafter-all "After-all Suite-1" ((:async done))
+      (setf x 1)
+      (funcall done))
+    (deftest "Test-1" () (eql-p x 0))
+    (deftest "Test-2" ()
+      (funcall done (lambda () (eql-p x 0))))))
+
+(run)
+```
+
+#### <a name="bdd">bdd</a>
+
+This interface works by define suites inside others suites, but no 
+is provide macros, it provides functions that need of the use 
+of `lambda`.
+
+```lisp
+(before-all name fn &key (timeout -1))
+(before-each name fn &key (timeout -1))
+(after-each name fn &key (timeout -1))
+(after-all name fn &key (timeout -1))
+(context name fn &key only skip (timeout -1))
+(it name fn &key only skip (timeout -1))
+```
+
+See one example of use:
+
+```lisp
+(defpackage #:cacau-examples-interfaces
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-interfaces)
+
+(context
+ "Suite-1"
+ (lambda (&optional (x 0))
+   (before-all "Before-all Suite-1" (lambda () (setf x 1)))
+   (before-each "Before-each Suite-1" (lambda () (setf x 1)))
+   (after-each "After-each Suite-1" (lambda () (setf x 1)))
+   (after-all "After-all Suite-1" (lambda (done) (funcall done)))
+   (it "Test-1" (lambda () (eql-p x 1)))
+   (it "Test-2" (lambda () (incf x) (eql-p x 2)))
+   (context
+    "Suite-2"
+    (lambda (&optional (x 0))
+      (it "Test-1" (lambda () (incf x) (eql-p x 1)))
+      (it "Test-2" (lambda () (eql-p x 1)))))))
+      
+(run)
+```
+
+#### <a name="tdd">tdd</a>
+
+This interface works by define suites inside others suites, but no 
+is provide macros, it provides functions that need of the use 
+of `lambda`.
+
+```lisp
+(suite-setup name fn &key (timeout -1))
+(suite-teardown name fn &key (timeout -1))
+(test-setup name fn &key (timeout -1))
+(test-teardown name fn &key (timeout -1))
+(suite name fn &key only skip (timeout -1))
+(test name fn &key only skip (timeout -1))
+```
+
+See one example of use:
+
+```lisp
+(defpackage #:cacau-examples-interfaces
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-interfaces)
+
+(suite
+ "Suite-1"
+ (lambda (&optional (x 0))
+   (suite-setup "Suite-setup Suite-1" (lambda () (setf x 1)))
+   (test-setup "Test-setup Suite-1" (lambda () (setf x 1)))
+   (test-teardown "Test-teardown Suite-1" (lambda () (setf x 1)))
+   (suite-teardown "Suite-teardown Suite-1" (lambda (done) (funcall done)))
+   (test "Test-1" (lambda () (eql-p x 1)))
+   (test "Test-2" (lambda () (incf x) (eql-p x 2)))
+   (suite
+    "Suite-2"
+    (lambda (&optional (x 0))
+      (test "Test-1" (lambda () (incf x) (eql-p x 1)))
+      (test "Test-2" (lambda () (eql-p x 1)))))))
+      
+(run)
+```
+
+#### <a name="no-spaghetti">no-spaghetti</a>
+
+This interface works by without define suites inside others suites, 
+it works on the serial way and provide the macros:
+
+```lisp
+(defbefore-plan name options &body body)
+(defbefore-t name options &body body)
+(defafter-t name options &body body)
+(defafter-plan name options &body body)
+(in-plan name &optional (options ()))
+(deft name &optional (options ()))
+```
+
+The `options` parameter receive one list that should have zero or more 
+of the following items, in the hooks:
+
+```lisp
+((:async done) (:timeout 0))
+```
+
+in `in-plan`:
+
+```lisp
+(:skip :only (:async done) (:timeout 0) (:parent :suite-name))
+```
+
+and in `deft`:
+
+```lisp
+(:skip :only (:async done) (:timeout 0))
+```
+
+This works like this to avoid that you need specify who is the father 
+suite of each test that you write. When you call `in-plan`, whole next 
+calls of `deft` or hooks calls will have this suite as father, until 
+you call other `in-plan`.
+
+See one example of use:
+
+```lisp
+(defpackage #:cacau-examples-interfaces
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-interfaces)
+
+(let ((x 0))
+  (in-plan :suite-1 ()) ;; or (in-suite :suite-1 ((:parent :suite-root)))
+  (defbefore-plan :before-plan-suite-1 () (setf x 1))
+  (deft :test-1 () (eql-p x 1))
+  (deft :test-2 ((:async done))
+    (incf x)
+    (funcall done (lambda () (eql-p x 2))))
+
+  (in-plan :suite-2 ((:parent :suite-1)))
+  (defafter-plan :after-plan-suite-2 ((:async done-hook)) (setf x 1) (funcall done-hook))
+  (deft :test-1 () (eql-p x 2))
+  (deft :test-2 () (incf x) (eql-p x 3))
+
+  (in-plan :suite-3 ((:parent :suite-2)))
+  (defbefore-t :before-t-suite-3 () (setf x 0))
+  (deft :test-1 () (incf x) (eql-p x 1))
+  (deft :test-2 () (eql-p x 0))
+
+  (in-plan :suite-4) ;; or (in-suite :suite-4 ((:parent :suite-root)))
+  (defafter-t :after-t-suite-4 () (setf x 0))
+  (deft :test-1 () (incf x) (eql-p x 2))
+  (deft :test-2 () (eql-p x 0)))
+  
+  (run)
+```
+
+You can want see the file of the [examples of interfaces](examples/cacau-examples-interfaces.lisp) for 
+better comprehension.
+
+### <a name="cacau-with-colors">Cacau with colors</a>
+
+The cacau by default don't deliver colorful results, but you can 
+enable the colors in output of the cacau and have one visualization 
+colorful of the reporters result.
+You need configure the cacau passing the `:colorful` key argument with 
+the value `t` for the function `(run)`, see how:
+
+```lisp
+(run :colorful t)
+```
+
+#### <a name="reporters">Reporters</a>
+
+The cacau was built in a way support the create new reporters, so 
+you can use whichever you prefer, or even contribute with the cacau 
+project building one new reporter.
+
+You need configure the reporter who chose to use, you should do this 
+passing for `(run)` the `:reporter` key argument with the value of 
+the reporter name chosen.
+
+I will introduce the reporters in details order of your outputs, from 
+most basic until the more detailed reporter.
+
+#### <a name="min">min</a>
+
+This is the cacau's default reporter, when you call `(run)` without 
+specify some reporter, the cacau will use the `:min` reporter.
+
+This reporter show very basic information, it output consist in one 
+epilogue saying the running tests quantity and how many passed and 
+failed.
+
+For this code:
+
+```lisp
+(defpackage #:cacau-examples-reporters
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-reporters)
+
+(defsuite :suite-1 ()
+  (deftest "Test-1" () (t-p t))
+  (deftest "Test-2" (:skip) (t-p t))
+  (deftest "Test-3" () (t-p nil)))
+
+(run :colorful t) ;; or (run :colorful t :reporter :min)
+```
+
+The output will be:
+
+![reporter min output](images/cacau-examples-reporter-min.png)
+
+#### <a name="list">list</a>
+
+This rather reporter show more detailed information then `:min` 
+reporter, it list the suites and tests that are running, and 
+finally show one epilogue saying the running tests quantity 
+and how many passed and failed, and also still provides the 
+quantity of the suites and tests that are configured with `skip`.
+
+For this code:
+
+```lisp
+(defpackage #:cacau-examples-reporters
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-reporters)
+
+(defsuite :suite-1 ()
+  (deftest "Test-1" () (t-p t))
+  (deftest "Test-2" (:skip) (t-p t))
+  (deftest "Test-3" () (t-p nil)))
+
+(run :colorful t :reporter :list)
+```
+The output will be:
+
+![reporter list output](images/cacau-examples-reporter-list.png)
+
+#### <a name="full">full</a>
+
+This rather reporter show more detailed information then `:list` 
+reporter, it list the suites and tests that are running, and 
+show one epilogue saying all the information of the tests 
+race that cacau can give, and finally show the failing tests with 
+the error messages, provide the option of analyze the full stack 
+that led until that error.
+
+For this code:
+
+```lisp
+(defpackage #:cacau-examples-reporters
+  (:use #:common-lisp
+        #:assert-p
+        #:cacau))
+(in-package #:cacau-examples-reporters)
+
+(defsuite :suite-1 ()
+  (deftest "Test-1" () (t-p t))
+  (deftest "Test-2" () (t-p t))
+  (deftest "Test-3" () (t-p nil)))
+
+(run :colorful t :reporter :full)
+```
+
+The output will be:
+
+![reporter full output](images/cacau-examples-reporter-full.png)
+
+You can configure the output of the `:full` reporter passing the 
+`:reporter-options` key argument for `(run)` and with this show the 
+information in the order you want, or you can hide the information 
+that don't wish see.
+
+For this code:
+
+```lisp
+(defsuite :suite-1 ()
+  (deftest "Test-1" () (t-p t))
+  (deftest "Test-2" () (t-p t))
+  (deftest "Test-3" () (t-p nil)))
+
+(run :colorful t
+     :reporter :full
+     :reporter-options
+     '(:tests-list
+       (:epilogue
+        (:run-start
+         :run-end
+         :run-duration
+         :running-suites
+         :running-tests
+         :passing
+         :failing
+         :errors))
+       :stack))
+```
+
+The output will be:
+
+![reporter full with reporter options output](images/cacau-examples-reporter-full-with-reporter-options.png)
+
+You can want see the file of the [examples of reporters](examples/cacau-examples-reporters.lisp) for 
+better comprehension.
+
+### <a name="enabling-cl-debugger">Enabling the cl-debugger</a>
+
+If you want call the cl-debugger avoiding that the cacau catches the 
+errors, you can do this configuring the cacau when passing `:cl-debugger` 
+key argument with the value `t` for the `(run)` function, see:
+
+```lisp
+(run :cl-debugger t)
+```
+
+### <a name="run-hooks">Run hooks</a>
+
+If you need execute something before or after of the execution of the 
+`(run)` function, there are two hooks available for this, you only need 
+pass one key argument for `(run)`:
+
+```lisp
+(run :before-run (lambda () (print "before-run")) 
+            :after-run (lambda () (print "after-run"))) 
+```
+
+## <a name="cacau-with-colors-in-slime">Cacau with colors in SLIME</a>
+
+The cacau use ANSI escape codes for print your colorful outputs, and 
+by default the SLIME does not support this.
+
+For enable the use ANSI colors in the SLIME, you will need follow them
+steps below:
+
+**1. Copy "slime-repl-ansi-color.el" file**
+
+You will need copy the
+[slime-repl-ansi-color.el](https://github.com/noloop/cacau/blob/master/contrib/slime-repl-ansi-color/slime-repl-ansi-color.el)
+file for the directory "contrib" of the SLIME, something as 
+"~/.emacs.d/site-lisp/slime/contrib/", it will depend of how you be 
+configured your EMACS + SLIME.
+
+**2. Configure your ".emacs" file**
+
+Add the line below in the your EMACS configure file:
+
+```lisp
+(slime-setup '(slime-repl-ansi-color))
+```
+
+It also will depend of how you be configured your EMACS.
+
+**3. Enable/disable slime-repl-ansi**
+
+For enable:
+
+```lisp
+(slime-repl-ansi-on)
+```
+
+For disable:
+
+```lisp
+(slime-repl-ansi-off)
+```
+
+And finally, in the cacau you just need call `(run)` passing the 
+`:colorful` key argument with the value `t`:
+
+```lisp
+(cacau:run :colorful t)
+```
+
+## <a name="asdf-integration">ASDF Integration</a>
+
+You also can want call the cacau in your ASDF system, to get it, 
+configure your system of tests like this:
+
+```lisp
+(defsystem :cacau-examples-asdf-integration-test
+  :depends-on (:cacau-examples-asdf-integration
+               :cacau
+               :assert-p)
+  :defsystem-depends-on (:cacau-asdf)
+  :components ((:cacau-file "cacau-examples-asdf-integration-test"))
+  :perform
+  (test-op (op c)
+           (progn
+             (funcall (intern #.(string :run-cacau-asdf) :cacau) c)
+             (symbol-call :cacau '#:run))))
+```
+
+You can want see the directory of [example of ASDF integration](examples/asdf-integration/) for 
+better comprehension.
+
+## <a name="contributing">Contributing</a>
+
+The cacau was built to facilitate add new functionalities, 
+as also write new interfaces or reporters.
+If you have one new idea for make it better, or found come bug, or 
+want contribute of any other way, don't let of open a new 
+[issue](https://github.com/noloop/cacau/issues).
+
+## <a name="todo">TODO</a>
+
+* Provide tests in others CL compilers/interpreters using some CI tool.
+* Write unit tests for the cacau kernel functions.
+
+## <a name="api">API</a>
+
+function **(context name fn &key only skip (timeout -1))** => suite
+
+function **(before-all name fn &key (timeout -1))** => suite-before-all
+
+function **(after-all name fn &key (timeout -1))** => suite-after-all
+
+function **(before-each name fn &key (timeout -1))** => suite-before-each
+
+function **(after-each name fn &key (timeout -1))** => suite-after-all
+
+function **(it name fn &key only skip (timeout -1))** => test
+
+function **(suite name fn &key only skip (timeout -1))** => suite
+
+function **(suite-setup name fn &key (timeout -1))** => suite-before-all
+
+function **(suite-teardown name fn &key (timeout -1))** => suite-after-all
+
+function **(test-setup name fn &key (timeout -1))** => suite-before-each
+
+function **(test-teardown name fn &key (timeout -1))** => suite-after-each
+
+function **(test name fn &key only skip (timeout -1))** => test
+
+macro **(defsuite name options &body body)** => suite
+
+macro **(defbefore-all name options &body body)** => suite-before-all
+
+macro **(defafter-all name options &body body)** => suite-after-all
+
+macro **(defbefore-each name options &body body)** => suite-before-each
+
+macro **(defafter-each name options &body body)** => suite-after-each
+
+macro **(deftest name options &body body)** => test
+
+macro **(in-plan name &optional (options ()))** => suite
+
+macro **(defbefore-plan name options &body body)** => => suite-before-all
+
+macro **(defafter-plan name options &body body)** => suite-after-all
+
+macro **(defbefore-t name options &body body)** => suite-before-each
+
+macro **(defafter-t name options &body body)** => suite-after-each
+
+macro **(deft name options &body body)** => test
+
+function **(run &key (reporter :min)
+                   before-run
+                   after-run
+                   colorful
+                   reporter-options
+                   cl-debugger)** => result
+
+### <a name="license">LICENÇA</a>
 
 Copyright (C) 2019 noloop
 
