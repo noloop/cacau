@@ -1122,7 +1122,7 @@ function **(run &key (reporter :min)
                    reporter-options
                    cl-debugger)** => result
 
-### <a name="license">LICENÇA</a>
+### <a name="license">LICENSE</a>
 
 Copyright (C) 2019 noloop
 
