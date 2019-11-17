@@ -46,7 +46,8 @@
                          :before-each-suite-1
                          (lambda (done-hook)
                            (setf x 0)
-                           (funcall done-hook)))
+                           (funcall done-hook))
+			 :async-p t)
      (add-child suite-1
                 (create-test runner-instance
                              :test-1

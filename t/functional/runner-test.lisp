@@ -26,7 +26,8 @@
                              :test-1
                              (lambda (done)
                                (funcall done (lambda ()
-                                               (funcall r-done))))))
+                                               (funcall r-done))))
+			     :async-p t))
      (once-runner runner-instance
                   :end
                   (lambda () ()))
@@ -49,7 +50,8 @@
                 (create-test runner-instance
                              :test-2
                              (lambda (done)
-                               (funcall done))))
+                               (funcall done))
+			     :async-p t))
      (add-child suite-1
                 (create-test runner-instance
                              :test-3
@@ -80,18 +82,21 @@
                 (create-test runner-instance
                              :test-2
                              (lambda (done)
-                               (funcall done))))
+                               (funcall done))
+			     :async-p t))
      (add-child suite-1 suite-2)
      (add-child suite-2
                 (create-test runner-instance
                              :test-1
                              (lambda ()
-                               (= 1 1))))
+                               (= 1 1))
+			     :async-p nil))
      (add-child suite-2
                 (create-test runner-instance
                              :test-2
                              (lambda (done) 
-                               (funcall done))))
+                               (funcall done))
+			     :async-p t))
      (once-runner runner-instance
                   :end
                   (lambda ()

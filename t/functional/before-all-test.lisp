@@ -44,7 +44,8 @@
                         :before-all-suite-1
                         (lambda (done-hook)
                           (funcall done-hook (lambda ()
-                                               (setf x 1)))))
+                                               (setf x 1))))
+			:async-p t)
      (add-child suite-1
                 (create-test runner-instance
                              :test-1
@@ -78,7 +79,8 @@
                         :before-all-suite-1
                         (lambda (done-hook)
                           (setf x 1)
-                          (funcall done-hook)))
+                          (funcall done-hook))
+			:async-p t)
      (add-child suite-1
                 (create-test runner-instance
                              :test-1
@@ -94,7 +96,8 @@
                         :before-all-suite-2
                         (lambda (done-hook)
                           (incf x)
-                          (funcall done-hook)))
+                          (funcall done-hook))
+			:async-p t)
      (add-child suite-2
                 (create-test runner-instance
                              :test-1

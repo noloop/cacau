@@ -4,36 +4,40 @@
   (cond-options options
     `(common-create-before-all
       ,name
-      ,(if async
+      ,(if async-p
            `(lambda (,async-done) ,@body)
            `(lambda () ,@body))
+      :async-p ,async-p
       :timeout ,timeout)))
 
 (defmacro defafter-all (name options &body body)
   (cond-options options
     `(common-create-after-all
       ,name
-      ,(if async
+      ,(if async-p
            `(lambda (,async-done) ,@body)
            `(lambda () ,@body))
+      :async-p ,async-p
       :timeout ,timeout)))
 
 (defmacro defbefore-each (name options &body body)
   (cond-options options
     `(common-create-before-each
       ,name
-      ,(if async
+      ,(if async-p
            `(lambda (,async-done) ,@body)
            `(lambda () ,@body))
+      :async-p ,async-p
       :timeout ,timeout)))
 
 (defmacro defafter-each (name options &body body)
   (cond-options options
     `(common-create-after-each
       ,name
-      ,(if async
+      ,(if async-p
            `(lambda (,async-done) ,@body)
            `(lambda () ,@body))
+      :async-p ,async-p
       :timeout ,timeout)))
 
 (defmacro defsuite (name options &body body)
@@ -49,9 +53,10 @@
   (cond-options options
     `(common-create-test
       ,name
-      ,(if async
+      ,(if async-p
            `(lambda (,async-done) ,@body)
            `(lambda () ,@body))
+      :async-p ,async-p
       :only-p ,only-p
       :skip-p ,skip-p
       :timeout ,timeout)))

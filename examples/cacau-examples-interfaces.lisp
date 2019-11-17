@@ -31,7 +31,7 @@
    (before-all "Before-all Suite-1" (lambda () (setf x 1)))
    (before-each "Before-each Suite-1" (lambda () (setf x 1)))
    (after-each "After-each Suite-1" (lambda () (setf x 1)))
-   (after-all "After-all Suite-1" (lambda (done) (funcall done)))
+   (after-all "After-all Suite-1" (lambda (done) (funcall done)) :async t)
    (it "Test-1" (lambda () (eql-p x 1)))
    (it "Test-2" (lambda () (incf x) (eql-p x 2)))
    (context
@@ -54,7 +54,7 @@
    (suite-setup "Suite-setup Suite-1" (lambda () (setf x 1)))
    (test-setup "Test-setup Suite-1" (lambda () (setf x 1)))
    (test-teardown "Test-teardown Suite-1" (lambda () (setf x 1)))
-   (suite-teardown "Suite-teardown Suite-1" (lambda (done) (funcall done)))
+   (suite-teardown "Suite-teardown Suite-1" (lambda (done) (funcall done)) :async t)
    (test "Test-1" (lambda () (eql-p x 1)))
    (test "Test-2" (lambda () (incf x) (eql-p x 2)))
    (suite
@@ -67,7 +67,8 @@
        (lambda (&optional (x 0))
          (test "Test-1" (lambda (done)
                           (incf x)
-                          (funcall done (lambda () (eql-p x 1)))))
+                          (funcall done (lambda () (eql-p x 1))))
+	       :async t)
          (test "Test-2" (lambda () (eql-p x 1)))))))))
 
 (run :colorful t)

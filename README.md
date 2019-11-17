@@ -1,6 +1,4 @@
 # cacau
-
-#### <font color="red">Attention! I am learning English, should be many english errors over here, I would be grateful that when you find them, let me know with a new issue in this repository. </font>
  
 <p align="center">
   <img width="500" height="500" src="./images/cacau-logo-background-white-test-runner.png">
@@ -660,12 +658,12 @@ is provide macros, it provides functions that need of the use
 of `lambda`.
 
 ```lisp
-(before-all name fn &key (timeout -1))
-(before-each name fn &key (timeout -1))
-(after-each name fn &key (timeout -1))
-(after-all name fn &key (timeout -1))
+(before-all name fn &key async (timeout -1))
+(before-each name fn &key async (timeout -1))
+(after-each name fn &key async (timeout -1))
+(after-all name fn &key async (timeout -1))
 (context name fn &key only skip (timeout -1))
-(it name fn &key only skip (timeout -1))
+(it name fn &key async only skip (timeout -1))
 ```
 
 See one example of use:
@@ -683,7 +681,7 @@ See one example of use:
    (before-all "Before-all Suite-1" (lambda () (setf x 1)))
    (before-each "Before-each Suite-1" (lambda () (setf x 1)))
    (after-each "After-each Suite-1" (lambda () (setf x 1)))
-   (after-all "After-all Suite-1" (lambda (done) (funcall done)))
+   (after-all "After-all Suite-1" (lambda (done) (funcall done)) :async t)
    (it "Test-1" (lambda () (eql-p x 1)))
    (it "Test-2" (lambda () (incf x) (eql-p x 2)))
    (context
@@ -702,12 +700,12 @@ is provide macros, it provides functions that need of the use
 of `lambda`.
 
 ```lisp
-(suite-setup name fn &key (timeout -1))
-(suite-teardown name fn &key (timeout -1))
-(test-setup name fn &key (timeout -1))
-(test-teardown name fn &key (timeout -1))
+(suite-setup name fn &key async (timeout -1))
+(suite-teardown name fn &key async (timeout -1))
+(test-setup name fn &key async (timeout -1))
+(test-teardown name fn &key async (timeout -1))
 (suite name fn &key only skip (timeout -1))
-(test name fn &key only skip (timeout -1))
+(test name fn &key async only skip (timeout -1))
 ```
 
 See one example of use:
@@ -725,7 +723,7 @@ See one example of use:
    (suite-setup "Suite-setup Suite-1" (lambda () (setf x 1)))
    (test-setup "Test-setup Suite-1" (lambda () (setf x 1)))
    (test-teardown "Test-teardown Suite-1" (lambda () (setf x 1)))
-   (suite-teardown "Suite-teardown Suite-1" (lambda (done) (funcall done)))
+   (suite-teardown "Suite-teardown Suite-1" (lambda (done) (funcall done)) :async t)
    (test "Test-1" (lambda () (eql-p x 1)))
    (test "Test-2" (lambda () (incf x) (eql-p x 2)))
    (suite

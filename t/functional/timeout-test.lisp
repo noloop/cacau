@@ -414,6 +414,7 @@
                               (lambda (done-hook)
                                 (loop for i upto 10 collect i)
                                 (funcall done-hook))
+			      :async-p t
                               :timeout 0))
      (setf test-1
            (add-child suite-1
@@ -464,7 +465,8 @@
                               (lambda (done-hook)
                                 (loop for i upto 10 collect i)
                                 (funcall done-hook))
-                              :timeout 0))
+			      :async-p t
+			      :timeout 0))
      (setf test-2
            (add-child suite-2
                       (create-test runner-instance
@@ -555,7 +557,8 @@
                              (lambda (done-hook)
                                (loop for i upto 10 collect i)
                                (funcall done-hook))
-                             :timeout 0))
+			     :async-p t
+			     :timeout 0))
      (setf test-1
            (add-child suite-1
                       (create-test runner-instance
@@ -605,6 +608,7 @@
                              (lambda (done-hook)
                                (loop for i upto 10 collect i)
                                (funcall done-hook))
+			     :async-p t
                              :timeout 0))
      (setf test-2
            (add-child suite-2
@@ -696,6 +700,7 @@
                                (lambda (done-hook)
                                  (loop for i upto 10 collect i)
                                  (funcall done-hook))
+			       :async-p t
                                :timeout 0))
      (setf test-1
            (add-child suite-1
@@ -746,6 +751,7 @@
                                (lambda (done-hook)
                                  (loop for i upto 10 collect i)
                                  (funcall done-hook))
+			       :async-p t
                                :timeout 0))
      (setf test-2
            (add-child suite-2
@@ -837,6 +843,7 @@
                               (lambda (done-hook)
                                 (loop for i upto 10 collect i)
                                 (funcall done-hook))
+			      :async-p t
                               :timeout 0))
      (setf test-1
            (add-child suite-1
@@ -887,6 +894,7 @@
                               (lambda (done-hook)
                                 (loop for i upto 10 collect i)
                                 (funcall done-hook))
+			      :async-p t
                               :timeout 50000))
      (setf test-2
            (add-child suite-2

@@ -21,7 +21,7 @@
     (setf (current-suite new-runner) (suite-root new-runner))
     new-runner))
 
-(defmethod create-suite ((obj runner) name &key (only-p nil) (skip-p nil) (timeout -1))
+(defmethod create-suite ((obj runner) name &key only-p skip-p (timeout -1))
   (emit (eventbus obj) :add-suite (list :only-p only-p :skip-p skip-p))
   (make-suite :name name
               :only-p only-p
@@ -29,11 +29,12 @@
               :timeout timeout
               :eventbus (eventbus obj)))
 
-(defmethod create-test ((obj runner) name fn &key (only-p nil) (skip-p nil) (timeout -1))
+(defmethod create-test ((obj runner) name fn &key async-p only-p skip-p (timeout -1))
   (emit (eventbus obj) :add-test (list :only-p only-p :skip-p skip-p))
   (make-test :name name
              :fn fn
-             :only-p only-p
+	     :async-p async-p
+	     :only-p only-p
              :skip-p skip-p
              :timeout timeout
              :eventbus (eventbus obj)))

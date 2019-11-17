@@ -15,7 +15,8 @@
                       (create-test runner-instance
                                    :test-1
                                    (lambda (done)
-                                     (funcall done (lambda () (t-p nil)))))))
+                                     (funcall done (lambda () (t-p nil))))
+				   :async-p t)))
      (setf test-2
            (add-child suite-1
                       (create-test runner-instance
@@ -50,7 +51,8 @@
                       (create-test runner-instance
                                    :test-2
                                    (lambda (done)
-                                     (funcall done (lambda () (t-p nil)))))))
+                                     (funcall done (lambda () (t-p nil))))
+				   :async-p t)))
      (once-runner runner-instance
                   :end
                   (lambda ()
@@ -82,7 +84,8 @@
                                    (lambda (done)
                                      (handler-case (t-p nil)
                                        (error (c)
-                                         (funcall done c)))))))
+                                         (funcall done c))))
+				   :async-p t)))
      (once-runner runner-instance
                   :end
                   (lambda ()

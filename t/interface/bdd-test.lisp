@@ -12,7 +12,7 @@
       (context
        "Suite-2"
        (lambda (&optional (x 0))
-         (after-all "After-all Suite-2" (lambda (done-hook) (setf x 1) (funcall done-hook)))
+         (after-all "After-all Suite-2" (lambda (done-hook) (setf x 1) (funcall done-hook)) :async t)
          (it "Test-1" (lambda () (incf x) (eql-p x 1)))
          (it "Test-2" (lambda () (eql-p x 1)))
          (context
@@ -48,7 +48,7 @@
       (context
        "Suite-2"
        (lambda (&optional (x 0))
-         (after-all "After-all Suite-2" (lambda (done-hook) (setf x 1) (funcall done-hook)))
+         (after-all "After-all Suite-2" (lambda (done-hook) (setf x 1) (funcall done-hook)) :async t)
          (it "Test-1" (lambda () (incf x) (eql-p x 1)))
          (it "Test-2" (lambda () (eql-p x 1)) :timeout 50000)
          (context
@@ -85,7 +85,7 @@
       (context
        "Suite-2"
        (lambda (&optional (x 0))
-         (after-all "After-all Suite-2" (lambda (done-hook) (setf x 1) (funcall done-hook)))
+         (after-all "After-all Suite-2" (lambda (done-hook) (setf x 1) (funcall done-hook)) :async t)
          (it "Test-1" (lambda () (incf x) (eql-p x 1)))
          (it "Test-2" (lambda () (eql-p x 1)) :skip t)
          (context
@@ -94,7 +94,8 @@
             (before-each "Before-each Suite-3" (lambda () (setf x 1)))
             (it "Test-1" (lambda (done)
                            (incf x)
-                           (funcall done (lambda () (eql-p x 2)))))
+                           (funcall done (lambda () (eql-p x 2))))
+		:async t)
             (it "Test-2" (lambda () (eql-p x 1))))
           :skip t))))
     :only t)

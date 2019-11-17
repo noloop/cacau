@@ -1,20 +1,24 @@
 (in-package #:noloop.cacau)
 
 (defclass hook-class (runnable)
-  ((pos-hook-fn :initform nil
+  ((async-p :initarg :async-p
+	    :initform nil
+	    :accessor async-p)
+   (pos-hook-fn :initform nil
                 :accessor pos-hook-fn)))
 
-(defun make-hook (&key name fn (timeout -1) eventbus)
+(defun make-hook (&key name fn async-p (timeout -1) eventbus)
   (make-instance 'hook-class
                  :name name
                  :fn fn
+		 :async-p async-p
                  :timeout timeout
                  :eventbus eventbus))
 
 (defmethod run-runnable ((hook hook-class) &optional after-hook)
   (setf (pos-hook-fn hook) after-hook)
   (start-timeout hook)
-  (if (>= (get-function-args-length (fn hook)) 1)
+  (if (async-p hook)
       (funcall (fn hook) (done-runnable hook))
       (progn
         (try-fn hook

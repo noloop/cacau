@@ -646,12 +646,12 @@ Ela funciona definindo suíte no corpo de outra suíte, porém não é fornecido
 e sim funções que necessitam do uso de `lambda`.
 
 ```lisp
-(before-all name fn &key (timeout -1))
-(before-each name fn &key (timeout -1))
-(after-each name fn &key (timeout -1))
-(after-all name fn &key (timeout -1))
+(before-all name fn &key async (timeout -1))
+(before-each name fn &key async (timeout -1))
+(after-each name fn &key async (timeout -1))
+(after-all name fn &key async (timeout -1))
 (context name fn &key only skip (timeout -1))
-(it name fn &key only skip (timeout -1))
+(it name fn &key async only skip (timeout -1))
 ```
 
 Veja um exemplo de uso:
@@ -669,7 +669,7 @@ Veja um exemplo de uso:
    (before-all "Before-all Suite-1" (lambda () (setf x 1)))
    (before-each "Before-each Suite-1" (lambda () (setf x 1)))
    (after-each "After-each Suite-1" (lambda () (setf x 1)))
-   (after-all "After-all Suite-1" (lambda (done) (funcall done)))
+   (after-all "After-all Suite-1" (lambda (done) (funcall done)) :async t)
    (it "Test-1" (lambda () (eql-p x 1)))
    (it "Test-2" (lambda () (incf x) (eql-p x 2)))
    (context
@@ -688,12 +688,12 @@ porém não é fornecido macros, e sim funções que necessitam do
 uso de `lambda`.
 
 ```lisp
-(suite-setup name fn &key (timeout -1))
-(suite-teardown name fn &key (timeout -1))
-(test-setup name fn &key (timeout -1))
-(test-teardown name fn &key (timeout -1))
+(suite-setup name fn &key async (timeout -1))
+(suite-teardown name fn &key async (timeout -1))
+(test-setup name fn &key async (timeout -1))
+(test-teardown name fn &key async (timeout -1))
 (suite name fn &key only skip (timeout -1))
-(test name fn &key only skip (timeout -1))
+(test name fn &key async only skip (timeout -1))
 ```
 
 Veja um exemplo de uso:
@@ -711,7 +711,7 @@ Veja um exemplo de uso:
    (suite-setup "Suite-setup Suite-1" (lambda () (setf x 1)))
    (test-setup "Test-setup Suite-1" (lambda () (setf x 1)))
    (test-teardown "Test-teardown Suite-1" (lambda () (setf x 1)))
-   (suite-teardown "Suite-teardown Suite-1" (lambda (done) (funcall done)))
+   (suite-teardown "Suite-teardown Suite-1" (lambda (done) (funcall done)) :async t)
    (test "Test-1" (lambda () (eql-p x 1)))
    (test "Test-2" (lambda () (incf x) (eql-p x 2)))
    (suite

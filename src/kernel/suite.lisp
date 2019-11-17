@@ -31,33 +31,37 @@
                  :timeout timeout
                  :eventbus eventbus))
 
-(defmethod create-before-all ((suite suite-class) name fn &key (timeout -1))
+(defmethod create-before-all ((suite suite-class) name fn &key async-p (timeout -1))
   (setf (suite-before-all suite) (make-hook :name name
                                             :fn fn
+					    :async-p async-p
                                             :timeout timeout
                                             :eventbus (eventbus suite)))
   (setf (parent (suite-before-all suite)) suite)
   (suite-before-all suite))
 
-(defmethod create-after-all ((suite suite-class) name fn &key (timeout -1))
+(defmethod create-after-all ((suite suite-class) name fn &key async-p (timeout -1))
   (setf (suite-after-all suite) (make-hook :name name
                                            :fn fn
+					   :async-p async-p
                                            :timeout timeout
                                            :eventbus (eventbus suite)))
   (setf (parent (suite-after-all suite)) suite)
   (suite-after-all suite))
 
-(defmethod create-before-each ((suite suite-class) name fn &key (timeout -1))
+(defmethod create-before-each ((suite suite-class) name fn &key async-p (timeout -1))
   (setf (suite-before-each suite) (make-hook :name name
                                              :fn fn
+					     :async-p async-p
                                              :timeout timeout
                                              :eventbus (eventbus suite)))
   (setf (parent (suite-before-each suite)) suite)
   (suite-before-each suite))
 
-(defmethod create-after-each ((suite suite-class) name fn &key (timeout -1))
+(defmethod create-after-each ((suite suite-class) name fn &key async-p (timeout -1))
   (setf (suite-after-each suite) (make-hook :name name
                                             :fn fn
+					    :async-p async-p
                                             :timeout timeout
                                             :eventbus (eventbus suite)))
   (setf (parent (suite-after-each suite)) suite)

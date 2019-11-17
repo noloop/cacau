@@ -8,7 +8,7 @@
       :suite-1
       (lambda ()
         (before-all "Before-all Suite-1" (lambda () (setf x 1)))
-        (it "Test-1" (lambda (done) (funcall done (lambda () (eql-p x 1)))))
+        (it "Test-1" (lambda (done) (funcall done (lambda () (eql-p x 1)))) :async t)
         (it "Test-2" (lambda () (incf x) (eql-p x 2)))
         
         (in-plan :suite-2 ((:parent :suite-1)))

@@ -12,7 +12,7 @@
       (suite
        "Suite-2"
        (lambda (&optional (x 0))
-         (suite-teardown "Suite-teardown Suite-2" (lambda (done-hook) (setf x 1) (funcall done-hook)))
+         (suite-teardown "Suite-teardown Suite-2" (lambda (done-hook) (setf x 1) (funcall done-hook)) :async t)
          (test "Test-1" (lambda () (incf x) (eql-p x 1)))
          (test "Test-2" (lambda () (eql-p x 1)))
          (suite
@@ -21,7 +21,8 @@
             (test-setup "Test-setup Suite-3" (lambda () (setf x 1)))
             (test "Test-1" (lambda (done)
                              (incf x)
-                             (funcall done (lambda () (eql-p x 2)))))
+                             (funcall done (lambda () (eql-p x 2))))
+		  :async t)
             (test "Test-2" (lambda () (eql-p x 1)))))))))
    (suite
     "Suite-4"
@@ -50,7 +51,7 @@
       (suite
        "Suite-2"
        (lambda (&optional (x 0))
-         (suite-teardown "Suite-teardown Suite-2" (lambda (done-hook) (setf x 1) (funcall done-hook)))
+         (suite-teardown "Suite-teardown Suite-2" (lambda (done-hook) (setf x 1) (funcall done-hook)) :async t)
          (test "Test-1" (lambda () (incf x) (eql-p x 1)))
          (test "Test-2" (lambda () (eql-p x 1)) :timeout 0)
          (suite
@@ -87,7 +88,7 @@
       (suite
        "Suite-2"
        (lambda (&optional (x 0))
-         (suite-teardown "Suite-teardown Suite-2" (lambda (done-hook) (setf x 1) (funcall done-hook)))
+         (suite-teardown "Suite-teardown Suite-2" (lambda (done-hook) (setf x 1) (funcall done-hook)) :async t)
          (test "Test-1" (lambda () (incf x) (eql-p x 1)))
          (test "Test-2" (lambda () (eql-p x 1)) :skip t)
          (suite
