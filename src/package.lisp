@@ -14,9 +14,6 @@
                 #:assertion-error-result
                 #:assertion-error-stack
                 #:get-stack-trace)
-  (:import-from #:cacau-asdf
-                #:cacau-file
-                #:run-cacau-asdf)
   (:export #:make-runner
            #:suite-root
            #:add-child

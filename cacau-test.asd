@@ -12,32 +12,32 @@
     ((:file "recursive-runner")
      (:module "functional"
       :components
-      ((:cacau-file "runner-test")
-       (:cacau-file "suite-test")
-       (:cacau-file "test-test")     
-       (:cacau-file "before-all-test")
-       (:cacau-file "after-all-test")
-       (:cacau-file "before-each-test")
-       (:cacau-file "after-each-test")
-       (:cacau-file "timeout-test")
-       (:cacau-file "only-test")
-       (:cacau-file "skip-test")
-       (:cacau-file "skip-only-rule-test")))
+      ((:file "runner-test")
+       (:file "suite-test")
+       (:file "test-test")     
+       (:file "before-all-test")
+       (:file "after-all-test")
+       (:file "before-each-test")
+       (:file "after-each-test")
+       (:file "timeout-test")
+       (:file "only-test")
+       (:file "skip-test")
+       (:file "skip-only-rule-test")))
      (:module "interface"
       :components
-      ((:cacau-file "cl-test")
-       (:cacau-file "bdd-test")
-       (:cacau-file "tdd-test")
-       (:cacau-file "no-spaghetti-test")
-       (:cacau-file "mix-test")))
+      ((:file "cl-test")
+       (:file "bdd-test")
+       (:file "tdd-test")
+       (:file "no-spaghetti-test")
+       (:file "mix-test")))
      (:module "reporter"
       :components
-      ((:cacau-file "min-test")
-       (:cacau-file "list-test")
-       (:cacau-file "full-test"))))))
+      ((:file "min-test")
+       (:file "list-test")
+       (:file "full-test"))))))
   :perform
   (test-op (op c)
            (progn
-             (funcall (intern #.(string :run-cacau-asdf) :cacau) c)
+	     (funcall (intern #.(string :run-cacau-asdf) :cacau-asdf) c)
              (symbol-call :cacau-test '#:r-run))))
 

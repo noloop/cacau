@@ -33,8 +33,7 @@ There are also others [reporters](#reporters).
 
 See that the cacau returned `T`, this happened because none test failed, when there are tests failing or errors (errors
 of hooks by example) it's returned `NIL`.
-
-## 
+ 
 ## <a name="getting-started">Getting Started in cacau</a>
 
 ### <a name="summary">Summary</a>
@@ -1039,11 +1038,11 @@ configure your system of tests like this:
                :cacau
                :assert-p)
   :defsystem-depends-on (:cacau-asdf)
-  :components ((:cacau-file "cacau-examples-asdf-integration-test"))
+  :components ((:file "cacau-examples-asdf-integration-test"))
   :perform
   (test-op (op c)
            (progn
-             (funcall (intern #.(string :run-cacau-asdf) :cacau) c)
+             (funcall (intern #.(string :run-cacau-asdf) :cacau-asdf) c)
              (symbol-call :cacau '#:run))))
 ```
 

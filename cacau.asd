@@ -12,8 +12,7 @@
   :components ((:module "src"
                 :serial t
                 :components
-                ((:file "asdf")
-                 (:file "package")
+                ((:file "package")
                  (:file "utils")
                  (:module "kernel"
                   :serial t
@@ -42,5 +41,5 @@
                    (:file "bdd")
                    (:file "tdd")
                    (:file "no-spaghetti"))))))
-  :in-order-to ((test-op (test-op :cacau-test))))
+  :in-order-to ((test-op (test-op "cacau-test"))))
 

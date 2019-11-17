@@ -1,37 +1,24 @@
 (in-package #:cl-user)
 (defpackage #:cacau-asdf
-  (:nicknames #:cacau-asdf)
-  (:use #:common-lisp
-        #:asdf)
-  (:export #:cacau-file
-           #:run-cacau-asdf))
+  (:use #:common-lisp)
+  (:import-from #:asdf
+  		#:component-children
+  		#:component-pathname)
+  (:import-from #:cl-fad
+		#:directory-exists-p
+		#:file-exists-p)
+  (:export #:run-cacau-asdf))
 (in-package #:cacau-asdf)
 
-(defvar *system-cacau-files* (make-hash-table))
+(defun run-cacau-asdf (c)
+  (dolist (child (component-children c))
+    (let ((path (component-pathname child)))
+      (cond ((pathname-is-file path)
+	     (load path))
+	    ((directory-exists-p path)
+	     (run-cacau-asdf child))))))
 
-(defclass cacau-file (asdf:cl-source-file) ())
-
-(defmethod asdf:input-files ((o asdf:compile-op) (c cacau-file)) ())
-
-(defmethod asdf:output-files ((o asdf:compile-op) (c cacau-file)) ())
-
-(defmethod asdf:perform ((op asdf:compile-op) (c cacau-file)) ())
-
-(defmethod asdf:perform ((op asdf:load-op) (c cacau-file))
-  (pushnew c (gethash (asdf:component-system c) *system-cacau-files*)
-           :key #'asdf:component-pathname
-           :test #'equal))
-
-(defun run-cacau-asdf (system-designator)
-  #+quicklisp (ql:quickload (if (typep system-designator 'asdf:system)
-                                (asdf:component-name system-designator)
-                                system-designator))
-  #-Quicklisp (asdf:load-system system-designator)
-  (restart-case
-      (dolist (c (reverse
-                  (gethash (asdf:find-system system-designator) *system-cacau-files*)))
-        (restart-case
-            (asdf:perform 'asdf:load-source-op c)))))
-
-(import 'cacau-file :asdf)
+(defun pathname-is-file (path)
+  (and (not (directory-exists-p path))
+       (file-exists-p path)))
 
