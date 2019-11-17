@@ -41,5 +41,5 @@
                    (:file "bdd")
                    (:file "tdd")
                    (:file "no-spaghetti"))))))
-  :in-order-to ((test-op (test-op "cacau-test"))))
+  :in-order-to ((test-op (test-op :cacau-test))))
 
