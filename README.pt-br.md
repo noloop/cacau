@@ -1045,27 +1045,27 @@ uma nova [questão](https://github.com/noloop/cacau/issues).
 
 function **(context name fn &key only skip (timeout -1))** => suite
 
-function **(before-all name fn &key (timeout -1))** => suite-before-all
+function **(before-all name fn &key async (timeout -1))** => suite-before-all
 
-function **(after-all name fn &key (timeout -1))** => suite-after-all
+function **(after-all name fn &key async (timeout -1))** => suite-after-all
 
-function **(before-each name fn &key (timeout -1))** => suite-before-each
+function **(before-each name fn &key async (timeout -1))** => suite-before-each
 
-function **(after-each name fn &key (timeout -1))** => suite-after-all
+function **(after-each name fn &key async (timeout -1))** => suite-after-all
 
-function **(it name fn &key only skip (timeout -1))** => test
+function **(it name fn &key async only skip (timeout -1))** => test
 
 function **(suite name fn &key only skip (timeout -1))** => suite
 
-function **(suite-setup name fn &key (timeout -1))** => suite-before-all
+function **(suite-setup name fn &key async (timeout -1))** => suite-before-all
 
-function **(suite-teardown name fn &key (timeout -1))** => suite-after-all
+function **(suite-teardown name fn &key async (timeout -1))** => suite-after-all
 
-function **(test-setup name fn &key (timeout -1))** => suite-before-each
+function **(test-setup name fn &key async (timeout -1))** => suite-before-each
 
-function **(test-teardown name fn &key (timeout -1))** => suite-after-each
+function **(test-teardown name fn &key async (timeout -1))** => suite-after-each
 
-function **(test name fn &key only skip (timeout -1))** => test
+function **(test name fn &key async only skip (timeout -1))** => test
 
 macro **(defsuite name options &body body)** => suite
 
