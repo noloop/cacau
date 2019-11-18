@@ -1038,12 +1038,8 @@ configure your system of tests like this:
                :cacau
                :assert-p)
   :defsystem-depends-on (:cacau-asdf)
-  :components ((:file "cacau-examples-asdf-integration-test"))
-  :perform
-  (test-op (op c)
-           (progn
-             (funcall (intern #.(string :run-cacau-asdf) :cacau-asdf) c)
-             (symbol-call :cacau '#:run))))
+  :components ((:cacau-file "cacau-examples-asdf-integration-test"))
+  :perform (test-op (op c) (symbol-call :cacau '#:run)))
 ```
 
 You can want see the directory of [example of ASDF integration](examples/asdf-integration/) for 

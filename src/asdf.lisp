@@ -2,23 +2,26 @@
 (defpackage #:cacau-asdf
   (:use #:common-lisp)
   (:import-from #:asdf
-  		#:component-children
-  		#:component-pathname)
-  (:import-from #:cl-fad
-		#:directory-exists-p
-		#:file-exists-p)
-  (:export #:run-cacau-asdf))
+		#:cl-source-file
+		#:operation-done-p
+  		#:load-op
+  		#:compile-op)
+  (:export #:cacau-file
+	   #:cacau-file-nd))
 (in-package #:cacau-asdf)
 
-(defun run-cacau-asdf (c)
-  (dolist (child (component-children c))
-    (let ((path (component-pathname child)))
-      (cond ((pathname-is-file path)
-	     (load path))
-	    ((directory-exists-p path)
-	     (run-cacau-asdf child))))))
+(defclass cacau-file (cl-source-file) ())
 
-(defun pathname-is-file (path)
-  (and (not (directory-exists-p path))
-       (file-exists-p path)))
+(defmethod operation-done-p ((op load-op) (c cacau-file)) nil)
 
+(defmethod operation-done-p ((op compile-op) (c cacau-file)) t)
+
+(import 'cacau-file :asdf)
+
+(defclass cacau-file-nd (cl-source-file) ())
+
+(defmethod operation-done-p ((op load-op) (c cacau-file-nd)) nil)
+
+(defmethod operation-done-p ((op compile-op) (c cacau-file-nd)) nil)
+
+(import 'cacau-file-nd :asdf)

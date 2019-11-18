@@ -9,13 +9,12 @@
   :source-control (:git "git@github.com:noloop/cacau.git")
   :description "Test Runner in Common Lisp."
   :depends-on (:eventbus :assertion-error)
+  :serial t
   :components ((:module "src"
-                :serial t
                 :components
                 ((:file "package")
                  (:file "utils")
                  (:module "kernel"
-                  :serial t
                   :components
                   ((:file "timer")
                    (:file "runnable")
@@ -26,7 +25,6 @@
                    (:file "runner-listeners")
                    (:file "runner")))
                  (:module "reporters"
-                  :serial t
                   :components
                   ((:file "base")
                    (:file "min")
@@ -34,7 +32,6 @@
                    (:file "full")))
                  (:file "cacau")
                  (:module "interfaces"
-                  :serial t
                   :components
                   ((:file "common")
                    (:file "cl")

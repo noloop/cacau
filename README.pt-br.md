@@ -1016,12 +1016,8 @@ para conseguir isso, configure seu sistema de teste como mostrado abaixo:
                :cacau
                :assert-p)
   :defsystem-depends-on (:cacau-asdf)
-  :components ((:file "cacau-examples-asdf-integration-test"))
-  :perform
-  (test-op (op c)
-           (progn
-             (funcall (intern #.(string :run-cacau-asdf) :cacau-asdf) c)
-             (symbol-call :cacau '#:run))))
+  :components ((:cacau-file "cacau-examples-asdf-integration-test"))
+  :perform (test-op (op c) (symbol-call :cacau '#:run)))
 ```
 
 Você pode querer olhar para o diretório de 
