@@ -1042,7 +1042,7 @@ configure your system of tests like this:
   :perform (test-op (op c) (symbol-call :cacau '#:run)))
 ```
 
-You can want see the directory of [example of ASDF integration](examples/asdf-integration/) for 
+You can want see the directory of [example of ASDF integration](https://github.com/noloop/cacau/tree/master/examples/asdf-intregration) for 
 better comprehension.
 
 ## <a name="contributing">Contributing</a>

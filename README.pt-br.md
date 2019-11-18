@@ -1021,7 +1021,7 @@ para conseguir isso, configure seu sistema de teste como mostrado abaixo:
 ```
 
 Você pode querer olhar para o diretório de 
-[exemplo de integração ASDF](examples/asdf-integration/)
+[exemplo de integração ASDF](https://github.com/noloop/cacau/tree/master/examples/asdf-intregration)
 para melhor compreensão.
 
 ## <a name="contributing">Contribuindo</a>
