@@ -634,7 +634,7 @@ Veja um exemplo de uso:
       (setf x 1)
       (funcall done))
     (deftest "Test-1" () (eql-p x 0))
-    (deftest "Test-2" ()
+    (deftest "Test-2" ((:async done))
       (funcall done (lambda () (eql-p x 0))))))
 
 (run)
