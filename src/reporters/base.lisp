@@ -1,7 +1,7 @@
 (in-package #:noloop.cacau)
 
 (defun cacau-logo ()
-  (format t "~%~a~%~%" (cacau-string-color "<=> Cacau <=>" "red"
+  (format t "~a~%~%" (cacau-string-color "<=> Cacau <=>" "red"
                                            :background "yellow"
                                            :style "underline")))
 

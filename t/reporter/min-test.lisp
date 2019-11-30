@@ -32,8 +32,7 @@
                 (run
                  :reporter :min
                  :colorful nil))))
-     (funcall r-done (equal out "
-<=> Cacau <=>
+     (funcall r-done (equal out "<=> Cacau <=>
 
 From 8 running tests: 
 
@@ -73,8 +72,7 @@ From 8 running tests:
                 (run
                  :reporter :min
                  :colorful t))))
-     (funcall r-done (equal out "
-[4;31;43m<=> Cacau <=>[0m
+     (funcall r-done (equal out "[4;31;43m<=> Cacau <=>[0m
 
 [37mFrom [0m[34m8[0m[37m running tests: [0m
 

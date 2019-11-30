@@ -11,6 +11,7 @@
 
 (run :colorful t
      :reporter :full)
+(format t "~%")
 
 ;;; timeout-in-hooks
 (defsuite :suite-1 ()
@@ -20,6 +21,7 @@
 
 (run :colorful t
      :reporter :full)
+(format t "~%")
 
 ;;; timeout-in-tests
 (defsuite :suite-1 ()
@@ -28,6 +30,7 @@
 
 (run :colorful t
      :reporter :full)
+(format t "~%")
 
 ;;; timeout-in-tests-with-suites-timeout-configured
 (defsuite :suite-1 ((:timeout 0))

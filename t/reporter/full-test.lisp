@@ -51,8 +51,7 @@
                       :completed-suites
                       :completed-tests))
                     :stack))))))
-     (funcall r-done (equal out "
-<=> Cacau <=>
+     (funcall r-done (equal out "<=> Cacau <=>
 
 :SUITE-1
  -> Test-1
@@ -145,8 +144,7 @@ Read Stack (y/n)? ")))))
                        :completed-suites
                        :completed-tests))
                      :stack))))))
-     (funcall r-done (equal out "
-[4;31;43m<=> Cacau <=>[0m
+     (funcall r-done (equal out "[4;31;43m<=> Cacau <=>[0m
 
 [34m:SUITE-1[0m
 [32m -> Test-1[0m

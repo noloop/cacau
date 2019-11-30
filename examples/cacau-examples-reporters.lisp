@@ -11,6 +11,7 @@
   (deftest "Test-3" () (t-p nil)))
 
 (run :colorful t) ;; or (run :colorful t :reporter :min)
+(format t "~%")
 
 ;;; :list
 (defsuite :suite-1 ()
@@ -19,6 +20,7 @@
   (deftest "Test-3" () (t-p nil)))
 
 (run :colorful t :reporter :list)
+(format t "~%")
 
 ;;; :full
 (defsuite :suite-1 ()
@@ -27,6 +29,7 @@
   (deftest "Test-3" () (t-p nil)))
 
 (run :colorful t :reporter :full)
+(format t "~%")
 
 ;;; :full with :reporter-options
 (defsuite :suite-1 ()

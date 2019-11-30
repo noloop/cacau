@@ -10,6 +10,7 @@
   (deftest "Test-2" (:skip) (t-p t)))
 (run :colorful t
      :reporter :list)
+(format t "~%")
 
 ;;; skip-test-precedes-only-suite
 (defsuite :suite-1 (:only) 
@@ -17,6 +18,7 @@
   (deftest "Test-2" (:skip) (t-p t)))
 (run :colorful t
      :reporter :list)
+(format t "~%")
 
 ;;; skip-only-suite-not-precedes-skip-suite
 (defsuite :suite-1 (:only)
@@ -27,6 +29,7 @@
     (deftest "Test-2" () (t-p t))))
 (run :colorful t
      :reporter :list)
+(format t "~%")
 
 ;;; skip-suite-precedes-only-test
 ;;; Attention here! Because before the cacau is isolating the "Test-1"
@@ -39,6 +42,7 @@
     (deftest "Test-2" () (t-p t))))
 (run :colorful t
      :reporter :list)
+(format t "~%")
 
 ;;; skip-suite-precedes-only-suite
 (defsuite :suite-1 (:skip)
@@ -49,6 +53,7 @@
     (deftest "Test-2" () (t-p t))))
 (run :colorful t
      :reporter :list)
+(format t "~%")
 
 ;;; skip-suite-precedes-only-test-and-only-suite
 (defsuite :suite-1 (:skip)

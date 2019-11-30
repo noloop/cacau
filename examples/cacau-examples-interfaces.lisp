@@ -23,6 +23,7 @@
         (deftest "Test-2" () (eql-p x 0))))))
 
 (run :colorful t)
+(format t "~%")
 
 ;;; bdd
 (context
@@ -46,6 +47,7 @@
          (it "Test-2" (lambda () (eql-p x 1)))))))))
 
 (run :colorful t)
+(format t "~%")
 
 ;;; tdd
 (suite
@@ -72,6 +74,7 @@
          (test "Test-2" (lambda () (eql-p x 1)))))))))
 
 (run :colorful t)
+(format t "~%")
 
 ;;; no-spaghetti
 (let ((x 0))
