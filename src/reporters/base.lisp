@@ -42,17 +42,16 @@
      runner
      :fail
      (lambda (test) 
-       (format t "~a~%"
-               (concatenate 'string
-                            (cacau-string-color
+       (format t "~a~%~a~%~a~%"
+	       (cacau-string-color
                              (concatenate 'string
                                           spaces
                                           " <- "
                                           (string-if-not-string (name test))
                                           ":")
                              "red" :style "underline")
-                            " "
-                            (cacau-string-color (gethash :message (runnable-error test)) "white")))))))
+	       (cacau-string-color "Error message:" "red" :style "underline")
+	       (cacau-string-color (gethash :message (runnable-error test)) "white"))))))
 
 (defun epilogue (runner-result)
   (let ((passed-tests

@@ -61,9 +61,13 @@
   -> Test-2
  :SUITE-3
   -> Test-1
-  <- Test-2: 1 EQL 0
+  <- Test-2:
+Error message:
+1 EQL 0
 :SUITE-4
- <- Test-2: 0 EQL 1
+ <- Test-2:
+Error message:
+0 EQL 1
 
 Epilogue
 -------------------------
@@ -154,9 +158,13 @@ Read Stack (y/n)? ")))))
  [32m -> Test-2[0m
  [34m:SUITE-3[0m
  [32m -> Test-1[0m
-[4;31m  <- Test-2:[0m [37m1 EQL 0[0m
+[4;31m  <- Test-2:[0m
+[4;31mError message:[0m
+[37m1 EQL 0[0m
 [34m:SUITE-4[0m
-[4;31m <- Test-2:[0m [37m0 EQL 1[0m
+[4;31m <- Test-2:[0m
+[4;31mError message:[0m
+[37m0 EQL 1[0m
 
 [0mEpilogue[0m
 [0m-------------------------[0m

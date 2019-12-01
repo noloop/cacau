@@ -43,7 +43,9 @@
   -> Test-2
  :SUITE-3
   -> Test-1
-  <- Test-2: 1 EQL 0
+  <- Test-2:
+Error message:
+1 EQL 0
 :SUITE-4
  -> Test-2
 
@@ -83,6 +85,7 @@ From 7 running tests:
        (deftest "Test-1" () (incf x) (eql-p x 1))
        (deftest "Test-2" ((:async done))
          (funcall done (lambda () (eql-p x 0))))))
+
    (let ((out (with-output-to-string (*standard-output*)
                 (run
                  :reporter :list
@@ -95,7 +98,9 @@ From 7 running tests:
  [34m:SUITE-2[0m
  [34m:SUITE-3[0m
  [32m -> Test-1[0m
-[4;31m  <- Test-2:[0m [37m1 EQL 0[0m
+[4;31m  <- Test-2:[0m
+[4;31mError message:[0m
+[37m1 EQL 0[0m
 
 [0m-------------------------[0m
 [37mFrom [0m[34m4[0m[37m running tests: [0m
