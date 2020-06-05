@@ -181,7 +181,7 @@
       (format t "~a~%"
               (cacau-string-color
                (concatenate 'string
-                            "Message: "
+                            (format nil "Message:~%")
                             (string-if-not-string (gethash :message (gethash :error test-err))))
                "red"))
       (format t "~a" (cacau-string-color "Read Stack (y/n)? " "red"))

@@ -45,7 +45,15 @@
   -> Test-1
   <- Test-2:
 Error message:
-1 EQL 0
+BIT EQL BIT
+
+Actual:
+
+1
+
+Expected:
+
+0
 :SUITE-4
  -> Test-2
 
@@ -100,7 +108,15 @@ From 7 running tests:
  [32m -> Test-1[0m
 [4;31m  <- Test-2:[0m
 [4;31mError message:[0m
-[37m1 EQL 0[0m
+[37mBIT EQL BIT
+
+Actual:
+
+1
+
+Expected:
+
+0[0m
 
 [0m-------------------------[0m
 [37mFrom [0m[34m4[0m[37m running tests: [0m

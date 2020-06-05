@@ -63,11 +63,27 @@
   -> Test-1
   <- Test-2:
 Error message:
-1 EQL 0
+BIT EQL BIT
+
+Actual:
+
+1
+
+Expected:
+
+0
 :SUITE-4
  <- Test-2:
 Error message:
-0 EQL 1
+BIT EQL BIT
+
+Actual:
+
+0
+
+Expected:
+
+1
 
 Epilogue
 -------------------------
@@ -89,12 +105,30 @@ Errors
 -------------------------
 Suite: :SUITE-3
 Test: Test-2
-Message: 1 EQL 0
+Message:
+BIT EQL BIT
+
+Actual:
+
+1
+
+Expected:
+
+0
 Read Stack (y/n)? 
 -------------------------
 Suite: :SUITE-4
 Test: Test-2
-Message: 0 EQL 1
+Message:
+BIT EQL BIT
+
+Actual:
+
+0
+
+Expected:
+
+1
 Read Stack (y/n)? ")))))
 
 (r-test
@@ -160,11 +194,27 @@ Read Stack (y/n)? ")))))
  [32m -> Test-1[0m
 [4;31m  <- Test-2:[0m
 [4;31mError message:[0m
-[37m1 EQL 0[0m
+[37mBIT EQL BIT
+
+Actual:
+
+1
+
+Expected:
+
+0[0m
 [34m:SUITE-4[0m
 [4;31m <- Test-2:[0m
 [4;31mError message:[0m
-[37m0 EQL 1[0m
+[37mBIT EQL BIT
+
+Actual:
+
+0
+
+Expected:
+
+1[0m
 
 [0mEpilogue[0m
 [0m-------------------------[0m
@@ -186,11 +236,29 @@ Read Stack (y/n)? ")))))
 [31m-------------------------[0m
 [31mSuite: :SUITE-3[0m
 [31mTest: Test-2[0m
-[31mMessage: 1 EQL 0[0m
+[31mMessage:
+BIT EQL BIT
+
+Actual:
+
+1
+
+Expected:
+
+0[0m
 [31mRead Stack (y/n)? [0m
 [31m-------------------------[0m
 [31mSuite: :SUITE-4[0m
 [31mTest: Test-2[0m
-[31mMessage: 0 EQL 1[0m
+[31mMessage:
+BIT EQL BIT
+
+Actual:
+
+0
+
+Expected:
+
+1[0m
 [31mRead Stack (y/n)? [0m")))))
 
